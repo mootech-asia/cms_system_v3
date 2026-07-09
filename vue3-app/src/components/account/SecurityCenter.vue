@@ -35,9 +35,9 @@ const emit = defineEmits(['navigate', 'logout']);
 
 const items = [
   { name: 'Personal Info',                sub: 'Complete your personal profile',                          icon: 'user', go: 'Personal Info' },
-  { name: 'Change Login Password',         sub: 'Recommended letter and number combination',               icon: 'lock' },
+  { name: 'Change Login Password',         sub: 'Recommended letter and number combination',               icon: 'lock', go: 'Change Login Password' },
   { name: 'Change Transaction Password',   sub: 'Set a password to improve the security of fund operations', icon: 'key' },
-  { name: 'Banking Details',               sub: 'Recommended letter and number combination',               icon: 'card', go: 'WithdrawalForm' },
+  { name: 'Banking Details',               sub: 'Recommended letter and number combination',               icon: 'card', go: 'Banking Details' },
   { name: 'Logout',                         sub: 'Logout safely',                                          icon: 'out', logout: true },
 ];
 

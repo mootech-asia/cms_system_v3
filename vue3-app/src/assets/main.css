@@ -4447,3 +4447,150 @@ select.twk-field {
 [data-theme="light"] .rt:hover {
   color: var(--accent) !important;
 }
+
+
+/* ── shared centered section pill (Deposit / Withdrawal / Banking) ── */
+.ap-pill,
+.ap-transfer-pill {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin: 4px auto 18px;
+  padding: 10px 26px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--accent) 16%, #0d1728);
+  border: 1px solid color-mix(in oklch, var(--accent) 26%, transparent);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  text-align: center;
+}
+.ap-pill:not(:first-child),
+.ap-transfer-pill:not(:first-child) { margin-top: 28px; }
+
+/* grey disabled state for gradient submit buttons */
+.ap-btn-wide.ap-grad:disabled {
+  background: color-mix(in oklch, var(--text-mid) 30%, var(--bg-card));
+  box-shadow: none;
+  color: rgba(255,255,255,.78);
+}
+
+/* modal icon variants */
+.pi-success-check.warn { background: linear-gradient(135deg, #fbbf24, #f59e0b); box-shadow: 0 0 20px rgba(245,158,11,.5); }
+.pi-success-check.ask  { background: linear-gradient(135deg, var(--accent-2), var(--accent)); }
+.ap-btn-wide.ghost { background: transparent; border: 0; color: var(--text-mid); box-shadow: none; }
+.ap-btn-wide.ghost:hover { color: var(--text); }
+
+
+/* ── Deposit — Transfer Details (step 2) ── */
+.ap-transfer { margin-top: 4px; }
+.ap-transfer-amt-row,
+.ap-transfer-acc-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.ap-transfer-amt-row { padding: 4px 0 16px; }
+.ap-transfer-acc-row { border-top: 1px solid var(--line); padding: 16px 0 4px; }
+.ap-transfer-label { font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--text); }
+.ap-transfer-amt { font-family: var(--font-mono); font-weight: 800; font-size: 26px; color: var(--text); }
+.ap-transfer-acc { font-family: var(--font-mono); font-weight: 700; font-size: 15px; color: var(--text); }
+.ap-transfer-note { color: var(--text-mid); font-size: 13px; line-height: 1.7; margin: 20px 0 14px; }
+.ap-transfer-cs {
+  display: block; text-align: center; margin: 0 auto 22px;
+  color: var(--accent-2); font-weight: 600; font-size: 14px; text-decoration: underline;
+}
+.ap-transfer-cs:hover { filter: brightness(1.12); }
+
+
+/* ── Banking Details ── */
+.ap-bd-select { position: relative; margin-bottom: 10px; }
+.ap-bd-trigger { display: flex; align-items: center; justify-content: space-between; width: 100%; text-align: left; cursor: pointer; }
+.ap-bd-trigger .placeholder { color: var(--text-dim); }
+.ap-bd-menu {
+  position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 30;
+  background: var(--bg-elev); border: 1px solid var(--line-hi); border-radius: 10px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.4); overflow: hidden; max-height: 280px; overflow-y: auto;
+}
+.ap-bd-search { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); color: var(--text-mid); }
+.ap-bd-search input { flex: 1; background: transparent; border: 0; outline: 0; color: var(--text); font: inherit; font-size: 14px; }
+.ap-bd-search input::placeholder { color: var(--text-dim); }
+.ap-bd-option { display: block; width: 100%; text-align: left; padding: 13px 16px; background: transparent; border: 0; border-bottom: 1px solid var(--line); color: var(--text); font: inherit; font-size: 14px; cursor: pointer; }
+.ap-bd-option:last-child { border-bottom: 0; }
+.ap-bd-option:hover { background: var(--bg-card-hi); color: var(--accent-2); }
+.ap-bd-menu .ap-bd-empty { padding: 14px 16px; color: var(--text-dim); font-size: 13px; }
+.ap-bd-locked { background: color-mix(in oklch, var(--text-mid) 22%, var(--bg-elev)); border-color: transparent; margin-bottom: 10px; pointer-events: none; }
+.ap-bd-submit { margin-top: 22px; }
+
+.ap-bd-empty-card {
+  display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 18px; padding: 44px 24px; border-radius: 12px;
+  background: var(--bg-elev); border: 1px solid var(--line); min-height: 130px;
+}
+.ap-bd-empty-icon { color: var(--text-dim); line-height: 0; }
+.ap-bd-empty-title { font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--text); }
+
+.ap-bd-list { display: flex; flex-direction: column; gap: 16px; }
+.ap-bd-account { padding: 20px 22px; border-radius: 12px; background: var(--bg-elev); border: 1px solid var(--line); }
+.ap-bd-account-top { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.ap-bd-check { flex-shrink: 0; }
+.ap-bd-account-title { font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--text); }
+.ap-bd-account-bank { font-weight: 700; font-size: 13px; color: var(--text); margin-bottom: 4px; }
+.ap-bd-account-bank .muted { color: var(--text-mid); font-weight: 500; }
+.ap-bd-account-num { font-family: var(--font-mono); font-size: 13px; color: var(--text-mid); letter-spacing: .06em; }
+
+/* floating add button */
+.ap-fab {
+  position: fixed; right: 28px; bottom: 28px; z-index: 80;
+  width: 52px; height: 52px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--bg-elev); color: var(--accent-2); border: 2px solid var(--accent);
+  box-shadow: 0 8px 26px color-mix(in oklch, var(--accent) 40%, transparent), 0 0 0 4px color-mix(in oklch, var(--accent) 14%, transparent);
+  cursor: pointer; transition: filter .15s, transform .15s;
+}
+.ap-fab:hover { filter: brightness(1.1); transform: translateY(-2px); }
+@media (max-width: 900px) { .ap-fab { bottom: 80px; } }
+
+
+/* ── Change Login Password ── */
+.ap-cp-hint { color: var(--text); font-size: 14px; font-weight: 600; margin: 16px 2px 6px; }
+
+
+/* ── Withdrawal — bound bank card (credit-card style) ── */
+.ap-wd-title { font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--text); text-align: center; margin: 0 0 14px; }
+.ap-wd-acchead {
+  display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 14px;
+  font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--text);
+}
+.ap-wd-acchead b { color: var(--text-mid); font-weight: 600; font-family: var(--font-mono); font-size: 13px; }
+.ap-wd-arrow {
+  width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center;
+  background: var(--bg-elev); border: 1px solid var(--line-hi); color: var(--text-mid); cursor: pointer;
+}
+.ap-wd-arrow:hover { color: #fff; border-color: var(--accent); }
+.ap-wd-card {
+  position: relative; padding: 22px 24px; border-radius: 14px; overflow: hidden;
+  min-height: 150px; margin-bottom: 4px;
+  background: linear-gradient(135deg, #10151f 0%, #0b0f18 100%);
+  border: 1px solid var(--line-hi);
+}
+.ap-wd-card::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(115deg, rgba(255,255,255,.04) 0 1px, transparent 1px 22px);
+}
+.ap-wd-card-name { display: inline-block; padding: 5px 14px; border-radius: 8px; background: rgba(255,255,255,.08); color: #fff; font-weight: 600; font-size: 12.5px; }
+.ap-wd-card-acc { text-align: center; margin: 2px 0 28px; }
+.ap-wd-card-acc-label { display: block; color: rgba(255,255,255,.6); font-size: 12px; margin-bottom: 6px; }
+.ap-wd-card-acc-num { font-family: var(--font-mono); font-size: 22px; letter-spacing: .16em; color: #fff; }
+.ap-wd-card-holder { color: var(--accent-3); font-family: var(--font-mono); font-size: 14px; letter-spacing: .12em; }
+.ap-wd-card-bind { position: absolute; right: 24px; bottom: 22px; text-align: right; font-size: 12px; color: #fff; }
+.ap-wd-card-bind .muted { display: block; color: rgba(255,255,255,.6); font-size: 11px; margin-bottom: 2px; }
+
+
+/* ── About Us / FAQ inline in lobby ── */
+.sup-inline { padding: 0; }
+.sup-inline .sup-tabs { margin-top: 4px; }
+
+/* light theme: keep white-on-dark text readable on white surfaces */
+[data-theme="light"] .pi-success-title,
+[data-theme="light"] .ap-wallet-label,
+[data-theme="light"] .ap-wallet-amt { color: var(--text); }

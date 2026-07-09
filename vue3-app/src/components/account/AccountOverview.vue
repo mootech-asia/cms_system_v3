@@ -86,7 +86,7 @@
         </template>
         <div v-else class="ap-bank-empty">No bank accounts yet.</div>
 
-        <a href="#" class="ap-add-bank">+ Add New Bank Account</a>
+        <a href="#" class="ap-add-bank" @click.prevent="emit('navigate', 'Banking Details')">+ Add New Bank Account</a>
       </div>
     </div>
 

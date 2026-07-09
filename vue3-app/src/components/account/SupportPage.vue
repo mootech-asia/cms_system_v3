@@ -1,10 +1,10 @@
 <template>
-  <section class="lobby-section ap-page sup-page" data-screen-label="About Us">
-    <button class="ap-back" @click="emit('navigate', 'Lobby')">
+  <section class="ap-page sup-page" :class="{ 'lobby-section': !inline, 'sup-inline': inline }" data-screen-label="About Us">
+    <button v-if="!inline" class="ap-back" @click="emit('navigate', 'Lobby')">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6" /></svg>
       Back
     </button>
-    <h1 class="sup-h1">About Us</h1>
+    <h1 v-if="!inline" class="sup-h1">About Us</h1>
 
     <div class="sup-tabs">
       <button v-for="t in TABS" :key="t"
@@ -78,6 +78,9 @@
 <script setup>
 import { ref, computed, reactive } from 'vue';
 
+defineProps({
+  inline: { type: Boolean, default: false },
+});
 const emit = defineEmits(['navigate']);
 
 const TABS = ['Support','Notice','About','Privacy','Info','Addiction','Rules','Exclusion turnover list','FAQ'];

@@ -47,6 +47,12 @@
       @navigate="activeCat = $event"
       @logout="user = null; activeCat = 'Lobby'"
     />
+    <BankingDetails v-else-if="activeCat === 'Banking Details'"
+      @navigate="activeCat = $event"
+    />
+    <ChangeLoginPassword v-else-if="activeCat === 'Change Login Password'"
+      @navigate="activeCat = $event"
+    />
     <CustomerServicePage v-else-if="activeCat === 'Customer Service'"
       @navigate="activeCat = $event"
     />
@@ -117,6 +123,9 @@
 
       <!-- Promotion tab -->
       <Promotion v-else-if="catTab === 'Promotion'" />
+
+      <!-- About Us / FAQ tab (inline) -->
+      <SupportPage v-else-if="catTab === 'About Us'" inline />
 
       <!-- Fallback -->
       <div v-else style="color:var(--text-dim);padding:40px 0;text-align:center;font-family:var(--font-mono);font-size:13px">
@@ -190,6 +199,8 @@ import DepositPage            from '@/components/account/DepositPage.vue';
 import WithdrawalPage         from '@/components/account/WithdrawalPage.vue';
 import PersonalInfo           from '@/components/account/PersonalInfo.vue';
 import SecurityCenter         from '@/components/account/SecurityCenter.vue';
+import BankingDetails         from '@/components/account/BankingDetails.vue';
+import ChangeLoginPassword    from '@/components/account/ChangeLoginPassword.vue';
 import CustomerServicePage    from '@/components/account/CustomerServicePage.vue';
 import RecordTable            from '@/components/account/RecordTable.vue';
 import SupportPage            from '@/components/account/SupportPage.vue';
