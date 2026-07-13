@@ -25,7 +25,7 @@
         </div>
         <div class="rb-progress-meta">
           <span>Current: <strong>Unranked</strong> <span class="rb-tier-dot u"></span></span>
-          <span class="rb-progress-count">{{ wagered.toLocaleString() }} / {{ goal / 1000 }}K</span>
+          <span class="rb-progress-count">{{ pct }}%</span>
           <span style="text-align:right">Next: <strong class="next">Bronze</strong> <span class="rb-tier-dot b"></span></span>
         </div>
       </div>
