@@ -142,7 +142,7 @@
 
     <!-- 頁尾 -->
     <template #footer>
-      <AppFooter />
+      <AppFooter v-if="activeCat === 'Lobby'" />
     </template>
 
     <!-- 手機底部導覽 -->
