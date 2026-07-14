@@ -961,8 +961,8 @@ img { display: block; }
 
 .rewards-banner {
   display: grid;
-  grid-template-columns: 1.2fr 1.8fr;
-  gap: 22px;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 32px;
   align-items: center;
   padding: 18px 24px;
   border-radius: var(--radius-lg);
@@ -2523,8 +2523,8 @@ select.twk-field {
 /* Hero */
 .ap-hero {
   position: relative;
-  display: flex; align-items: center; gap: 22px;
-  padding: 22px 28px;
+  display: flex; flex-direction: column; align-items: stretch; gap: 18px;
+  padding: 24px 28px;
   border-radius: var(--radius-lg);
   background: linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 100%);
   border: 1px solid var(--line-hi);
@@ -2539,8 +2539,11 @@ select.twk-field {
     repeating-linear-gradient(135deg, rgba(255,255,255,.025) 0 1px, transparent 1px 14px);
   z-index: -1;
 }
+.ap-hero-top {
+  display: flex; align-items: center; gap: 22px;
+}
 .ap-hero-avatar {
-  width: 76px; height: 76px;
+  width: 96px; height: 96px;
   border-radius: 50%;
   background: color-mix(in oklch, var(--accent) 24%, var(--bg-elev));
   color: var(--accent-2);
@@ -2585,6 +2588,32 @@ select.twk-field {
 }
 .ap-refresh { background: none; border: 0; color: var(--text-mid); cursor: pointer; padding: 4px; display: inline-grid; place-items: center; }
 .ap-refresh:hover { color: var(--accent-2); }
+.ap-hero-label {
+  font-size: 12px;
+  color: var(--text-mid);
+  font-weight: 500;
+  margin-top: 10px;
+}
+.ap-hero-member {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+.ap-hero-rewards {
+  display: flex; flex-direction: column; gap: 9px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.ap-rewards-row {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--text-mid);
+  font-family: var(--font-mono);
+  letter-spacing: 0.01em;
+}
+.ap-rewards-row strong { color: var(--text); font-weight: 700; }
+.ap-rewards-row strong.next { color: #f59e0b; }
+.ap-rewards-pct { color: var(--text); font-weight: 700; }
 
 /* Quick actions / Banking grid */
 .ap-grid {
@@ -2866,7 +2895,8 @@ select.twk-field {
   .ap-grid { grid-template-columns: 1fr; }
   .ap-form-card { padding: 20px 18px; }
   .ap-amount-grid { grid-template-columns: repeat(2, 1fr); }
-  .ap-hero { flex-direction: column; align-items: flex-start; padding: 20px; }
+  .ap-hero { padding: 20px; }
+  .ap-hero-top { flex-direction: column; align-items: flex-start; }
   .ap-tx-row { grid-template-columns: 1.4fr 1fr; row-gap: 4px; }
   .ap-tx-row > span:nth-child(3),
   .ap-tx-row > span:nth-child(4) { display: none; }

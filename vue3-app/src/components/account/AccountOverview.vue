@@ -5,41 +5,59 @@
     <!-- Hero -->
     <div class="ap-hero">
       <div class="ap-hero-bg" aria-hidden="true"></div>
-      <div class="ap-hero-avatar">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
-          <circle cx="12" cy="9" r="3.5" />
-          <path d="M5 20a7 7 0 0 1 14 0" />
-        </svg>
+      <div class="ap-hero-top">
+        <div class="ap-hero-avatar">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+            <circle cx="12" cy="9" r="3.5" />
+            <path d="M5 20a7 7 0 0 1 14 0" />
+          </svg>
+        </div>
+        <div class="ap-hero-info">
+          <div class="ap-hero-name">
+            <span>{{ user?.name || 'beaucat' }}</span>
+            <span class="ap-tag-new">신규(New)</span>
+          </div>
+          <div class="ap-hero-nick">
+            <span class="muted">Nickname：</span>
+            <span>Meow</span>
+            <button class="ap-pencil" aria-label="Edit nickname">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+                <path d="m4 20 4-1 11-11-3-3L5 16l-1 4Z" />
+              </svg>
+            </button>
+          </div>
+          <div class="ap-hero-label">Current Balance</div>
+          <div class="ap-hero-balance">
+            <span>₩{{ Math.round(balance * 778000).toLocaleString() }}</span>
+            <button class="ap-refresh" :class="{ spinning: spin }" aria-label="Refresh balance"
+              @click="spin = true; setTimeout(() => spin = false, 700)"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round">
+                <path d="M20 11a8 8 0 1 1-2.34-5.66L20 8" /><path d="M20 3v5h-5" />
+              </svg>
+            </button>
+          </div>
+          <div class="ap-hero-label">Member Since</div>
+          <div class="ap-hero-member">August 2025</div>
+        </div>
+        <div class="ap-hero-rollover">
+          <div class="ap-rollover-title">Rollover</div>
+          <div class="ap-rollover-label">Remaining Turnover Amount:</div>
+          <div class="ap-rollover-amt">₩16,517.41</div>
+        </div>
       </div>
-      <div class="ap-hero-info">
-        <div class="ap-hero-name">
-          <span>{{ user?.name || 'beaucat' }}</span>
-          <span class="ap-tag-new">신규(New)</span>
+      <div class="ap-hero-rewards">
+        <div class="ap-rewards-row">
+          <span>Rewards · Day 27, 03:26 UTC</span>
+          <span>Next: <strong class="next">Bronze</strong> <span class="rb-tier-dot b"></span></span>
         </div>
-        <div class="ap-hero-nick">
-          <span class="muted">Nickname：</span>
-          <span>Meow</span>
-          <button class="ap-pencil" aria-label="Edit nickname">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
-              <path d="m4 20 4-1 11-11-3-3L5 16l-1 4Z" />
-            </svg>
-          </button>
+        <div class="rb-progress-track">
+          <div class="rb-progress-fill" :style="{ width: pct + '%' }"></div>
         </div>
-        <div class="ap-hero-balance">
-          <span>₩{{ Math.round(balance * 778000).toLocaleString() }}</span>
-          <button class="ap-refresh" :class="{ spinning: spin }" aria-label="Refresh balance"
-            @click="spin = true; setTimeout(() => spin = false, 700)"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round">
-              <path d="M20 11a8 8 0 1 1-2.34-5.66L20 8" /><path d="M20 3v5h-5" />
-            </svg>
-          </button>
+        <div class="ap-rewards-row">
+          <span>Current: <strong>Unranked</strong> <span class="rb-tier-dot u"></span></span>
+          <span class="ap-rewards-pct">{{ pct }}%</span>
         </div>
-      </div>
-      <div class="ap-hero-rollover">
-        <div class="ap-rollover-title">Rollover</div>
-        <div class="ap-rollover-label">Remaining Turnover Amount:</div>
-        <div class="ap-rollover-amt">₩16,517.41</div>
       </div>
     </div>
 
@@ -143,6 +161,7 @@ const emit = defineEmits(['navigate']);
 const spin       = ref(false);
 const confirmDel = ref(false);
 const bankIdx    = ref(0);
+const pct        = Math.min(100, Math.round(6200 / 10000 * 100));
 
 const banks = ref([
   { bank: 'KB Bank',      num: '**** **** **** 1234' },
