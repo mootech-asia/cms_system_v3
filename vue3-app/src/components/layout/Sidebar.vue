@@ -223,7 +223,6 @@ const sections = [
   {
     label: 'My Account',
     items: [
-      { name: 'FAQ',               icon: 'help', cat: 'Lobby', tab: 'FAQ', public: true },
       { name: 'Account Overview',  icon: 'grid'   },
       { name: 'Betting Record',    icon: 'ticket' },
       { name: 'Deposit Record',    icon: 'down'   },
@@ -232,6 +231,7 @@ const sections = [
       { name: 'Account Record',    icon: 'book'   },
       { name: 'Personal Info',     icon: 'person' },
       { name: 'Security Center',   icon: 'shield' },
+      { name: 'FAQ',               icon: 'help', cat: 'Lobby', tab: 'FAQ', public: true },
     ],
   },
 ];
