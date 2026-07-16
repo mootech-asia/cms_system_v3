@@ -3215,6 +3215,38 @@ select.twk-field {
   font-weight: 600;
 }
 .pi-note { font-size: 12px; color: var(--text-dim); line-height: 1.6; margin: 4px 0 18px; }
+.nickname-card { max-width: 460px; margin: 0 auto; }
+.nickname-current {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--bg-elev);
+  color: var(--text-mid);
+}
+.nickname-current strong { color: var(--accent); font-family: var(--font-display); font-size: 16px; }
+.nickname-label {
+  display: block;
+  margin: 0 2px 8px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: var(--weight-semibold);
+}
+.nickname-card .pi-field { margin-bottom: 0; }
+.nickname-card .pi-field:focus-within { border-color: var(--accent); box-shadow: var(--focus-ring); }
+.nickname-card .pi-field.invalid { border-color: var(--danger); }
+.nickname-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 7px 2px 0;
+  color: var(--text-dim);
+  font-size: var(--type-meta);
+}
 .ap-btn-wide.ap-grad {
   background: var(--gradient-primary);
   color: #fff;
@@ -4287,15 +4319,73 @@ select.twk-field {
 [data-theme="light"] .ap-wallet-amt { color: var(--text); }
 
 
-/* ── Deposit — payment method tabs (Bank Card / Crypto Wallet) ── */
-.dp-method-tabs { display: flex; gap: 12px; margin-bottom: 20px; }
+/* ── Deposit — gateway and payment method tabs ── */
+.dp-provider-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.dp-provider-tabs button {
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--bg-card);
+  color: var(--text-mid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: color var(--duration-fast), border-color var(--duration-fast), background var(--duration-fast);
+}
+.dp-provider-tabs button:hover:not(.active) { color: var(--text); border-color: var(--line-hi); }
+.dp-provider-tabs button.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 10%, var(--bg-card));
+}
+.dp-provider-code {
+  display: grid;
+  place-items: center;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--bg-elev);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.dp-method-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
 .dp-method-tabs button {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px;
+  min-width: 0; display: flex; align-items: center; justify-content: center; gap: 10px;
   min-height: 52px; padding: 12px 18px;
   border: 1px solid var(--line-hi); border-radius: 10px;
   background: var(--bg-elev); color: var(--text-mid);
   font: inherit; font-weight: 600; font-size: 14px; cursor: pointer;
   transition: border-color .15s, color .15s, background .15s, box-shadow .15s;
+}
+.dp-method-coin {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #12a97b;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
 }
 .dp-method-tabs button:hover:not(.active) { border-color: var(--accent); color: var(--text); }
 .dp-method-tabs button.active {
@@ -4325,7 +4415,12 @@ select.twk-field {
 .dp-crypto-title { font-weight: 700; color: #fff; font-size: 14px; }
 .dp-crypto-amt { margin-left: auto; color: var(--accent-2); font-size: 14px; font-weight: 600; white-space: nowrap; }
 [data-theme="light"] .dp-crypto-title { color: var(--text); }
+.deposit-result { max-width: 520px; }
+.deposit-result .pi-success-sub { line-height: 1.7; margin: 10px auto 22px; max-width: 440px; }
 @media (max-width: 700px) {
+  .dp-provider-tabs { grid-template-columns: 1fr; }
+  .dp-provider-tabs button { justify-content: flex-start; }
+  .dp-method-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .dp-crypto-grid { grid-template-columns: 1fr; gap: 8px; }
   .dp-crypto-promo { flex-wrap: wrap; }
   .dp-crypto-amt { width: 100%; margin-left: 34px; }
