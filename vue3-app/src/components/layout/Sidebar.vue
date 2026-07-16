@@ -12,17 +12,29 @@
     <!-- 分組導覽 -->
     <nav class="sidebar-list">
       <section v-for="section in sections" :key="section.label" class="sb-section">
-        <button
-          class="sb-section-toggle"
-          :class="{ collapsed: !sectionOpen[section.label] }"
-          :aria-expanded="sectionOpen[section.label]"
-          @click="sectionOpen[section.label] = !sectionOpen[section.label]"
-        >
-          <span>{{ section.label }}</span>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="m6 9 6 6 6-6" />
-          </svg>
-        </button>
+        <div class="sb-section-head">
+          <button
+            class="sb-section-toggle"
+            :class="{ collapsed: !sectionOpen[section.label] }"
+            :aria-expanded="sectionOpen[section.label]"
+            @click="sectionOpen[section.label] = !sectionOpen[section.label]"
+          >
+            <span>{{ section.label }}</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <button
+            v-if="section.label === 'My Account'"
+            class="sb-collapse sb-collapse-account"
+            aria-label="Close sidebar"
+            @click="collapseSidebar"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+        </div>
         <div v-show="sectionOpen[section.label]" class="sb-section-items">
           <a
             v-for="item in section.items" :key="item.name"
@@ -157,7 +169,7 @@
       <div class="sb-money">
         <button class="sb-deposit"  @click="handleDeposit">Deposit</button>
         <button class="sb-withdraw" @click="handleWithdraw">Withdrawal</button>
-        <button class="sb-collapse sb-collapse-inline" aria-label="Collapse sidebar" @click="emit('update:collapsed', true)">
+        <button class="sb-collapse sb-collapse-inline sb-collapse-money" aria-label="Collapse sidebar" @click="collapseSidebar">
           ‹
         </button>
       </div>
@@ -244,6 +256,11 @@ function isActive(item) {
 function closeMenu() {
   langOpen.value = false;
   emit('close-menu');
+}
+
+function collapseSidebar() {
+  emit('update:collapsed', true);
+  closeMenu();
 }
 
 function handleNav(item) {
