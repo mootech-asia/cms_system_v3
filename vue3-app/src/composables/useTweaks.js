@@ -1,17 +1,9 @@
 import { reactive, watch } from 'vue';
-
-const ACCENT_PALETTES = {
-  '#1fd373': { a2: '#29e8a3', a3: '#b6f37c' },
-  '#2473ff': { a2: '#38bdf8', a3: '#fbbf24' },
-  '#7c5cff': { a2: '#22d3ee', a3: '#fbbf24' },
-  '#22d3ee': { a2: '#2473ff', a3: '#fbbf24' },
-  '#f472b6': { a2: '#38bdf8', a3: '#fde68a' },
-  '#fb923c': { a2: '#f472b6', a3: '#facc15' },
-};
+import { DEFAULT_SKIN, normalizeSkin } from '../skins/index.js';
 
 export const TWEAK_DEFAULTS = {
   theme:            'dark',
-  accent:           '#2473ff',
+  skin:             DEFAULT_SKIN,
   density:          'comfy',
   aspect:            1.1,
   showPromos:        true,
@@ -21,17 +13,19 @@ export const TWEAK_DEFAULTS = {
 export function useTweaks(defaults = TWEAK_DEFAULTS) {
   const t = reactive({ ...defaults });
 
-  // 還原上次選擇的主題
+  // Restore the visitor's last appearance settings.
   try {
-    const saved = localStorage.getItem('cms_theme');
-    if (saved === 'dark' || saved === 'light') t.theme = saved;
-  } catch (e) { /* ignore */ }
+    const savedTheme = localStorage.getItem('cms_theme');
+    const savedSkin = localStorage.getItem('cms_skin');
+
+    if (savedTheme === 'dark' || savedTheme === 'light') t.theme = savedTheme;
+    t.skin = normalizeSkin(savedSkin || t.skin);
+  } catch (e) { /* localStorage can be unavailable in private contexts */ }
 
   function setTweak(key, val) {
     t[key] = val;
   }
 
-  // 主題套用到 document + 記住選擇
   watch(
     () => t.theme,
     (theme) => {
@@ -41,20 +35,29 @@ export function useTweaks(defaults = TWEAK_DEFAULTS) {
     { immediate: true }
   );
 
-  // accent 色票套用到 CSS 變數
+  // A skin owns all visual color tokens. Removing old inline accent values keeps
+  // subsequent skins free to replace the complete palette.
   watch(
-    () => t.accent,
-    (accent) => {
-      const r = document.documentElement.style;
-      r.setProperty('--accent', accent);
-      const palette = ACCENT_PALETTES[accent] || ACCENT_PALETTES['#7c5cff'];
-      r.setProperty('--accent-2', palette.a2);
-      r.setProperty('--accent-3', palette.a3);
+    () => t.skin,
+    (value) => {
+      const skin = normalizeSkin(value);
+
+      if (value !== skin) {
+        t.skin = skin;
+        return;
+      }
+
+      const root = document.documentElement;
+      root.style.removeProperty('--accent');
+      root.style.removeProperty('--accent-2');
+      root.style.removeProperty('--accent-3');
+      root.setAttribute('data-skin', skin);
+
+      try { localStorage.setItem('cms_skin', skin); } catch (e) { /* ignore */ }
     },
     { immediate: true }
   );
 
-  // card aspect ratio
   watch(
     () => t.aspect,
     (aspect) => document.documentElement.style.setProperty('--card-aspect', aspect),
