@@ -3345,14 +3345,6 @@ select.twk-field {
   font: inherit;
   cursor: pointer;
 }
-.pi-date::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-  opacity: .6;
-  cursor: pointer;
-}
-.pi-date::-webkit-calendar-picker-indicator:hover { opacity: 1; }
-
-
 /* ── RECORD TABLE PAGES ─────────────────── */
 .rec-page {
   margin-top: 24px;
@@ -3522,35 +3514,8 @@ select.twk-field {
 .cs-opt-arrow { color: var(--text-dim); font-size: 20px; }
 
 
-/* operable date range in record toolbar */
-.rec-date { gap: 6px; }
-.rec-date-input {
-  background: transparent;
-  border: 0;
-  outline: 0;
-  color: var(--text);
-  font: inherit;
-  font-size: 13px;
-  cursor: pointer;
-  color-scheme: dark;
-  min-width: 118px;
-}
-.rec-date-input::-webkit-calendar-picker-indicator { filter: invert(.7); opacity: .6; cursor: pointer; }
-.rec-date-input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+/* Record date separator; date controls are canonicalised below. */
 .rec-date-sep { color: var(--text-dim); }
-
-
-/* brighter, clearer date picker icon */
-.rec-date-input::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(1.6);
-  opacity: .85;
-  cursor: pointer;
-}
-.rec-date-input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
-.pi-date::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(1.6);
-  opacity: .85;
-}
 
 
 /* custom English date buttons (hide native locale picker) */
@@ -3681,156 +3646,62 @@ select.twk-field {
 }
 
 
-/* make native date inputs clearly clickable */
-.rec-date { cursor: pointer; }
+/* ── DATE / CALENDAR CONTROLS ───────────────── */
+/* Single source of truth for Personal Info and record filters. */
+.rec-date {
+  gap: 6px;
+  cursor: pointer;
+}
 .rec-date-input {
-  background: transparent; border: 0; outline: 0;
-  color: var(--text); font: inherit; font-size: 13px;
-  cursor: pointer; color-scheme: dark; min-width: 120px;
+  min-width: 120px;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: var(--text);
+  color-scheme: dark;
+  font: inherit;
+  font-size: var(--type-body-sm);
+  cursor: pointer;
 }
-.rec-date-input::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(1.6); opacity: .8; cursor: pointer;
-}
-.rec-date-input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
-@media (max-width: 700px) {
-  .rec-date-input { flex: 1 1 auto; min-width: 0; font-size: 12.5px; }
-}
+.rec-date-input,
+.pi-date { color-scheme: dark; }
 
-
-/* date-filter calendar leading icon — ensure visible */
-.rec-date > svg { color: var(--accent-2); flex-shrink: 0; opacity: 1; }
-
-
-/* ── DATE / CALENDAR ICONS — global visibility fix ── */
-/* leading calendar glyph in any date field */
 .rec-date > svg,
-.pi-field .pi-ico svg { color: var(--accent-2) !important; opacity: 1 !important; }
-.pi-field .pi-ico { color: var(--accent-2); }
+.pi-field .pi-ico svg {
+  color: var(--cal-icon) !important;
+  filter: none !important;
+  flex-shrink: 0;
+  opacity: 1 !important;
+}
 
-/* native date picker indicators — bright, theme-consistent */
 .rec-date-input::-webkit-calendar-picker-indicator,
 .pi-date::-webkit-calendar-picker-indicator {
-  filter: invert(72%) sepia(60%) saturate(560%) hue-rotate(120deg) brightness(1.05) !important;
-  opacity: 1 !important;
+  filter: var(--calendar-indicator-filter) !important;
+  opacity: var(--calendar-indicator-opacity) !important;
   cursor: pointer;
 }
 .rec-date-input::-webkit-calendar-picker-indicator:hover,
-.pi-date::-webkit-calendar-picker-indicator:hover { filter: invert(80%) sepia(70%) saturate(700%) hue-rotate(120deg) brightness(1.15) !important; }
-.rec-date-input, .pi-date { color-scheme: dark; }
-
-
-/* unify ALL calendar icons in date fields to one accent-2 tone */
-.rec-date > svg { color: var(--accent-2) !important; }
-.rec-date-input::-webkit-calendar-picker-indicator,
-.pi-date::-webkit-calendar-picker-indicator {
-  filter: invert(78%) sepia(58%) saturate(620%) hue-rotate(115deg) brightness(1.0) !important;
+.pi-date::-webkit-calendar-picker-indicator:hover {
+  filter: var(--calendar-indicator-hover-filter) !important;
   opacity: 1 !important;
 }
 
-
-/* ── DATE FIELD: English overlay over native picker ── */
-.rec-date-cell {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  min-width: 116px;
-}
-.rec-date-cell .rec-date-text {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text);
-  pointer-events: none;
-  white-space: nowrap;
-}
-.rec-date-cell .rec-date-text.ph { color: var(--text-dim); }
-/* native input sits on top, transparent text, picker indicator visible on right */
-.rec-date-cell .rec-date-input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  background: transparent;
-  border: 0;
-  color: transparent;
-  cursor: pointer;
-  color-scheme: dark;
-}
-.rec-date-cell .rec-date-input::-webkit-datetime-edit { color: transparent; }
-.rec-date-cell .rec-date-input::-webkit-calendar-picker-indicator {
-  filter: invert(78%) sepia(58%) saturate(620%) hue-rotate(115deg) brightness(1.0) !important;
-  opacity: 1 !important;
-  cursor: pointer;
-}
-@media (max-width: 700px) {
-  .rec-date-cell { flex: 1 1 auto; min-width: 0; }
-  .rec-date-cell .rec-date-text { font-size: 12.5px; }
-}
-
-
-/* make calendar icons more vivid / eye-catching */
-.rec-date > svg { color: #2ff5a8 !important; filter: drop-shadow(0 0 6px rgba(47,245,168,.55)); }
-.rec-date-cell .rec-date-input::-webkit-calendar-picker-indicator,
-.rec-date-input::-webkit-calendar-picker-indicator,
-.pi-date::-webkit-calendar-picker-indicator {
-  filter: invert(72%) sepia(96%) saturate(900%) hue-rotate(108deg) brightness(1.15) !important;
-  opacity: 1 !important;
-}
-
-
-/* revert calendar icons to clean unified accent-2 tone */
-.rec-date > svg { color: var(--accent-2) !important; filter: none !important; }
-.rec-date-cell .rec-date-input::-webkit-calendar-picker-indicator,
-.rec-date-input::-webkit-calendar-picker-indicator,
-.pi-date::-webkit-calendar-picker-indicator {
-  filter: invert(78%) sepia(58%) saturate(620%) hue-rotate(115deg) brightness(1.0) !important;
-  opacity: 1 !important;
-}
-
-
-/* calendar icons — neutral grey-white */
-.rec-date > svg { color: rgba(234,245,255,0.7) !important; filter: none !important; }
-.rec-date-cell .rec-date-input::-webkit-calendar-picker-indicator,
-.rec-date-input::-webkit-calendar-picker-indicator,
-.pi-date::-webkit-calendar-picker-indicator {
-  filter: invert(88%) brightness(1.05) !important;
-  opacity: 0.75 !important;
-}
-.pi-field .pi-ico svg { color: rgba(234,245,255,0.7) !important; }
-
-
-/* single source of truth for ALL calendar icons */
-
-.rec-date > svg,
-.pi-field .pi-ico svg { color: var(--cal-icon) !important; filter: none !important; }
-.rec-date-cell .rec-date-input::-webkit-calendar-picker-indicator,
-.rec-date-input::-webkit-calendar-picker-indicator,
-.pi-date::-webkit-calendar-picker-indicator {
-  filter: invert(88%) brightness(1.05) !important;
-  opacity: 0.72 !important;
-}
-
-
-/* whole date cell is clickable */
-.rec-date-cell { cursor: pointer; }
-.rec-date-cell .rec-date-input { cursor: pointer; z-index: 2; }
-.rec-date-cell .rec-date-text { z-index: 1; }
-
-
-/* ── DATE FIELD v2: clear visible icon + clickable cell ── */
 .rec-date-cell {
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   min-width: 132px;
-  padding: 4px 4px;
+  padding: 4px;
   cursor: pointer;
 }
 .rec-date-cell .rec-date-text {
-  font-family: var(--font-mono);
-  font-size: 13px;
+  z-index: 1;
   color: var(--text);
-  pointer-events: none;
+  font-family: var(--font-mono);
+  font-size: var(--type-body-sm);
   white-space: nowrap;
+  pointer-events: none;
 }
 .rec-date-cell .rec-date-text.ph { color: var(--text-dim); }
 .rec-date-cell .rec-date-ico {
@@ -3838,33 +3709,41 @@ select.twk-field {
   flex-shrink: 0;
   pointer-events: none;
 }
-/* native input fully covers the cell but is invisible; picker indicator hidden (we use our own icon) */
 .rec-date-cell .rec-date-input {
   position: absolute;
   inset: 0;
-  width: 100%; height: 100%;
-  opacity: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
   border: 0;
-  margin: 0; padding: 0;
+  opacity: 0;
   cursor: pointer;
 }
 .rec-date-cell .rec-date-input::-webkit-calendar-picker-indicator {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  margin: 0; padding: 0;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
   cursor: pointer;
 }
+
 @media (max-width: 700px) {
-  .rec-date-cell { flex: 1 1 auto; min-width: 0; justify-content: space-between; }
+  .rec-date-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: var(--type-label);
+  }
+  .rec-date-cell {
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: space-between;
+  }
+  .rec-date-cell .rec-date-text { font-size: var(--type-label); }
 }
-
-
-/* theme-aware calendar icon color (one place) */
-
-
-.rec-date-cell .rec-date-ico,
-.rec-date > svg,
-.pi-field .pi-ico svg { color: var(--cal-icon) !important; filter: none !important; }
 
 
 /* ── MOBILE TOPBAR FIT (≤900px) — keep avatar fully visible ── */
