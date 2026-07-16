@@ -2,7 +2,7 @@
 
 > 基準分支：`claude/folder-upload-preview-url-5tzplm`
 >
-> 重構前備份：`backup/pre-design-system-20260716`
+> 重構前備份：`backup/pre-design-system-complete-20260716`
 >
 > 目前預設 skin：`blue`
 >
