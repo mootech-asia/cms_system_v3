@@ -20,17 +20,10 @@
             :aria-expanded="skinMenuOpen"
             @click="skinMenuOpen = !skinMenuOpen; menuOpen = false"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3a9 9 0 1 0 0 18h1.2a1.8 1.8 0 0 0 1.3-3l-.2-.2a1.8 1.8 0 0 1 1.3-3h1.9A3.5 3.5 0 0 0 21 11.3 8.3 8.3 0 0 0 12 3Z" />
-              <circle cx="7.5" cy="10" r=".8" fill="currentColor" stroke="none" />
-              <circle cx="10" cy="6.8" r=".8" fill="currentColor" stroke="none" />
-              <circle cx="14.2" cy="7" r=".8" fill="currentColor" stroke="none" />
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 8a4 4 0 1 0 4 4 2.8 2.8 0 0 1-4-4Z" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
             </svg>
-            <span
-              class="tb-skin-trigger-swatch"
-              :style="{ '--skin-color': currentSkin.swatch, '--skin-surface': currentSkin.surface }"
-              aria-hidden="true"
-            ></span>
           </button>
 
           <div v-if="skinMenuOpen" class="tb-skin-menu" role="listbox" aria-label="Skin">
@@ -162,11 +155,6 @@ const skinMenuOpen = ref(false);
 const skinRef      = ref(null);
 
 const initials = computed(() => props.user ? props.user.name.slice(0, 2).toUpperCase() : '');
-const currentSkin = computed(() =>
-  props.skins.find((option) => option.id === props.skin) ||
-  props.skins[0] ||
-  { swatch: '#2473ff', surface: '#05080f' }
-);
 const balanceFmt = computed(() =>
   props.balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 );
