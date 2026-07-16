@@ -24,15 +24,15 @@ export const SKINS = Object.freeze([
     id: 'night-esports-green',
     label: 'Emerald Nocturne',
     theme: 'dark',
-    swatch: '#22e06f',
-    surface: '#050806',
+    swatch: '#9fe2d1',
+    surface: '#0d1316',
   }),
   Object.freeze({
     id: 'cosmic-spectrum-purple',
     label: 'Cosmic Amethyst',
     theme: 'dark',
-    swatch: '#a855f7',
-    surface: '#0b0714',
+    swatch: '#6a48ff',
+    surface: '#0b0a25',
   }),
 ]);
 
