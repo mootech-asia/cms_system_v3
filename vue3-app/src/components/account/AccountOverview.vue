@@ -15,12 +15,12 @@
       <div class="ap-hero-info">
         <div class="ap-hero-name">
           <span>{{ user?.name || 'beaucat' }}</span>
-          <span class="ap-tag-new">신규(New)</span>
+          <span class="ap-tag-new">Unranked</span>
         </div>
         <div class="ap-hero-nick">
           <span class="muted">Nickname：</span>
-          <span>Meow</span>
-          <button class="ap-pencil" aria-label="Edit nickname">
+          <span>{{ nickname }}</span>
+          <button class="ap-pencil" aria-label="Edit nickname" @click="emit('navigate', 'Edit Nickname')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
               <path d="m4 20 4-1 11-11-3-3L5 16l-1 4Z" />
             </svg>
@@ -147,6 +147,7 @@ import LevelProgress from '@/components/ui/LevelProgress.vue';
 const props = defineProps({
   user:    { type: Object, default: null },
   balance: { type: Number, default: 0 },
+  nickname: { type: String, default: 'Meow' },
 });
 const emit = defineEmits(['navigate']);
 
