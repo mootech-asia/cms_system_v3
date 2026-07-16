@@ -3,7 +3,6 @@
     <div class="section-head">
       <h2 class="section-title">Providers<span class="count">{{ PROVIDERS.length }}</span></h2>
       <div class="section-actions">
-        <a href="#" class="see-all">All providers →</a>
         <button
           class="section-collapse"
           :class="{ active: collapsed }"
@@ -15,8 +14,27 @@
         </button>
       </div>
     </div>
-    <div v-show="!collapsed" class="providers">
-      <a v-for="p in PROVIDERS" :key="p" href="#" class="provider">{{ p }}</a>
+    <div v-show="!collapsed" class="providers-marquee">
+      <div class="providers-track">
+        <div
+          v-for="copy in 2"
+          :key="copy"
+          class="providers-group"
+          :aria-hidden="copy === 2"
+        >
+          <a
+            v-for="p in PROVIDERS"
+            :key="p"
+            href="#"
+            class="provider provider-logo"
+            :tabindex="copy === 2 ? -1 : 0"
+            @click.prevent
+          >
+            <!-- Replace this fallback with an img when provider logos are ready. -->
+            <span class="provider-logo-fallback">{{ p }}</span>
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 </template>
