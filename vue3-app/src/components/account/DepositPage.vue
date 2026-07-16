@@ -36,11 +36,12 @@
     </button>
     <h1 class="ap-h1">Deposit</h1>
 
-    <div class="dp-provider-tabs" role="tablist" aria-label="Payment gateway provider">
+    <div class="ui-tablist--underline" role="tablist" aria-label="Payment gateway provider">
       <button
         v-for="option in providers"
         :key="option.id"
         type="button"
+        class="ui-tab--underline"
         :class="{ active: provider === option.id }"
         role="tab"
         :aria-selected="provider === option.id"
