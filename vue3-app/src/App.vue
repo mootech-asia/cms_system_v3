@@ -225,7 +225,7 @@
     <!-- 頁尾 -->
     <template #footer>
       <AppFooter
-        :class="{ 'mobile-inner-hidden': activeCat !== 'Lobby' }"
+        v-if="activeCat === 'Lobby' && !isSupportView"
         @back-to-top="scrollToTop"
       />
     </template>
