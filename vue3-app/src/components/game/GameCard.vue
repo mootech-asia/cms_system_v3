@@ -12,10 +12,15 @@
         :aria-label="isFav ? 'Remove favorite' : 'Add favorite'"
         @click.stop="emit('fav', game.id)"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24"
-          :fill="isFav ? 'currentColor' : 'none'"
-          stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
-          <path d="M12 20s-7-4.6-9.3-9C1.2 8 2.6 4.5 6 4.5c2 0 3.2 1.2 4 2.4.8-1.2 2-2.4 4-2.4 3.4 0 4.8 3.5 3.3 6.5C19 15.4 12 20 12 20Z"/>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M20.8 4.9a5.5 5.5 0 0 0-7.8 0L12 6l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.3 1-1a5.5 5.5 0 0 0 0-7.8Z"
+            :fill="isFav ? 'currentColor' : 'none'"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </button>
 
