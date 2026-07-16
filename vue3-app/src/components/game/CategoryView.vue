@@ -57,11 +57,12 @@ import Icon     from '@/components/ui/Icon.vue';
 import GameCard from '@/components/game/GameCard.vue';
 
 const props = defineProps({
-  title:          { type: String, required: true },
-  icon:           { type: String, default: null },
-  games:          { type: Array,  default: () => [] },
-  enableLoadMore: { type: Boolean, default: false },
-  pageSize:       { type: Number,  default: 10 },
+  title:            { type: String, required: true },
+  icon:             { type: String, default: null },
+  games:            { type: Array,  default: () => [] },
+  enableLoadMore:   { type: Boolean, default: false },
+  pageSize:         { type: Number,  default: 10 },
+  showProviderTabs: { type: Boolean, default: true },
 });
 const emit = defineEmits(['open']);
 
@@ -69,11 +70,11 @@ const { favs, toggle } = useFavorites();
 
 const filter       = ref('All');
 const visibleCount = ref(props.pageSize);
-const tabs         = computed(() => ['All', 'Favorites', ...PROVIDERS]);
+const tabs         = computed(() => props.showProviderTabs ? ['All', 'Favorites', ...PROVIDERS] : ['All', 'Favorites']);
 
 const filtered = computed(() => {
   if (filter.value === 'Favorites') return props.games.filter(g => favs.value.has(g.id));
-  if (filter.value !== 'All') return props.games.filter(g => g.provider === filter.value);
+  if (props.showProviderTabs && filter.value !== 'All') return props.games.filter(g => g.provider === filter.value);
   return props.games;
 });
 
@@ -85,7 +86,7 @@ const canLoadMore = computed(() => shown.value.length < filtered.value.length);
 
 const emptyText = computed(() => {
   if (filter.value === 'Favorites') return 'No favorites yet - tap the heart on any game to save it here.';
-  if (filter.value !== 'All') return `No games from ${filter.value} yet.`;
+  if (props.showProviderTabs && filter.value !== 'All') return `No games from ${filter.value} yet.`;
   return 'No games to show.';
 });
 
@@ -99,7 +100,7 @@ function loadMore() {
 }
 
 watch(
-  () => [props.title, props.games],
+  () => [props.title, props.games, props.showProviderTabs],
   () => {
     filter.value = 'All';
     visibleCount.value = props.pageSize;
