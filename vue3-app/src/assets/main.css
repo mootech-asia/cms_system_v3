@@ -22,25 +22,18 @@ a { color: inherit; text-decoration: none; }
 img { display: block; }
 
 /* Shell and container geometry live in assets/layout.css. */
-.sidebar-tabs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--line);
-}
 .sidebar.collapsed .sidebar-tabs { display: none; }
 .sb-tab {
-  padding: 9px;
-  border-radius: 8px;
+  padding: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--line);
-  background: linear-gradient(180deg, var(--bg-card) 0%, color-mix(in oklch, var(--bg-card) 80%, #000) 100%);
+  background: var(--bg-card);
   color: var(--text-mid);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: var(--weight-semibold);
   font-family: inherit;
   cursor: pointer;
-  transition: color .15s, border-color .15s;
+  transition: color var(--duration-fast), border-color var(--duration-fast);
 }
 .sb-tab:hover:not(.active) { color: var(--text); border-color: var(--line-hi); }
 
@@ -306,16 +299,6 @@ img { display: block; }
   padding: 14px;
   border-bottom: 1px solid var(--line);
 }
-.sidebar.collapsed .sidebar-tabs { display: none; }
-.sb-tab {
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid var(--line);
-  background: var(--bg-card);
-  color: var(--text-mid);
-  font-size: 12px;
-  font-weight: 600;
-}
 .sb-tab.active {
   background:
     radial-gradient(ellipse 80% 60% at 50% 50%, color-mix(in oklch, var(--accent) 28%, var(--bg-elev)) 0%, var(--bg-elev) 75%),
@@ -328,7 +311,6 @@ img { display: block; }
     0 0 16px color-mix(in oklch, var(--accent) 55%, transparent),
     0 0 20px color-mix(in oklch, var(--accent) 18%, transparent) inset;
 }
-.sb-tab:hover:not(.active) { color: var(--text); border-color: var(--line-hi); }
 
 .sidebar-search {
   padding: 12px 14px 6px;
@@ -895,24 +877,11 @@ img { display: block; }
   padding: 18px 24px;
   border-radius: var(--radius-lg);
   position: relative;
-  background:
-    radial-gradient(ellipse 70% 80% at 0% 50%, color-mix(in oklch, var(--accent) 14%, transparent) 0%, transparent 60%),
-    linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 100%);
-  border: 1px solid color-mix(in oklch, var(--accent) 32%, var(--line));
-  box-shadow:
-    0 0 0 1px color-mix(in oklch, var(--accent) 14%, transparent),
-    0 0 32px color-mix(in oklch, var(--accent) 12%, transparent),
-    0 0 40px color-mix(in oklch, var(--accent) 12%, transparent) inset,
-    0 8px 26px rgba(0,0,0,.4);
+  background: linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 100%) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.18) !important;
   isolation: isolate;
   overflow: hidden;
-}
-.rewards-banner::before {
-  content: '';
-  position: absolute; inset: 0;
-  background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.018) 0 1px, transparent 1px 14px);
-  pointer-events: none;
-  z-index: -1;
 }
 
 .rb-brand {
@@ -943,12 +912,12 @@ img { display: block; }
 .rb-brand-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .rb-username {
   font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-size: var(--type-section-title);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0;
   line-height: 1.1;
-  color: #fff;
-  text-shadow: 0 0 14px color-mix(in oklch, var(--accent) 50%, transparent);
+  color: var(--text) !important;
+  text-shadow: none !important;
 }
 .rb-day {
   font-size: 12px;
@@ -2551,10 +2520,12 @@ select.twk-field {
 .ap-btn:last-child { margin-bottom: 0; }
 .ap-btn:hover { color: #fff; border-color: var(--accent); filter: brightness(1.06); }
 .ap-btn.primary {
-  background: linear-gradient(180deg, color-mix(in oklch, var(--accent) 60%, #fff) 0%, var(--accent) 50%, color-mix(in oklch, var(--accent) 80%, #000) 100%);
-  color: var(--accent-ink);
-  border: 0;
-  font-weight: 700;
+  background: var(--gradient-primary) !important;
+  color: var(--text-on-accent) !important;
+  border: 0 !important;
+  font-weight: var(--weight-bold) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35) !important;
+  box-shadow: var(--shadow-primary), 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 .ap-bank-row {
   display: flex; align-items: center; gap: 12px;
@@ -2702,24 +2673,21 @@ select.twk-field {
 .ap-btn-wide {
   display: block;
   width: 100%;
-  padding: 14px;
-  border-radius: 10px;
+  padding: 13px;
+  border-radius: var(--radius-card);
   background: color-mix(in oklch, var(--text-mid) 30%, var(--bg-card));
   border: 0;
-  color: #fff;
+  color: var(--text-on-accent);
   font: inherit;
-  font-weight: 600;
-  font-size: 15px;
+  font-weight: var(--weight-bold);
+  font-size: var(--type-body);
   cursor: pointer;
   margin-top: 12px;
-  transition: filter .15s, background .15s;
+  margin-bottom: 10px;
+  transition: filter var(--duration-fast), background var(--duration-fast);
 }
 .ap-btn-wide:disabled { opacity: 0.6; cursor: not-allowed; }
 .ap-btn-wide:not(:disabled):hover { filter: brightness(1.1); }
-.ap-btn-wide.outline {
-  background: transparent;
-  border: 1px solid var(--line-hi);
-}
 
 /* Withdrawal */
 .ap-empty-bank {
@@ -3108,14 +3076,6 @@ select.twk-field {
 
 
 /* clearer Deposit primary button on Account Overview */
-.ap-btn.primary {
-  background: var(--gradient-primary) !important;
-  color: #fff !important;
-  border: 0 !important;
-  font-weight: 700 !important;
-  text-shadow: 0 1px 2px rgba(0,0,0,.35) !important;
-  box-shadow: 0 0 16px color-mix(in oklch, var(--primary) 40%, transparent), 0 4px 12px rgba(0,0,0,.3) !important;
-}
 .ap-btn.primary:hover { filter: brightness(1.08) !important; }
 
 
@@ -3263,15 +3223,6 @@ select.twk-field {
   font-weight: 600;
 }
 .pi-note { font-size: 12px; color: var(--text-dim); line-height: 1.6; margin: 4px 0 18px; }
-.ap-btn-wide {
-  display: block; width: 100%;
-  padding: 13px;
-  border-radius: 12px;
-  border: 0;
-  font: inherit; font-weight: 700; font-size: 14px;
-  cursor: pointer;
-  margin-bottom: 10px;
-}
 .ap-btn-wide.ap-grad {
   background: var(--gradient-primary);
   color: #fff;
@@ -4086,17 +4037,11 @@ select.twk-field {
 
 
 /* remove blue glow wash on rewards banner (both themes), keep clean card */
-.rewards-banner {
-  background: linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 100%) !important;
-  box-shadow: 0 8px 26px rgba(0,0,0,.18) !important;
-  border: 1px solid var(--line) !important;
-}
 [data-theme="light"] .rewards-banner {
   background: linear-gradient(180deg, #ffffff 0%, #f6f5f0 100%) !important;
 }
 .rewards-banner::before { display: none !important; }
 /* username readable */
-.rb-username { color: var(--text) !important; text-shadow: none !important; }
 [data-theme="light"] .rb-username { color: var(--text) !important; }
 
 
@@ -4169,7 +4114,6 @@ select.twk-field {
 [data-theme="light"] .rewards-banner::after { display: none !important; }
 
 /* username "player" — readable */
-.rb-username { color: var(--text) !important; text-shadow: none !important; }
 [data-theme="light"] .rb-username { color: #0f0f17 !important; }
 
 /* Withdraw button label — dark text in light theme */
