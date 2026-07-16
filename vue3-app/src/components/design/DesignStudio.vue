@@ -324,7 +324,7 @@ const importInput = ref(null);
 
 const assets = reactive({
   game: `${import.meta.env.BASE_URL}assets/mock/game-04.webp`,
-  promo: `${import.meta.env.BASE_URL}assets/mock/promo-4.webp`,
+  promo: `${import.meta.env.BASE_URL}assets/mock/promo-4-v2.jpg`,
   hero: `${import.meta.env.BASE_URL}assets/mock/hero-1.webp`,
   heroPosition: HERO_SLIDES[0].position || 'center',
   heroMobilePosition: HERO_SLIDES[0].mobilePosition || HERO_SLIDES[0].position || 'center',

@@ -18,8 +18,8 @@
   --text: #27241f;
   --text-mid: rgba(39, 36, 31, 0.72);
   --text-dim: rgba(39, 36, 31, 0.48);
-  --text-on-accent: #ffffff;
-  --text-on-accent-soft: #f8f4ea;
+  --text-on-accent: #f7f1e5;
+  --text-on-accent-soft: #eee7da;
   --icon-muted: rgba(39, 36, 31, 0.58);
   --cal-icon: var(--icon-muted);
   --calendar-indicator-filter: invert(26%) brightness(0.86);

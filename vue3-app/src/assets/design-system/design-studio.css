@@ -580,7 +580,7 @@
 
 .studio-sample-banner > img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
 .studio-sample-banner::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(4, 6, 8, .9), rgba(4, 6, 8, .28)); }
-.studio-sample-banner > div { max-width: 480px; padding: 28px; color: #fff; }
+.studio-sample-banner > div { max-width: 480px; padding: 28px; color: var(--text-on-accent); }
 .studio-sample-banner span { color: rgba(255, 255, 255, .68); font-family: var(--font-mono); font-size: var(--type-caption); }
 .studio-sample-banner h3 { margin: 7px 0; font-family: var(--font-display); font-size: 38px; }
 .studio-sample-banner p { margin: 0; color: rgba(255, 255, 255, .72); font-size: var(--type-body-sm); }
