@@ -75,10 +75,10 @@
 
       <!-- Lobby tab -->
       <template v-if="catTab === 'Lobby'">
-        <Rail title="Recently played" :games="RECENTLY_PLAYED" :count="RECENTLY_PLAYED.length" @open="openGame = $event" />
-        <Rail title="Slots"       icon="fire" :games="GAMES.slots" @open="openGame = $event" />
-        <Rail title="Live Casino" icon="bolt" :games="GAMES.live"  @open="openGame = $event" />
-        <FilteredGrid @open="openGame = $event" />
+        <Rail title="Recently played" :games="RECENTLY_PLAYED" :count="RECENTLY_PLAYED.length" />
+        <Rail title="Slots"       icon="fire" :games="GAMES.slots" />
+        <Rail title="Live Casino" icon="bolt" :games="GAMES.live"  />
+        <FilteredGrid />
         <Leaderboard />
         <Tournaments />
         <Promotion />
@@ -89,35 +89,30 @@
       <CategoryView v-else-if="catTab === 'Hot Games'"
         title="Hot Games" icon="fire"
         :games="[...GAMES.slots, ...GAMES.live, ...GAMES.originals]"
-        @open="openGame = $event"
       />
 
       <!-- Mini Games tab -->
       <CategoryView v-else-if="catTab === 'Mini Games'"
         title="Mini Games" icon="star"
         :games="GAMES.originals"
-        @open="openGame = $event"
       />
 
       <!-- Slots tab -->
       <CategoryView v-else-if="catTab === 'Slots'"
         title="Slots" icon="fire"
         :games="GAMES.slots"
-        @open="openGame = $event"
       />
 
       <!-- Live tab -->
       <CategoryView v-else-if="catTab === 'Live'"
         title="Live" icon="bolt"
         :games="GAMES.live"
-        @open="openGame = $event"
       />
 
       <!-- Fish tab -->
       <CategoryView v-else-if="catTab === 'Fish'"
         title="Fish"
         :games="GAMES.slots"
-        @open="openGame = $event"
       />
 
       <!-- Sports tab -->
@@ -158,11 +153,6 @@
   </AppLayout>
 
   <!-- Modals -->
-  <GameModal
-    v-if="openGame"
-    :game="openGame"
-    @close="openGame = null"
-  />
   <SignInModal
     v-if="showSignIn"
     @close="showSignIn = false"
@@ -193,7 +183,6 @@ import Tournaments            from '@/components/lobby/Tournaments.vue';
 import Sports                 from '@/components/lobby/Sports.vue';
 import Promotion              from '@/components/lobby/Promotion.vue';
 import Providers              from '@/components/lobby/Providers.vue';
-import GameModal              from '@/components/modal/GameModal.vue';
 import SignInModal            from '@/components/modal/SignInModal.vue';
 import CustomerServiceModal   from '@/components/modal/CustomerServiceModal.vue';
 import AccountOverview        from '@/components/account/AccountOverview.vue';
@@ -211,7 +200,6 @@ import { GAMES, RECENTLY_PLAYED } from '@/data/index.js';
 
 const { t, setTweak } = useTweaks();
 
-const openGame          = ref(null);
 const sidebarCollapsed  = ref(false);
 const mobileSidebarOpen = ref(false);
 const activeCat         = ref('Lobby');

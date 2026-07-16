@@ -1339,7 +1339,7 @@ img { display: block; }
     radial-gradient(ellipse at 100% 0%, color-mix(in oklch, var(--promo-hue) 22%, transparent) 0%, transparent 60%),
     var(--bg-card);
   isolation: isolate;
-  min-height: 240px;
+  min-height: 300px;
   overflow: hidden;
 }
 .promo-card::before {
@@ -1364,7 +1364,7 @@ img { display: block; }
   margin-bottom: 14px;
 }
 .promo-card-art {
-  height: 96px;
+  height: 150px;
   border-radius: 10px;
   margin-bottom: 14px;
   background:
@@ -3526,7 +3526,15 @@ select.twk-field {
 
 
 /* ── RECORD TABLE PAGES ─────────────────── */
-.rec-page { margin-top: 24px; }
+.rec-page {
+  margin-top: 24px;
+  display: flex; flex-direction: column;
+  min-height: calc(100vh - var(--header-h) - 48px);
+}
+.rec-page .ap-back { align-self: flex-start; }
+@media (max-width: 768px) {
+  .rec-page { min-height: calc(100vh - var(--header-h) - var(--mobile-nav-h) - 48px); }
+}
 .rec-toolbar {
   display: flex; align-items: center; justify-content: space-between;
   gap: 14px; flex-wrap: wrap;
@@ -3617,8 +3625,8 @@ select.twk-field {
   font-size: 13.5px;
 }
 .rec-table thead th {
-  background: linear-gradient(180deg, #fde68a 0%, #facc15 100%);
-  color: #1a1205;
+  background: linear-gradient(180deg, #38bdf8 0%, #2473ff 60%, #1e5fd8 100%);
+  color: #fff;
   font-weight: 700;
   font-size: 12.5px;
   padding: 14px 16px;
@@ -3656,14 +3664,15 @@ select.twk-field {
 
 .rec-total {
   display: flex; align-items: center; justify-content: space-between;
-  margin-top: 14px;
+  margin-top: auto;
   padding: 16px 24px;
   border-radius: 12px;
   background: linear-gradient(180deg, #1a1f2b 0%, #12151d 100%);
   border: 1px solid var(--line-hi);
 }
-.rec-total > span:first-child { color: #facc15; font-weight: 700; font-size: 14px; }
-.rec-total-val { color: #facc15; font-family: var(--font-mono); font-weight: 700; font-size: 15px; }
+.rec-table-scroll { margin-bottom: 14px; }
+.rec-total > span:first-child { color: var(--accent-2); font-weight: 700; font-size: 14px; }
+.rec-total-val { color: var(--accent-2); font-family: var(--font-mono); font-weight: 700; font-size: 15px; }
 
 @media (max-width: 900px) {
   .rec-toolbar { gap: 10px; }
