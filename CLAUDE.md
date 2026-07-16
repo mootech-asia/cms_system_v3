@@ -28,6 +28,9 @@
 
 ## 專案說明
 
+本 repo 為業主生成系統交付出去的其中一個獨立專案（一個交付版型 = 一個專案）；
+工廠與模板規範在 `mootech-asia/cms_system_v2`，全部資產屬於業主個人、不屬於公司。
+
 Gaming Lobby CMS 前台，原始 prototype 為 CDN React + 純 HTML/CSS。
 Vue 3 重構版本放在 `vue3-app/` 目錄，已完成全部 9 個 Phase。
 
