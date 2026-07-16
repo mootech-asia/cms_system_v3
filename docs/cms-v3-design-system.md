@@ -274,6 +274,7 @@ Account Overview：
 | `--type-card-title` | 15px | 卡片標題 |
 | `--type-group-title` | 16px | 卡片群組標題 |
 | `--type-section-title` | 22px | 區塊標題 |
+| `--type-feature-title` | 24px | 重點功能標題 |
 | `--type-page-title` | 26px | 頁面標題 |
 
 數字、金額、倒數、百分比、賠率使用 `--font-mono`。
@@ -576,8 +577,8 @@ src/composables/useTweaks.js
 - 將藍色、surface、狀態色、漸層、陰影、表頭與互動狀態集中至 `blue.css`。
 - 將 title、button、quiet control、tab、table 舊 class 對應到共用 UI contract。
 - 移除 `main.css` / `layout.css` 重複的根變數與 shell / container 定義。
-- 合併 Sidebar tab、Account primary、wide button、Rewards Banner 等重複基礎規則。
-- Primary 漸層、record table header、record total、Back / Load More 已改讀 skin token。
+- 合併 Sidebar tab、Account primary、wide button、Rewards Banner、status badge、日期控制等重複基礎規則。
+- Primary 漸層、active state、record table header、record total、Back / Load More、calendar icon 已改讀 skin token。
 - `useTweaks` 已由單一 accent 色改為完整 skin，並保留 dark / light theme。
 - 保留 Rewards 兩欄進度對齊、藍色表頭、record total 置底與 compact Load More 尺寸。
 
