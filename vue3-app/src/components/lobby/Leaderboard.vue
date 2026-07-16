@@ -1,11 +1,10 @@
 <template>
   <section class="lobby-section" :class="{ 'is-collapsed': collapsed }" data-screen-label="Leaderboard">
     <div class="section-head">
-      <h2 class="section-title">
-        <Icon name="bolt" :size="18" />Top wins · last hour
-      </h2>
-      <div class="section-actions">
-        <a href="#" class="see-all">All winners →</a>
+      <div class="section-title-group">
+        <h2 class="section-title">
+          <Icon name="bolt" :size="18" />Top wins · last hour
+        </h2>
         <button
           class="section-collapse"
           :class="{ active: collapsed }"
@@ -15,6 +14,9 @@
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
         </button>
+      </div>
+      <div class="section-actions">
+        <a href="#" class="see-all">All winners →</a>
       </div>
     </div>
 
