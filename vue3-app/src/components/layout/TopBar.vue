@@ -3,7 +3,13 @@
     <div class="container header-inner" style="justify-content: space-between">
 
       <!-- Logo -->
-      <a href="#" class="topbar-brand" @click.prevent="emit('home')">
+      <a
+        href="#"
+        class="topbar-brand"
+        aria-label="Home and back to top"
+        title="Home and back to top"
+        @click.prevent="emit('home')"
+      >
         <img src="/assets/logo.png" alt="100%" class="topbar-logo" />
       </a>
 

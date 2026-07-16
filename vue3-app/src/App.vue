@@ -25,7 +25,7 @@
         :skins="skins"
         @sign-in="showSignIn = true"
         @logout="user = null"
-        @home="activeCat = 'Lobby'; catTab = 'Lobby'"
+        @home="goHome"
         @navigate="(cat) => activeCat = cat"
         @change-skin="setTweak('skin', $event)"
       />
@@ -224,7 +224,10 @@
 
     <!-- 頁尾 -->
     <template #footer>
-      <AppFooter :class="{ 'mobile-inner-hidden': activeCat !== 'Lobby' }" />
+      <AppFooter
+        :class="{ 'mobile-inner-hidden': activeCat !== 'Lobby' }"
+        @back-to-top="scrollToTop"
+      />
     </template>
 
     <!-- 手機底部導覽 -->
@@ -336,6 +339,17 @@ const touchDragPointerId = ref(null);
 // showPromos 從 tweaks 驅動
 const showPromos = computed(() => t.showPromos);
 const isSupportView = computed(() => ['About Us', 'FAQ'].includes(catTab.value));
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goHome() {
+  activeCat.value = 'Lobby';
+  catTab.value = 'Lobby';
+  mobileSidebarOpen.value = false;
+  nextTick(scrollToTop);
+}
 
 function openPromotionDetail(promotion) {
   selectedPromotion.value = promotion;
