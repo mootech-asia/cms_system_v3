@@ -1,28 +1,39 @@
 <template>
-  <section class="lobby-section" :data-screen-label="title">
+  <section class="lobby-section" :class="{ 'is-collapsed': collapsed }" :data-screen-label="title">
     <div class="section-head">
       <h2 class="section-title">
         <Icon v-if="icon" :name="icon" :size="18" />
         {{ title }}
         <span class="count">{{ count ?? games.length }}</span>
       </h2>
-      <div v-if="showActions" class="section-actions">
-        <a
-          v-if="seeAllTab"
-          href="#"
-          class="see-all"
-          @click.prevent="emit('see-all', seeAllTab)"
-        >See all →</a>
-        <button class="arrow" :disabled="!canL" aria-label="Scroll left" @click="scroll(-1)">
-          <Icon name="arrL" />
-        </button>
-        <button class="arrow" :disabled="!canR" aria-label="Scroll right" @click="scroll(1)">
-          <Icon name="arrR" />
+      <div class="section-actions">
+        <template v-if="showActions">
+          <a
+            v-if="seeAllTab"
+            href="#"
+            class="see-all"
+            @click.prevent="emit('see-all', seeAllTab)"
+          >See all →</a>
+          <button class="arrow" :disabled="!canL" aria-label="Scroll left" @click="scroll(-1)">
+            <Icon name="arrL" />
+          </button>
+          <button class="arrow" :disabled="!canR" aria-label="Scroll right" @click="scroll(1)">
+            <Icon name="arrR" />
+          </button>
+        </template>
+        <button
+          class="section-collapse"
+          :class="{ active: collapsed }"
+          :aria-label="collapsed ? `Expand ${title}` : `Collapse ${title}`"
+          :aria-expanded="!collapsed"
+          @click="collapsed = !collapsed"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
         </button>
       </div>
     </div>
 
-    <div class="rail-wrap">
+    <div v-show="!collapsed" class="rail-wrap">
       <div class="rail" ref="railEl" @scroll="update">
         <GameCard
           v-for="g in games" :key="g.id"
@@ -49,6 +60,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['open', 'see-all']);
 
+const collapsed = ref(false);
 const railEl = ref(null);
 const canL   = ref(false);
 const canR   = ref(true);
