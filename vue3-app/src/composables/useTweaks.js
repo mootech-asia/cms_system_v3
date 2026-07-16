@@ -1,5 +1,5 @@
 import { reactive, watch } from 'vue';
-import { DEFAULT_SKIN, SKINS, normalizeSkin } from '../skins/index.js';
+import { DEFAULT_SKIN, SKINS, getSkin, normalizeSkin } from '../skins/index.js';
 
 export const TWEAK_DEFAULTS = {
   theme:            'dark',
@@ -18,8 +18,12 @@ export function useTweaks(defaults = TWEAK_DEFAULTS) {
     const savedTheme = localStorage.getItem('cms_theme');
     const savedSkin = localStorage.getItem('cms_skin');
 
-    if (savedTheme === 'dark' || savedTheme === 'light') t.theme = savedTheme;
-    t.skin = normalizeSkin(savedSkin || t.skin);
+    const restoredSkin =
+      savedTheme === 'light' && (!savedSkin || savedSkin === 'blue')
+        ? 'white'
+        : savedSkin || t.skin;
+
+    t.skin = normalizeSkin(restoredSkin);
   } catch (e) { /* localStorage can be unavailable in private contexts */ }
 
   function setTweak(key, val) {
@@ -46,6 +50,9 @@ export function useTweaks(defaults = TWEAK_DEFAULTS) {
         t.skin = skin;
         return;
       }
+
+      const config = getSkin(skin);
+      if (t.theme !== config.theme) t.theme = config.theme;
 
       const root = document.documentElement;
       root.style.removeProperty('--accent');
