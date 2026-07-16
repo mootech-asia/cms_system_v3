@@ -300,16 +300,11 @@ img { display: block; }
   border-bottom: 1px solid var(--line);
 }
 .sb-tab.active {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, color-mix(in oklch, var(--accent) 28%, var(--bg-elev)) 0%, var(--bg-elev) 75%),
-    var(--bg-elev);
+  background: var(--control-active-bg);
   color: #fff;
   border: 1.5px solid var(--accent);
-  text-shadow: 0 0 10px color-mix(in oklch, var(--accent) 70%, transparent);
-  box-shadow:
-    0 0 0 3px color-mix(in oklch, var(--accent) 14%, transparent),
-    0 0 16px color-mix(in oklch, var(--accent) 55%, transparent),
-    0 0 20px color-mix(in oklch, var(--accent) 18%, transparent) inset;
+  text-shadow: var(--control-active-text-shadow);
+  box-shadow: var(--control-active-shadow);
 }
 
 .sidebar-search {
@@ -342,13 +337,11 @@ img { display: block; }
 }
 .sb-item:hover { color: var(--text); background: var(--bg-card-hi); }
 .sb-item.active {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, color-mix(in oklch, var(--accent) 28%, var(--bg-elev)) 0%, var(--bg-elev) 75%),
-    var(--bg-elev);
+  background: var(--control-active-bg);
   color: #fff;
   font-weight: 700;
   border: 1.5px solid var(--accent);
-  text-shadow: 0 0 10px color-mix(in oklch, var(--accent) 70%, transparent);
+  text-shadow: var(--control-active-text-shadow);
   box-shadow:
     0 0 0 3px color-mix(in oklch, var(--accent) 14%, transparent),
     0 0 20px color-mix(in oklch, var(--accent) 50%, transparent),
@@ -682,9 +675,7 @@ img { display: block; }
 .balance .coin { width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(135deg,#facc15,#f59e0b); display: inline-block; }
 .balance .deposit-btn {
   margin-left: 4px;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, color-mix(in oklch, var(--accent) 28%, var(--bg-elev)) 0%, var(--bg-elev) 75%),
-    var(--bg-elev);
+  background: var(--control-active-bg);
   color: #fff;
   border: 1.5px solid var(--accent);
   padding: 6px 14px;
@@ -693,7 +684,7 @@ img { display: block; }
   font-size: 12px;
   font-family: var(--font-body);
   display: flex; align-items: center; gap: 4px;
-  text-shadow: 0 0 10px color-mix(in oklch, var(--accent) 70%, transparent);
+  text-shadow: var(--control-active-text-shadow);
   box-shadow:
     0 0 0 3px color-mix(in oklch, var(--accent) 14%, transparent),
     0 0 18px color-mix(in oklch, var(--accent) 55%, transparent),
@@ -717,14 +708,12 @@ img { display: block; }
   filter: brightness(1.06);
 }
 .btn.primary {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, color-mix(in oklch, var(--accent) 28%, var(--bg-elev)) 0%, var(--bg-elev) 75%),
-    var(--bg-elev);
+  background: var(--control-active-bg);
   border: 1.5px solid var(--accent);
   color: #fff;
   font-weight: 700;
   letter-spacing: 0.01em;
-  text-shadow: 0 0 10px color-mix(in oklch, var(--accent) 70%, transparent);
+  text-shadow: var(--control-active-text-shadow);
   box-shadow:
     0 0 0 4px color-mix(in oklch, var(--accent) 14%, transparent),
     0 0 20px color-mix(in oklch, var(--accent) 55%, transparent),
@@ -1029,9 +1018,7 @@ img { display: block; }
   width: 36px; height: 36px;
   border-radius: 10px;
   border: 1.5px solid var(--accent);
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, color-mix(in oklch, var(--accent) 28%, var(--bg-elev)) 0%, var(--bg-elev) 75%),
-    var(--bg-elev);
+  background: var(--control-active-bg);
   color: var(--accent-2);
   display: grid; place-items: center;
   box-shadow: 0 0 14px color-mix(in oklch, var(--accent) 40%, transparent);
@@ -1066,9 +1053,7 @@ img { display: block; }
   color: #fff;
   font-weight: 700;
   border: 1.5px solid var(--accent);
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, color-mix(in oklch, var(--accent) 28%, var(--bg-elev)) 0%, var(--bg-elev) 75%),
-    var(--bg-elev);
+  background: var(--control-active-bg);
   text-shadow: 0 0 10px color-mix(in oklch, var(--accent) 60%, transparent);
   box-shadow:
     0 0 0 3px color-mix(in oklch, var(--accent) 14%, transparent),
@@ -1110,7 +1095,7 @@ img { display: block; }
   font-size: 14px;
   letter-spacing: 0.02em;
   cursor: pointer;
-  text-shadow: 0 0 10px color-mix(in oklch, var(--accent) 70%, transparent);
+  text-shadow: var(--control-active-text-shadow);
   box-shadow:
     0 0 0 3px color-mix(in oklch, var(--accent) 14%, transparent),
     0 0 18px color-mix(in oklch, var(--accent) 50%, transparent);
@@ -1342,10 +1327,8 @@ img { display: block; }
   color: #fff;
   font-weight: 700;
   border: 1.5px solid var(--accent);
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, color-mix(in oklch, var(--accent) 28%, var(--bg-elev)) 0%, var(--bg-elev) 75%),
-    var(--bg-elev);
-  text-shadow: 0 0 10px color-mix(in oklch, var(--accent) 70%, transparent);
+  background: var(--control-active-bg);
+  text-shadow: var(--control-active-text-shadow);
   box-shadow:
     0 0 0 3px color-mix(in oklch, var(--accent) 14%, transparent),
     0 0 18px color-mix(in oklch, var(--accent) 55%, transparent),
@@ -1485,22 +1468,15 @@ section.lobby-section { margin-top: 44px; }
 }
 .chip:hover { color: var(--text); border-color: var(--line-hi); }
 .chip.active {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, color-mix(in oklch, var(--accent) 28%, var(--bg-elev)) 0%, var(--bg-elev) 75%),
-    var(--bg-elev);
+  background: var(--control-active-bg);
   color: #fff;
   border: 1.5px solid var(--accent);
   font-weight: 700;
-  text-shadow: 0 0 10px color-mix(in oklch, var(--accent) 70%, transparent);
-  box-shadow:
-    0 0 0 3px color-mix(in oklch, var(--accent) 14%, transparent),
-    0 0 16px color-mix(in oklch, var(--accent) 55%, transparent),
-    0 0 20px color-mix(in oklch, var(--accent) 18%, transparent) inset;
+  text-shadow: var(--control-active-text-shadow);
+  box-shadow: var(--control-active-shadow);
 }
 [data-theme="light"] .chip.active {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, color-mix(in oklch, var(--accent) 28%, var(--bg-elev)) 0%, var(--bg-elev) 75%),
-    var(--bg-elev);
+  background: var(--control-active-bg);
   color: #fff;
 }
 
@@ -2025,13 +2001,11 @@ section.lobby-section { margin-top: 44px; }
   border-radius: 999px; font-size: 13px; font-weight: 500; color: var(--text-mid);
 }
 .signin-tab.active {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, color-mix(in oklch, var(--accent) 28%, var(--bg-elev)) 0%, var(--bg-elev) 75%),
-    var(--bg-elev);
+  background: var(--control-active-bg);
   color: #fff;
   border: 1.5px solid var(--accent);
   font-weight: 700;
-  text-shadow: 0 0 10px color-mix(in oklch, var(--accent) 70%, transparent);
+  text-shadow: var(--control-active-text-shadow);
   box-shadow:
     0 0 0 3px color-mix(in oklch, var(--accent) 14%, transparent),
     0 0 16px color-mix(in oklch, var(--accent) 55%, transparent);
