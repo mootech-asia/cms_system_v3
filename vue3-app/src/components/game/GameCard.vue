@@ -1,5 +1,5 @@
 <template>
-  <article class="gcard" @click="emit('open', game)">
+  <article class="gcard" style="cursor: default">
     <div class="gcard-art" :style="{ '--gcard-bg': game.bg }">
       <span v-if="game.tag"
         class="gcard-tag"
@@ -24,19 +24,6 @@
       <div v-if="game.category === 'live'" class="gcard-players">
         <span class="live-dot"></span>{{ game.players?.toLocaleString() }} playing
       </div>
-
-      <div class="gcard-hover">
-        <button class="play-btn" aria-label="Play">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M8 5.14v14l11-7-11-7Z"/>
-          </svg>
-        </button>
-        <div class="quick-info">
-          <span>RTP {{ game.rtp }}%</span>
-          <span>·</span>
-          <span>Max {{ game.maxWin }}</span>
-        </div>
-      </div>
     </div>
 
     <div class="gcard-meta">
@@ -52,5 +39,5 @@ const props = defineProps({
   isFav:   { type: Boolean, default: false },
   showFav: { type: Boolean, default: false },
 });
-const emit = defineEmits(['open', 'fav']);
+const emit = defineEmits(['fav']);
 </script>
