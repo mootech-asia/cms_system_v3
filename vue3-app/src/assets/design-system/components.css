@@ -41,6 +41,7 @@
   font: inherit;
   font-size: var(--type-button);
   font-weight: var(--weight-semibold);
+  cursor: pointer;
   transition:
     color var(--duration-fast) var(--ease-standard),
     border-color var(--duration-fast) var(--ease-standard),
@@ -86,6 +87,14 @@
 .ap-btn-wide:disabled {
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+.ui-button:focus-visible,
+.ui-tab:focus-visible,
+.ap-back:focus-visible,
+.cv-view-all:focus-visible {
+  outline: 0;
+  box-shadow: var(--focus-ring);
 }
 
 /* Tabs and filters */
