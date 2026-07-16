@@ -13,13 +13,13 @@
   width: min(100%, 240px);
   min-height: 48px;
   padding: 0 24px;
-  border: 1px solid var(--line-hi);
+  border: 1px solid var(--control-border);
   border-radius: 10px;
-  background: linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 100%);
-  color: var(--text-mid);
+  background: var(--control-bg);
+  color: var(--control-text);
   font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--type-group-title);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0;
   line-height: 1;
   text-align: center;
@@ -28,23 +28,23 @@
   filter: none;
   cursor: pointer;
   transition:
-    color .15s ease,
-    border-color .15s ease,
-    background .15s ease;
+    color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    background var(--duration-fast) var(--ease-standard);
 }
 
 .cv-view-all:hover {
-  border-color: var(--accent);
-  background: linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 100%);
-  color: #fff;
+  border-color: var(--control-hover-border);
+  background: var(--control-bg);
+  color: var(--control-hover-text);
   box-shadow: none;
   filter: none;
   transform: none;
 }
 
 .cv-view-all:active {
-  border-color: var(--accent);
-  color: #fff;
+  border-color: var(--control-hover-border);
+  color: var(--control-hover-text);
   transform: none;
 }
 
