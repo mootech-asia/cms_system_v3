@@ -465,8 +465,9 @@ img { display: block; }
 
 .sb-money {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 42px;
   gap: 8px;
+  align-items: stretch;
 }
 .sb-deposit,
 .sb-withdraw {
@@ -4559,4 +4560,25 @@ select.twk-field {
 
 @media (max-width: 700px) {
   .tb-skin-menu { position: fixed; top: calc(var(--header-h) + 8px); right: 12px; }
+}
+
+
+/* Sidebar collapse placement */
+.sb-collapse-inline {
+  width: 42px;
+  height: 100%;
+  min-height: 42px;
+  border-radius: 10px;
+}
+.sidebar-foot { display: none; }
+.sidebar.collapsed .sidebar-foot {
+  display: flex;
+  justify-content: center;
+}
+.sidebar.collapsed .sb-collapse-compact { display: grid; }
+
+@media (max-width: 900px) {
+  .sidebar-foot,
+  .sidebar.collapsed .sidebar-foot { display: none; }
+  .sb-collapse-inline { display: grid; }
 }
