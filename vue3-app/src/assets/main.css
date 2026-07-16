@@ -3453,10 +3453,10 @@ select.twk-field {
   font-size: 13.5px;
 }
 .rec-table thead th {
-  background: var(--gradient-primary);
-  color: #fff;
-  font-weight: 700;
-  font-size: 12.5px;
+  background: var(--table-header-bg);
+  color: var(--table-header-text);
+  font-weight: var(--weight-bold);
+  font-size: var(--type-label);
   padding: 14px 16px;
   text-align: center;
   white-space: nowrap;
@@ -3494,9 +3494,9 @@ select.twk-field {
   display: flex; align-items: center; justify-content: space-between;
   margin-top: auto;
   padding: 16px 24px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, #1a1f2b 0%, #12151d 100%);
-  border: 1px solid var(--line-hi);
+  border-radius: var(--radius-card);
+  background: var(--record-total-bg);
+  border: 1px solid var(--record-total-border);
 }
 .rec-table-scroll { margin-bottom: 14px; }
 .rec-total > span:first-child { color: var(--accent-2); font-weight: 700; font-size: 14px; }
@@ -3798,7 +3798,7 @@ select.twk-field {
 
 
 /* single source of truth for ALL calendar icons */
-:root { --cal-icon: rgba(234,245,255,0.72); }
+
 .rec-date > svg,
 .pi-field .pi-ico svg { color: var(--cal-icon) !important; filter: none !important; }
 .rec-date-cell .rec-date-input::-webkit-calendar-picker-indicator,
@@ -3860,8 +3860,8 @@ select.twk-field {
 
 
 /* theme-aware calendar icon color (one place) */
-:root { --cal-icon: rgba(234,245,255,0.72); }
-[data-theme="light"] { --cal-icon: rgba(15,15,23,0.55); }
+
+
 .rec-date-cell .rec-date-ico,
 .rec-date > svg,
 .pi-field .pi-ico svg { color: var(--cal-icon) !important; filter: none !important; }
