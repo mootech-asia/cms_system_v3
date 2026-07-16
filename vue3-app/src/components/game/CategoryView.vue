@@ -11,17 +11,15 @@
     <div
       v-if="showFilterTabs"
       class="cv-tabs"
-      style="display:flex;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;scrollbar-width:none"
     >
       <button
         v-for="tb in tabs" :key="tb"
         class="cv-tab"
-        style="flex:0 0 auto"
         :class="{ active: filter === tb }"
         @click="setFilter(tb)"
       >
-        <svg v-if="tb === 'Favorites'" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 20s-7-4.6-9.3-9C1.2 8 2.6 4.5 6 4.5c2 0 3.2 1.2 4 2.4.8-1.2 2-2.4 4-2.4 3.4 0 4.8 3.5 3.3 6.5C19 15.4 12 20 12 20Z"/>
+        <svg v-if="tb === 'Favorites'" class="cv-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M20.8 4.9a5.5 5.5 0 0 0-7.8 0L12 6l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.3 1-1a5.5 5.5 0 0 0 0-7.8Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         {{ tb }}
         <span v-if="tb === 'Favorites' && favs.size > 0" class="cv-tab-count">{{ favs.size }}</span>
