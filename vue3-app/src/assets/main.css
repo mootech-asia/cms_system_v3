@@ -405,7 +405,7 @@ img { display: block; }
   padding: 9px 14px;
   border-radius: 12px;
   border: 1px solid var(--line);
-  background: linear-gradient(180deg, var(--bg-card) 0%, color-mix(in oklch, var(--bg-card) 80%, #000) 100%);
+  background: var(--bg-card);
   color: var(--text);
   font-size: 13.5px;
   font-weight: 500;
@@ -4098,10 +4098,10 @@ select.twk-field {
 [data-theme="light"] .tourn .btn.primary,
 [data-theme="light"] .modal-foot .btn.primary,
 [data-theme="light"] .ap-btn.primary {
-  box-shadow: 0 2px 8px rgba(36,115,255,.18) !important;
+  box-shadow: var(--shadow-primary) !important;
 }
 [data-theme="light"] .btn.primary:hover,
-[data-theme="light"] .cv-view-all:hover { box-shadow: 0 4px 12px rgba(36,115,255,.26) !important; }
+[data-theme="light"] .cv-view-all:hover { box-shadow: 0 4px 12px color-mix(in oklch, var(--accent) 22%, transparent) !important; }
 
 /* avatars / badges / tier dots — remove accent halo */
 [data-theme="light"] .tb-avatar,
@@ -4158,15 +4158,23 @@ select.twk-field {
 [data-theme="light"] .promo-card-cta,
 [data-theme="light"] .tb-balance,
 [data-theme="light"] .tb-user,
-[data-theme="light"] .tb-icon-btn,
-[data-theme="light"] .cv-tab:hover,
-[data-theme="light"] .cat-tab:hover,
-[data-theme="light"] .sb-tab:hover:not(.active),
-[data-theme="light"] .btn:hover,
-[data-theme="light"] .rt:hover {
-  border-color: var(--accent) !important;
+[data-theme="light"] .tb-icon-btn {
+  border-color: var(--line-hi) !important;
   background: #ffffff !important;
-  color: var(--accent) !important;
+  color: var(--text) !important;
+}
+[data-theme="light"] .cv-tab:hover:not(.active),
+[data-theme="light"] .cat-tab:hover:not(.active),
+[data-theme="light"] .sb-tab:hover:not(.active),
+[data-theme="light"] .sb-deposit:hover,
+[data-theme="light"] .sb-withdraw:hover,
+[data-theme="light"] .btn:hover,
+[data-theme="light"] .rt:hover:not(.active),
+[data-theme="light"] .promo-card-cta:hover,
+[data-theme="light"] .tb-icon-btn:hover {
+  border-color: var(--control-hover-border) !important;
+  background: #ffffff !important;
+  color: var(--text) !important;
 }
 /* keep active states as defined (accent outline) */
 [data-theme="light"] .cv-tab.active,
