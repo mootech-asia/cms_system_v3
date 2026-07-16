@@ -7,5 +7,7 @@ import './assets/main.css';
 import './skins/index.js';
 import './assets/design-system/components.css';
 import './assets/load-more.css';
+import './assets/design-system/variants.css';
+import './assets/design-system/design-studio.css';
 
 createApp(App).mount('#app');

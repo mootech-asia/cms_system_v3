@@ -94,6 +94,9 @@
               <g v-else-if="item.icon === 'shield'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
                 <path d="M12 3 4 6v6c0 4.5 3.3 8 8 9 4.7-1 8-4.5 8-9V6l-8-3Z" /><path d="m9 12 2 2 4-4" />
               </g>
+              <g v-else-if="item.icon === 'studio'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                <path d="M4 7h10M18 7h2M4 17h2M10 17h10" /><circle cx="16" cy="7" r="2" /><circle cx="8" cy="17" r="2" />
+              </g>
             </svg>
           </span>
             <span class="sb-label">{{ item.name }}</span>
@@ -244,6 +247,7 @@ const sections = [
       { name: 'Personal Info',     icon: 'person' },
       { name: 'Security Center',   icon: 'shield' },
       { name: 'FAQ',               icon: 'help', cat: 'Lobby', tab: 'FAQ', public: true },
+      { name: 'Design Studio',     icon: 'studio', public: true },
     ],
   },
 ];

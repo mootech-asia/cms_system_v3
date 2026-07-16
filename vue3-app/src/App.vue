@@ -32,7 +32,10 @@
     </template>
 
     <!-- Account pages -->
-    <AccountOverview v-if="activeCat === 'Account Overview'"
+    <DesignStudio v-if="activeCat === 'Design Studio'"
+      @navigate="activeCat = $event; if ($event === 'Lobby') catTab = 'Lobby'"
+    />
+    <AccountOverview v-else-if="activeCat === 'Account Overview'"
       :user="user" :balance="balance" :nickname="nickname"
       @navigate="activeCat = $event"
     />
@@ -275,10 +278,13 @@ import ChangeLoginPassword    from '@/components/account/ChangeLoginPassword.vue
 import CustomerServicePage    from '@/components/account/CustomerServicePage.vue';
 import RecordTable            from '@/components/account/RecordTable.vue';
 import SupportPage            from '@/components/account/SupportPage.vue';
+import DesignStudio           from '@/components/design/DesignStudio.vue';
 import { useTweaks }          from '@/composables/useTweaks.js';
+import { useDesignStudio }    from '@/composables/useDesignStudio.js';
 import { GAMES, RECENTLY_PLAYED } from '@/data/index.js';
 
 const { t, setTweak, skins } = useTweaks();
+useDesignStudio();
 
 const openGame          = ref(null);
 const sidebarCollapsed  = ref(false);
