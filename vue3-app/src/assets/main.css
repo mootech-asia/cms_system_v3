@@ -1305,20 +1305,24 @@ img { display: block; }
 .cat-tabs::-webkit-scrollbar { display: none; }
 .cat-tab {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  background: linear-gradient(180deg, var(--bg-card) 0%, color-mix(in oklch, var(--bg-card) 80%, #000) 100%);
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: color .15s, border-color .15s, filter .15s;
-  font-family: var(--font-body);
-  cursor: pointer;
   min-width: 0;
+  padding: 12px 14px;
   overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--bg-grad-card);
+  color: var(--text);
+  box-shadow: none;
+  font-family: var(--font-body);
+  font-size: var(--type-body);
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
   text-overflow: ellipsis;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast),
+    border-color var(--duration-fast),
+    filter var(--duration-fast);
 }
 .cat-tab:hover { border-color: var(--line-hi); filter: brightness(1.06); }
 .cat-tab-icon { display: inline-grid; place-items: center; color: var(--text-mid); }
@@ -1640,8 +1644,15 @@ section.lobby-section { margin-top: 44px; }
 }
 .gcard-hover .quick-info {
   position: absolute;
-  left: 0; right: 0; bottom: 12px;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  display: flex;
   justify-content: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  font-family: var(--font-mono);
+  font-size: var(--type-caption);
 }
 .gcard:hover .gcard-hover { opacity: 1; pointer-events: auto; }
 .play-btn {
@@ -1663,12 +1674,6 @@ section.lobby-section { margin-top: 44px; }
 }
 .play-btn:hover { filter: brightness(1.12); }
 .gcard:hover .play-btn { transform: scale(1.06); }
-.gcard-hover .quick-info {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: rgba(255,255,255,.75);
-  display: flex; gap: 12px;
-}
 
 /* ── LEADERBOARD ────────────────────────── */
 .leaderboard-wrap {
@@ -2249,13 +2254,11 @@ select.twk-field {
   font-weight: 600 !important;
 }
 .twk-seg button[aria-pressed="true"] {
-  background: color-mix(in oklch, var(--accent) 20%, var(--bg-elev)) !important;
-  color: #fff !important;
-  border-radius: 6px !important;
-  box-shadow:
-    0 0 0 1px var(--accent),
-    0 0 12px color-mix(in oklch, var(--accent) 45%, transparent) !important;
-  text-shadow: 0 0 8px color-mix(in oklch, var(--accent) 60%, transparent);
+  border-radius: var(--radius-xs) !important;
+  background: transparent !important;
+  color: var(--text-on-accent) !important;
+  box-shadow: none !important;
+  text-shadow: 0 0 8px color-mix(in oklch, var(--accent) 60%, transparent) !important;
 }
 .twk-toggle, .twk-switch {
   background: var(--bg-card) !important;
@@ -2372,12 +2375,6 @@ select.twk-field {
     0 1px 3px rgba(0,0,0,.4) !important;
 }
 .twk-seg button { color: var(--text-mid) !important; }
-.twk-seg button[aria-pressed="true"] {
-  color: #fff !important;
-  text-shadow: 0 0 8px color-mix(in oklch, var(--accent) 60%, transparent) !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
 
 
 /* ── ACCOUNT / DEPOSIT / WITHDRAWAL PAGES ─────────── */
@@ -3096,7 +3093,17 @@ select.twk-field {
   padding-left: 24px;
   flex-shrink: 0;
 }
-.ap-hero-rollover .ap-rollover-title { font-size: 24px; margin-bottom: 6px; }
+.ap-hero-rollover .ap-rollover-title {
+  margin-bottom: 6px;
+  background: var(--rollover-hero-gradient) !important;
+  font-size: 24px;
+  font-weight: var(--weight-extrabold) !important;
+  letter-spacing: 0 !important;
+  filter: none !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
 .ap-hero-rollover .ap-rollover-label { color: #fff; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
 .ap-hero-rollover .ap-rollover-amt { font-family: var(--font-mono); font-size: 20px; color: var(--text); }
 @media (max-width: 900px) {
@@ -3105,23 +3112,9 @@ select.twk-field {
 
 
 /* refined vivid rollover title that suits the theme */
-.ap-hero-rollover .ap-rollover-title {
-  background: linear-gradient(95deg, var(--accent-2) 0%, var(--accent) 45%, #a855f7 100%) !important;
-  -webkit-background-clip: text !important; background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  filter: drop-shadow(0 0 12px color-mix(in oklch, var(--accent) 55%, transparent));
-  font-weight: 800 !important;
-  letter-spacing: 0.01em !important;
-}
 
 
 /* rollover title — yellow gradient */
-.ap-hero-rollover .ap-rollover-title {
-  background: linear-gradient(95deg, #fde68a 0%, #facc15 50%, #f59e0b 100%) !important;
-  -webkit-background-clip: text !important; background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  filter: drop-shadow(0 0 12px rgba(250,204,21,.5));
-}
 
 
 /* keep balance number on one line */
@@ -3378,13 +3371,16 @@ select.twk-field {
 .rec-status-opt:hover { background: var(--bg-card-hi); }
 .rec-status-opt.active { color: var(--accent-2); }
 .rec-date {
-  display: flex; align-items: center; gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 10px 16px;
-  border-radius: 10px;
   border: 1px solid var(--line-hi);
+  border-radius: var(--radius-control);
   background: var(--bg-card);
   color: var(--text-mid);
-  font-size: 13.5px;
+  font-size: var(--type-button);
+  cursor: pointer;
 }
 .rec-date svg { color: var(--text-mid); }
 .rec-confirm {
@@ -3631,10 +3627,6 @@ select.twk-field {
 
 /* ── DATE / CALENDAR CONTROLS ───────────────── */
 /* Single source of truth for Personal Info and record filters. */
-.rec-date {
-  gap: 6px;
-  cursor: pointer;
-}
 .rec-date-input {
   min-width: 120px;
   background: transparent;
@@ -3762,7 +3754,6 @@ select.twk-field {
 /* ════════ BATCH FIX (light-theme contrast + layout) ════════ */
 
 /* 1. cat-tab clean border (img1) */
-.cat-tab { box-shadow: none; }
 [data-theme="light"] .cat-tab { background: #fff; border-color: var(--line); }
 [data-theme="light"] .cat-tab.active { color: var(--accent-ink) !important; text-shadow: none !important; box-shadow: 0 0 0 1.5px var(--accent) !important; }
 
@@ -4010,10 +4001,6 @@ select.twk-field {
 
 /* ════ refined "Approved" status badge ════ */
 /* remove glow behind Rollover title (yellow gradient text, no drop-shadow) */
-.ap-hero-rollover .ap-rollover-title,
-[data-theme="light"] .ap-hero-rollover .ap-rollover-title { filter: none !important; }
-
-
 /* ════════════════════════════════════════════════════════════
    LIGHT THEME — GLOBAL GLOW REMOVAL (final, authoritative)
    ════════════════════════════════════════════════════════════ */
