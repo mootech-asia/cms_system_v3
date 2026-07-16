@@ -9,48 +9,73 @@
       </div>
     </div>
 
-    <!-- 導覽列表 -->
+    <!-- 分組導覽 -->
     <nav class="sidebar-list">
-      <a
-        v-for="item in items" :key="item.name"
-        href="#"
-        class="sb-item"
-        :class="{ active: activeCat === item.name }"
-        :title="collapsed ? item.name : undefined"
-        @click.prevent="handleNav(item)"
-      >
-        <span class="sb-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24">
-            <path v-if="item.icon === 'home'" d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1v-8Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round" />
-            <g v-else-if="item.icon === 'grid'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
-              <rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" />
-              <rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />
-            </g>
-            <g v-else-if="item.icon === 'ticket'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
-              <path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5L7.2 18l.9-5.4-3.9-3.8 5.4-.8L12 3Z" />
-            </g>
-            <g v-else-if="item.icon === 'down'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
-              <path d="M12 4v12m0 0-4-4m4 4 4-4" /><path d="M4 20h16" />
-            </g>
-            <g v-else-if="item.icon === 'chart'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
-              <path d="m4 16 5-5 4 4 7-9" /><path d="M14 6h6v6" />
-            </g>
-            <g v-else-if="item.icon === 'swap'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
-              <path d="M7 4v13m0 0-3-3m3 3 3-3" /><path d="M17 20V7m0 0 3 3m-3-3-3 3" />
-            </g>
-            <g v-else-if="item.icon === 'book'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="16" rx="2" /><path d="M7 9h10M7 13h10M7 17h6" />
-            </g>
-            <g v-else-if="item.icon === 'person'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9" /><circle cx="12" cy="10" r="3" /><path d="M6 19a6 6 0 0 1 12 0" />
-            </g>
-            <g v-else-if="item.icon === 'shield'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
-              <path d="M12 3 4 6v6c0 4.5 3.3 8 8 9 4.7-1 8-4.5 8-9V6l-8-3Z" /><path d="m9 12 2 2 4-4" />
-            </g>
-          </svg>
-        </span>
-        <span class="sb-label">{{ item.name }}</span>
-      </a>
+      <section v-for="section in sections" :key="section.label" class="sb-section">
+        <div class="sb-section-title">{{ section.label }}</div>
+        <a
+          v-for="item in section.items" :key="item.name"
+          href="#"
+          class="sb-item"
+          :class="{ active: isActive(item) }"
+          :title="collapsed ? item.name : undefined"
+          @click.prevent="handleNav(item)"
+        >
+          <span class="sb-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24">
+              <path v-if="item.icon === 'home'" d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1v-8Z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round" />
+              <path v-else-if="item.icon === 'fire'" d="M13.5 3.5c.8 3.1-.4 4.8-1.8 6.2.1-2.1-1.1-3.4-2.1-4.2.2 3.2-3.6 4.8-3.6 9A6 6 0 0 0 18 14c0-3-1.7-5.8-4.5-10.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+              <g v-else-if="item.icon === 'gamepad'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 8h10a4 4 0 0 1 3.8 5.2l-1.1 3.4a2.2 2.2 0 0 1-3.5 1.1L14.5 16h-5l-1.7 1.7a2.2 2.2 0 0 1-3.5-1.1l-1.1-3.4A4 4 0 0 1 7 8Z" /><path d="M8 11v4M6 13h4" /><circle cx="16" cy="12" r=".8" fill="currentColor" stroke="none" /><circle cx="18" cy="14" r=".8" fill="currentColor" stroke="none" />
+              </g>
+              <g v-else-if="item.icon === 'slots'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+                <rect x="3" y="5" width="18" height="14" rx="2" /><path d="M7 9h3v6H7zM14 9h3v6h-3z" />
+              </g>
+              <g v-else-if="item.icon === 'sports'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" /><path d="m12 3 2.5 6M21 12l-6 2.5M12 21l-2.5-6M3 12l6-2.5" />
+              </g>
+              <g v-else-if="item.icon === 'live'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="13" rx="2" /><path d="M8 21h8M12 17v4" />
+              </g>
+              <g v-else-if="item.icon === 'fish'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12c3.5-4.5 8.5-5.5 13-2l3-2v8l-3-2c-4.5 3.5-9.5 2.5-13-2Z" /><circle cx="14" cy="11" r=".7" fill="currentColor" stroke="none" />
+              </g>
+              <g v-else-if="item.icon === 'gift'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+                <rect x="3" y="9" width="18" height="12" rx="1.5" /><path d="M12 9v12M3 13h18M12 9H8.5a2.5 2.5 0 1 1 2.2-3.7L12 9Zm0 0h3.5a2.5 2.5 0 1 0-2.2-3.7L12 9Z" />
+              </g>
+              <g v-else-if="item.icon === 'help'" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" /><path d="M9.8 9a2.4 2.4 0 1 1 3.4 2.2c-.8.4-1.2.9-1.2 1.8" /><path d="M12 17h.01" />
+              </g>
+              <g v-else-if="item.icon === 'grid'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />
+              </g>
+              <g v-else-if="item.icon === 'ticket'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+                <path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5L7.2 18l.9-5.4-3.9-3.8 5.4-.8L12 3Z" />
+              </g>
+              <g v-else-if="item.icon === 'down'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+                <path d="M12 4v12m0 0-4-4m4 4 4-4" /><path d="M4 20h16" />
+              </g>
+              <g v-else-if="item.icon === 'chart'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+                <path d="m4 16 5-5 4 4 7-9" /><path d="M14 6h6v6" />
+              </g>
+              <g v-else-if="item.icon === 'swap'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
+                <path d="M7 4v13m0 0-3-3m3 3 3-3" /><path d="M17 20V7m0 0 3 3m-3-3-3 3" />
+              </g>
+              <g v-else-if="item.icon === 'book'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="16" rx="2" /><path d="M7 9h10M7 13h10M7 17h6" />
+              </g>
+              <g v-else-if="item.icon === 'person'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" /><circle cx="12" cy="10" r="3" /><path d="M6 19a6 6 0 0 1 12 0" />
+              </g>
+              <g v-else-if="item.icon === 'shield'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+                <path d="M12 3 4 6v6c0 4.5 3.3 8 8 9 4.7-1 8-4.5 8-9V6l-8-3Z" /><path d="m9 12 2 2 4-4" />
+              </g>
+            </svg>
+          </span>
+          <span class="sb-label">{{ item.name }}</span>
+        </a>
+      </section>
     </nav>
 
     <!-- 語言 + 存提款 -->
@@ -123,21 +148,8 @@
       </div>
     </div>
 
-    <!-- 社群 + 折疊 -->
+    <!-- 折疊 -->
     <div class="sidebar-foot">
-      <div class="sb-socials">
-        <a href="#" class="sb-social" aria-label="Customer support" title="Customer support" @click.prevent="emit('support')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">
-            <path d="M4 12a8 8 0 0 1 16 0v4a3 3 0 0 1-3 3h-2v-7h5" />
-            <path d="M4 12v4a3 3 0 0 0 3 3h2v-7H4" />
-          </svg>
-        </a>
-        <a href="#" class="sb-social" aria-label="Telegram" title="Telegram">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M21.05 3.4 2.7 10.5c-1.1.45-1.1 1.1-.2 1.4l4.6 1.45 1.8 5.7c.2.55.4.75.8.75.4 0 .55-.18.75-.4l2.3-2.3 4.7 3.45c.85.5 1.45.25 1.65-.8L21.95 4.6c.3-1.4-.45-2-1.5-1.55Z" />
-          </svg>
-        </a>
-      </div>
       <button class="sb-collapse" aria-label="Toggle sidebar" @click="emit('update:collapsed', !collapsed)">
         {{ collapsed ? '›' : '‹' }}
       </button>
@@ -153,7 +165,7 @@ import Icon from '@/components/ui/Icon.vue';
 const props = defineProps({
   collapsed:  { type: Boolean, default: false },
   activeCat:  { type: String,  default: 'Lobby' },
-  activeTab:  { type: String,  default: 'Casino' },
+  activeTab:  { type: String,  default: 'Lobby' },
   user:       { type: Object,  default: null },
 });
 
@@ -162,7 +174,7 @@ const emit = defineEmits([
   'update:activeCat',
   'update:activeTab',
   'sign-in',
-  'support',
+  'close-menu',
 ]);
 
 const lang     = ref('en');
@@ -174,31 +186,74 @@ const LANGS = {
   ko: { label: '한국어'   },
 };
 
-const items = [
-  { name: 'Lobby',            icon: 'home'   },
-  { name: 'Account Overview', icon: 'grid'   },
-  { name: 'Betting Record',   icon: 'ticket' },
-  { name: 'Deposit Record',   icon: 'down'   },
-  { name: 'Profit And Loss',  icon: 'chart'  },
-  { name: 'Withdrawal Record',icon: 'swap'   },
-  { name: 'Account Record',   icon: 'book'   },
-  { name: 'Personal Info',    icon: 'person' },
-  { name: 'Security Center',  icon: 'shield' },
+const sections = [
+  {
+    label: 'Menu',
+    items: [
+      { name: 'Lobby',      icon: 'home',    cat: 'Lobby', tab: 'Lobby',      public: true },
+      { name: 'Hot Games',  icon: 'fire',    cat: 'Lobby', tab: 'Hot Games',  public: true },
+      { name: 'Mini Games', icon: 'gamepad', cat: 'Lobby', tab: 'Mini Games', public: true },
+      { name: 'Slots',      icon: 'slots',   cat: 'Lobby', tab: 'Slots',      public: true },
+      { name: 'Sports',     icon: 'sports',  cat: 'Lobby', tab: 'Sports',     public: true },
+      { name: 'Live',       icon: 'live',    cat: 'Lobby', tab: 'Live',       public: true },
+      { name: 'Fish',       icon: 'fish',    cat: 'Lobby', tab: 'Fish',       public: true },
+      { name: 'Promotion',  icon: 'gift',    cat: 'Lobby', tab: 'Promotion',  public: true },
+      { name: 'FAQ',        icon: 'help',    cat: 'Lobby', tab: 'FAQ',        public: true },
+    ],
+  },
+  {
+    label: 'My Account',
+    items: [
+      { name: 'Account Overview',  icon: 'grid'   },
+      { name: 'Betting Record',    icon: 'ticket' },
+      { name: 'Deposit Record',    icon: 'down'   },
+      { name: 'Profit And Loss',   icon: 'chart'  },
+      { name: 'Withdrawal Record', icon: 'swap'   },
+      { name: 'Account Record',    icon: 'book'   },
+      { name: 'Personal Info',     icon: 'person' },
+      { name: 'Security Center',   icon: 'shield' },
+    ],
+  },
 ];
 
-function handleNav(item) {
-  if (item.name === 'Withdrawal Record' && !props.user) { emit('sign-in'); return; }
-  if (item.name !== 'Lobby' && !props.user)             { emit('sign-in'); return; }
-  emit('update:activeCat', item.name);
+function isActive(item) {
+  if (item.tab) return props.activeCat === 'Lobby' && props.activeTab === item.tab;
+  return props.activeCat === item.name;
 }
 
-function handleDeposit()  {
-  if (!props.user) { emit('sign-in'); return; }
+function closeMenu() {
+  langOpen.value = false;
+  emit('close-menu');
+}
+
+function handleNav(item) {
+  if (!item.public && !props.user) {
+    emit('sign-in');
+    closeMenu();
+    return;
+  }
+  emit('update:activeCat', item.cat || item.name);
+  if (item.tab) emit('update:activeTab', item.tab);
+  closeMenu();
+}
+
+function handleDeposit() {
+  if (!props.user) {
+    emit('sign-in');
+    closeMenu();
+    return;
+  }
   emit('update:activeCat', 'DepositForm');
+  closeMenu();
 }
 function handleWithdraw() {
-  if (!props.user) { emit('sign-in'); return; }
+  if (!props.user) {
+    emit('sign-in');
+    closeMenu();
+    return;
+  }
   emit('update:activeCat', 'WithdrawalForm');
+  closeMenu();
 }
 
 function onDocClick(e) {
