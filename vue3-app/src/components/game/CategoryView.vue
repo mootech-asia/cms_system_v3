@@ -34,7 +34,7 @@
         v-for="g in shown" :key="g.id"
         :game="g"
         :is-fav="favs.has(g.id)"
-        :show-fav="true"
+        :show-fav="showFavorites"
         @open="emit('open', $event)"
         @fav="toggle"
       />
@@ -63,6 +63,7 @@ const props = defineProps({
   pageSize:         { type: Number,  default: 10 },
   showFilterTabs:   { type: Boolean, default: true },
   showProviderTabs: { type: Boolean, default: true },
+  showFavorites:    { type: Boolean, default: true },
 });
 const emit = defineEmits(['open']);
 
@@ -70,7 +71,10 @@ const { favs, toggle } = useFavorites();
 
 const filter       = ref('All');
 const visibleCount = ref(props.pageSize);
-const tabs         = computed(() => props.showProviderTabs ? ['All', 'Favorites', ...PROVIDERS] : ['All', 'Favorites']);
+const tabs = computed(() => {
+  const favorites = props.showFavorites ? ['Favorites'] : [];
+  return props.showProviderTabs ? ['All', ...favorites, ...PROVIDERS] : ['All', ...favorites];
+});
 
 const filtered = computed(() => {
   if (filter.value === 'Favorites') return props.games.filter(g => favs.value.has(g.id));

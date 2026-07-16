@@ -6,14 +6,13 @@
       class="hero-slide"
       :class="{ active: i === idx }"
     >
-      <div class="hero-bg" />
+      <div class="hero-bg" :style="{ '--hero-image': `url(${s.image})` }" />
       <div class="hero-content">
         <div>
           <h1 class="hero-title">{{ s.title }}</h1>
           <p  class="hero-sub">{{ s.sub }}</p>
         </div>
       </div>
-      <div class="hero-side">[ FEATURE ARTWORK ]</div>
     </div>
 
     <!-- 指示點 -->

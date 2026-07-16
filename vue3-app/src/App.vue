@@ -154,6 +154,7 @@
         :games="[...GAMES.slots, ...GAMES.live, ...GAMES.originals]"
         :show-filter-tabs="false"
         :show-provider-tabs="false"
+        :show-favorites="false"
         @open="openGame = $event"
       />
 

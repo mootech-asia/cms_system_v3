@@ -24,6 +24,7 @@ const PROVIDERS = [
 ];
 
 const GAME_TAGS = ['Hot', 'New', '2x', 'Top', '⚡', 'Live', 'VIP'];
+const assetPath = (path) => `${import.meta.env.BASE_URL}${path}`;
 
 function makeGames(category, count, hueBase) {
   const titles = {
@@ -55,7 +56,8 @@ function makeGames(category, count, hueBase) {
       tag: i % 3 === 0 ? GAME_TAGS[i % GAME_TAGS.length] : null,
       players: 80 + ((i * 137) % 4200),
       rtp: (94 + ((i * 7) % 6) + ((i * 13) % 100) / 100).toFixed(2),
-      maxWin: `${500 + ((i * 91) % 50000)}x`
+      maxWin: `${500 + ((i * 91) % 50000)}x`,
+      image: assetPath(`assets/mock/game-${String((i % 12) + 1).padStart(2, '0')}.webp`),
     });
   }
   return arr;
@@ -69,9 +71,9 @@ const GAMES = {
 };
 
 const HERO_SLIDES = [
-  { eyebrow: 'WEEKLY DROP',  title: '$250,000 Vault\nUnlock Saturday',  sub: 'Spin any qualifying slot to enter. The bigger you bet, the bigger your slice.', hue: 290, badge: 'LIVE NOW' },
-  { eyebrow: 'NEW ORIGINAL', title: 'Crash 100 is\nlive in beta',       sub: 'Our flagship original — provably fair multipliers up to 1,000,000×.',           hue: 200, badge: 'BETA' },
-  { eyebrow: 'TOURNAMENT',   title: 'Race for $50K\nin 72 hours',        sub: 'Top 100 players split the prize pool. Climb the leaderboard live.',              hue: 340, badge: 'ENDS 2D 14H' }
+  { eyebrow: 'WEEKLY DROP',  title: '$250,000 Vault\nUnlock Saturday',  sub: 'Spin any qualifying slot to enter. The bigger you bet, the bigger your slice.', hue: 290, badge: 'LIVE NOW', image: assetPath('assets/mock/hero-1.webp') },
+  { eyebrow: 'NEW ORIGINAL', title: 'Crash 100 is\nlive in beta',       sub: 'Our flagship original — provably fair multipliers up to 1,000,000×.',           hue: 200, badge: 'BETA', image: assetPath('assets/mock/hero-2.webp') },
+  { eyebrow: 'TOURNAMENT',   title: 'Race for $50K\nin 72 hours',        sub: 'Top 100 players split the prize pool. Climb the leaderboard live.',              hue: 340, badge: 'ENDS 2D 14H', image: assetPath('assets/mock/hero-3.webp') }
 ];
 
 const PROMOS = [

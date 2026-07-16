@@ -1,6 +1,14 @@
 <template>
   <article class="gcard" style="cursor: default">
     <div class="gcard-art">
+      <img
+        v-if="game.image"
+        class="gcard-art-image"
+        :src="game.image"
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
       <span v-if="game.tag"
         class="gcard-tag"
         :class="{ hot: game.tag === 'Hot', new: game.tag === 'New' }"
@@ -24,7 +32,7 @@
         </svg>
       </button>
 
-      <span class="ph-label">{{ game.title.toUpperCase() }} ART</span>
+      <span v-else class="ph-label">{{ game.title.toUpperCase() }} ART</span>
 
       <div v-if="game.category === 'live'" class="gcard-players">
         <span class="live-dot"></span>{{ game.players?.toLocaleString() }} playing
