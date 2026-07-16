@@ -1,3 +1,5 @@
+import '../assets/skins/blue.css';
+
 export const DEFAULT_SKIN = 'blue';
 
 export const SKINS = Object.freeze([
