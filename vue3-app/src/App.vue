@@ -78,7 +78,7 @@
       <Hero v-if="!isSupportView" />
       <PromoRibbon v-if="showPromos && !isSupportView" />
       <RewardsBanner v-if="user && !isSupportView" :user="user" />
-      <Promos v-if="showPromos" v-model:active="catTab" />
+      <Promos v-if="showPromos && !isSupportView" v-model:active="catTab" />
 
       <!-- Lobby tab -->
       <template v-if="catTab === 'Lobby'">
@@ -294,9 +294,9 @@ const DEFAULT_LOBBY_SECTION_ORDER = Object.freeze([
   'recently-played',
   'slots',
   'live-casino',
-  'top-wins',
   'live-sport',
   'promotions',
+  'top-wins',
   'providers',
 ]);
 const lobbySectionLabels = Object.freeze({
