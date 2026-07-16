@@ -2,13 +2,13 @@
   <section class="design-studio" data-screen-label="Design Studio">
     <header class="studio-header">
       <div>
-        <div class="studio-eyebrow">CMS v3 / Modular UI</div>
+        <div class="studio-eyebrow">CMS v3 / Site Factory /studio</div>
         <div class="studio-title-row">
           <h1>Design Studio</h1>
           <span class="studio-schema">Schema {{ design.version }}</span>
           <span v-if="dirty" class="studio-unsaved">Unsaved changes</span>
         </div>
-        <p>Configure visual modules without changing page structure, content, or Skin color tokens.</p>
+        <p>Configure Skin, home composition, and reusable visual modules from one controlled workspace.</p>
       </div>
       <div class="studio-header-actions">
         <button class="studio-button quiet" type="button" @click="emit('navigate', 'Lobby')">View site</button>
@@ -25,6 +25,68 @@
 
     <div class="studio-workspace">
       <aside class="studio-module-panel" aria-label="Design modules">
+        <section class="studio-factory-section" aria-labelledby="studio-factory-title">
+          <div class="studio-panel-head studio-factory-heading">
+            <div>
+              <span id="studio-factory-title">Site factory</span>
+              <small>Applied from one shared configuration</small>
+            </div>
+          </div>
+
+          <label class="studio-factory-field">
+            <span>Preview Skin</span>
+            <select v-model="draftSkin" class="studio-select">
+              <option v-for="skin in skins" :key="skin.id" :value="skin.id">{{ skin.label }}</option>
+            </select>
+          </label>
+
+          <div class="studio-composition-head">
+            <div>
+              <span>Home composition</span>
+              <small>{{ visibleLayoutCount }} of {{ layoutOrder.length }} visible</small>
+            </div>
+            <button class="studio-text-button" type="button" @click="restoreLayoutDefaults">Reset layout</button>
+          </div>
+
+          <ul class="studio-layout-list" aria-label="Home section order">
+            <li
+              v-for="(sectionId, index) in layoutOrder"
+              :key="sectionId"
+              class="studio-layout-item"
+              :class="{
+                'is-hidden': hiddenSections.includes(sectionId),
+                'is-drag-over': layoutOverId === sectionId && layoutDragId !== sectionId,
+              }"
+              draggable="true"
+              @dragstart="startLayoutDrag(sectionId)"
+              @dragover.prevent="layoutOverId = sectionId"
+              @drop.prevent="dropLayoutSection(sectionId)"
+              @dragend="finishLayoutDrag"
+            >
+              <span class="studio-layout-grip" title="Drag to reorder" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <circle cx="4" cy="3" r="1" /><circle cx="10" cy="3" r="1" />
+                  <circle cx="4" cy="7" r="1" /><circle cx="10" cy="7" r="1" />
+                  <circle cx="4" cy="11" r="1" /><circle cx="10" cy="11" r="1" />
+                </svg>
+              </span>
+              <span class="studio-layout-name">{{ layoutLabels[sectionId] }}</span>
+              <button
+                class="studio-visibility-toggle"
+                type="button"
+                role="switch"
+                :aria-checked="!hiddenSections.includes(sectionId)"
+                :aria-label="`${hiddenSections.includes(sectionId) ? 'Show' : 'Hide'} ${layoutLabels[sectionId]}`"
+                @click="toggleLayoutSection(sectionId)"
+              ><span /></button>
+              <span class="studio-layout-move">
+                <button type="button" :disabled="index === 0" :aria-label="`Move ${layoutLabels[sectionId]} up`" @click="moveLayoutSection(index, index - 1)">↑</button>
+                <button type="button" :disabled="index === layoutOrder.length - 1" :aria-label="`Move ${layoutLabels[sectionId]} down`" @click="moveLayoutSection(index, index + 1)">↓</button>
+              </span>
+            </li>
+          </ul>
+        </section>
+
         <div class="studio-panel-head">
           <div>
             <span>Module library</span>
@@ -298,12 +360,21 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, reactive, ref } from 'vue';
+import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import MediaUploadField from '@/components/design/MediaUploadField.vue';
 import { HERO_SLIDES } from '@/data/index.js';
 import { DEFAULT_DESIGN_MODULES } from '@/design/registry.js';
 import { MEDIA_UPLOAD_SPECS } from '@/design/mediaSpecs.js';
 import { useDesignStudio } from '@/composables/useDesignStudio.js';
+import { useTweaks } from '@/composables/useTweaks.js';
+import {
+  DEFAULT_LOBBY_SECTION_ORDER,
+  LOBBY_SECTION_LABELS,
+  normalizeHiddenSections,
+  normalizeLobbyOrder,
+  readLobbyLayout,
+  writeLobbyLayout,
+} from '@/design/siteFactory.js';
 
 const emit = defineEmits(['navigate']);
 const {
@@ -315,8 +386,18 @@ const {
   makeDesignStyle,
   normalizeDesignModules,
 } = useDesignStudio();
+const { t, setTweak, skins } = useTweaks();
 
 const draft = reactive(normalizeDesignModules(design.modules));
+const initialLayout = readLobbyLayout();
+const appliedLayout = ref(initialLayout);
+const appliedSkin = ref(t.skin);
+const draftSkin = ref(t.skin);
+const layoutOrder = ref([...initialLayout.order]);
+const hiddenSections = ref([...initialLayout.hidden]);
+const layoutDragId = ref(null);
+const layoutOverId = ref(null);
+const layoutLabels = LOBBY_SECTION_LABELS;
 const selectedModuleId = ref(modules[0].id);
 const previewMode = ref('desktop');
 const notice = ref('');
@@ -353,7 +434,19 @@ const selectedVariant = computed(() => variantById(draft[selectedModuleId.value]
 const selectedMediaSpec = computed(() => MEDIA_UPLOAD_SPECS[selectedModuleId.value] || null);
 const previewAttributes = computed(() => makeDesignAttributes(draft));
 const previewStyle = computed(() => makeDesignStyle(draft));
-const dirty = computed(() => JSON.stringify(draft) !== JSON.stringify(design.modules));
+const visibleLayoutCount = computed(() => layoutOrder.value.length - hiddenSections.value.length);
+const dirty = computed(() =>
+  JSON.stringify(draft) !== JSON.stringify(design.modules)
+  || draftSkin.value !== appliedSkin.value
+  || JSON.stringify({ order: layoutOrder.value, hidden: hiddenSections.value }) !== JSON.stringify(appliedLayout.value)
+);
+
+watch(draftSkin, (skinId) => {
+  const skin = skins.find((option) => option.id === skinId) || skins[0];
+  if (!skin) return;
+  document.documentElement.setAttribute('data-skin', skin.id);
+  document.documentElement.setAttribute('data-theme', skin.theme);
+}, { immediate: true });
 
 function variantById(id) {
   return variants.find((variant) => variant.id === id) || variants[0];
@@ -408,33 +501,81 @@ function showNotice(message) {
   showNotice.timer = window.setTimeout(() => { notice.value = ''; }, 2600);
 }
 
+function moveLayoutSection(from, to) {
+  if (to < 0 || to >= layoutOrder.value.length || from === to) return;
+  const next = [...layoutOrder.value];
+  const [section] = next.splice(from, 1);
+  next.splice(to, 0, section);
+  layoutOrder.value = next;
+}
+
+function startLayoutDrag(sectionId) {
+  layoutDragId.value = sectionId;
+}
+
+function dropLayoutSection(targetId) {
+  const sourceIndex = layoutOrder.value.indexOf(layoutDragId.value);
+  const targetIndex = layoutOrder.value.indexOf(targetId);
+  if (sourceIndex >= 0 && targetIndex >= 0) moveLayoutSection(sourceIndex, targetIndex);
+  finishLayoutDrag();
+}
+
+function finishLayoutDrag() {
+  layoutDragId.value = null;
+  layoutOverId.value = null;
+}
+
+function toggleLayoutSection(sectionId) {
+  hiddenSections.value = hiddenSections.value.includes(sectionId)
+    ? hiddenSections.value.filter((id) => id !== sectionId)
+    : [...hiddenSections.value, sectionId];
+}
+
+function restoreLayoutDefaults() {
+  layoutOrder.value = [...DEFAULT_LOBBY_SECTION_ORDER];
+  hiddenSections.value = [];
+}
+
 function applyDraft() {
   applyConfig({ modules: draft });
-  showNotice('Design modules applied to the site.');
+  setTweak('skin', draftSkin.value);
+  const savedLayout = writeLobbyLayout({ order: layoutOrder.value, hidden: hiddenSections.value });
+  appliedSkin.value = draftSkin.value;
+  appliedLayout.value = savedLayout;
+  showNotice('Skin, layout, and design modules applied to the site.');
 }
 
 function resetDraft() {
   replaceDraft(design.modules);
+  draftSkin.value = appliedSkin.value;
+  layoutOrder.value = [...appliedLayout.value.order];
+  hiddenSections.value = [...appliedLayout.value.hidden];
   showNotice('Draft reset to the applied configuration.');
 }
 
 function restoreDefaults() {
   replaceDraft(DEFAULT_DESIGN_MODULES);
+  restoreLayoutDefaults();
   showNotice('All modules set to Foundation. Apply when ready.');
 }
 
 function exportConfig() {
   const payload = JSON.stringify({
-    schema: 'cms-v3-design-modules',
+    schema: 'cms-v3-site-factory',
     version: design.version,
     exportedAt: new Date().toISOString(),
+    skin: draftSkin.value,
+    layout: {
+      order: normalizeLobbyOrder(layoutOrder.value),
+      hidden: normalizeHiddenSections(hiddenSections.value),
+    },
     modules: normalizeDesignModules(draft),
   }, null, 2);
   const blob = new Blob([payload], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'cms-v3-design-modules.json';
+  link.download = 'cms-v3-site-factory.json';
   link.click();
   URL.revokeObjectURL(url);
   showNotice('Design configuration exported.');
@@ -446,6 +587,11 @@ async function importConfig(event) {
   try {
     const payload = JSON.parse(await file.text());
     replaceDraft(payload.modules || payload);
+    if (skins.some((skin) => skin.id === payload.skin)) draftSkin.value = payload.skin;
+    if (payload.layout) {
+      layoutOrder.value = normalizeLobbyOrder(payload.layout.order);
+      hiddenSections.value = normalizeHiddenSections(payload.layout.hidden);
+    }
     showNotice('Configuration imported as a draft.');
   } catch {
     showNotice('Import failed. Select a valid CMS v3 design JSON file.');
@@ -456,5 +602,10 @@ async function importConfig(event) {
 
 onBeforeUnmount(() => {
   objectUrls.forEach((url) => URL.revokeObjectURL(url));
+  const skin = skins.find((option) => option.id === appliedSkin.value) || skins[0];
+  if (skin) {
+    document.documentElement.setAttribute('data-skin', skin.id);
+    document.documentElement.setAttribute('data-theme', skin.theme);
+  }
 });
 </script>

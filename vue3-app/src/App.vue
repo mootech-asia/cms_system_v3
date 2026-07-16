@@ -32,10 +32,7 @@
     </template>
 
     <!-- Account pages -->
-    <DesignStudio v-if="activeCat === 'Design Studio'"
-      @navigate="activeCat = $event; if ($event === 'Lobby') catTab = 'Lobby'"
-    />
-    <PromotionDetail v-else-if="activeCat === 'Promotion Detail' && selectedPromotion"
+    <PromotionDetail v-if="activeCat === 'Promotion Detail' && selectedPromotion"
       :promotion="selectedPromotion"
       @back="closePromotionDetail"
       @navigate="activeCat = $event"
@@ -92,7 +89,7 @@
       <template v-if="catTab === 'Lobby'">
         <div class="lobby-section-list" :class="{ 'is-reordering': draggedSectionId }">
           <div
-            v-for="sectionId in lobbySectionOrder"
+            v-for="sectionId in visibleLobbySectionOrder"
             :key="sectionId"
             class="lobby-sort-item"
             :class="{
@@ -287,10 +284,17 @@ import ChangeLoginPassword    from '@/components/account/ChangeLoginPassword.vue
 import CustomerServicePage    from '@/components/account/CustomerServicePage.vue';
 import RecordTable            from '@/components/account/RecordTable.vue';
 import SupportPage            from '@/components/account/SupportPage.vue';
-import DesignStudio           from '@/components/design/DesignStudio.vue';
 import { useTweaks }          from '@/composables/useTweaks.js';
 import { useDesignStudio }    from '@/composables/useDesignStudio.js';
 import { GAMES, RECENTLY_PLAYED } from '@/data/index.js';
+import {
+  DEFAULT_LOBBY_SECTION_ORDER,
+  LOBBY_LAYOUT_STORAGE_KEY,
+  LOBBY_SECTION_LABELS,
+  LEGACY_LOBBY_ORDER_STORAGE_KEY,
+  readLobbyLayout,
+  writeLobbyLayout,
+} from '@/design/siteFactory.js';
 
 const { t, setTweak, skins } = useTweaks();
 useDesignStudio();
@@ -308,30 +312,9 @@ const selectedPromotion = ref(null);
 const promotionReturnTab = ref('Lobby');
 const promotionReturnScroll = ref(0);
 
-const LOBBY_SECTION_STORAGE_KEY = 'cms-v3:lobby-section-order';
-const DEFAULT_LOBBY_SECTION_ORDER = Object.freeze([
-  'recently-played',
-  'slots',
-  'live-casino',
-  'live-sport',
-  'top-wins',
-  'promotions',
-  'providers',
-]);
-const LEGACY_DEFAULT_LOBBY_SECTION_ORDERS = Object.freeze([
-  ['recently-played', 'slots', 'live-casino', 'top-wins', 'live-sport', 'promotions', 'providers'],
-  ['recently-played', 'slots', 'live-casino', 'live-sport', 'promotions', 'top-wins', 'providers'],
-]);
-const lobbySectionLabels = Object.freeze({
-  'recently-played': 'Recently played',
-  slots: 'Slots',
-  'live-casino': 'Live Casino',
-  'top-wins': 'Top wins',
-  'live-sport': 'Live sport',
-  promotions: 'Promotions',
-  providers: 'Providers',
-});
+const lobbySectionLabels = LOBBY_SECTION_LABELS;
 const lobbySectionOrder = ref([...DEFAULT_LOBBY_SECTION_ORDER]);
+const hiddenLobbySections = ref([]);
 const draggedSectionId = ref(null);
 const dragOverSectionId = ref(null);
 const touchDragPointerId = ref(null);
@@ -339,6 +322,9 @@ const touchDragPointerId = ref(null);
 // showPromos 從 tweaks 驅動
 const showPromos = computed(() => t.showPromos);
 const isSupportView = computed(() => ['About Us', 'FAQ'].includes(catTab.value));
+const visibleLobbySectionOrder = computed(() =>
+  lobbySectionOrder.value.filter((id) => !hiddenLobbySections.value.includes(id))
+);
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -369,29 +355,21 @@ function closePromotionDetail() {
 
 function saveLobbySectionOrder() {
   try {
-    localStorage.setItem(LOBBY_SECTION_STORAGE_KEY, JSON.stringify(lobbySectionOrder.value));
+    writeLobbyLayout({ order: lobbySectionOrder.value, hidden: hiddenLobbySections.value });
   } catch {
     // Storage can be unavailable in private browsing; ordering still works for this session.
   }
 }
 
 function restoreLobbySectionOrder() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(LOBBY_SECTION_STORAGE_KEY));
-    if (!Array.isArray(saved)) return;
-    const known = saved.filter((id) => DEFAULT_LOBBY_SECTION_ORDER.includes(id));
-    const missing = DEFAULT_LOBBY_SECTION_ORDER.filter((id) => !known.includes(id));
-    const normalized = [...new Set([...known, ...missing])];
-    const isLegacyDefault = LEGACY_DEFAULT_LOBBY_SECTION_ORDERS.some((order) =>
-      order.length === normalized.length && order.every((id, index) => id === normalized[index])
-    );
-    lobbySectionOrder.value = isLegacyDefault
-      ? [...DEFAULT_LOBBY_SECTION_ORDER]
-      : normalized;
-    if (isLegacyDefault) saveLobbySectionOrder();
-  } catch {
-    lobbySectionOrder.value = [...DEFAULT_LOBBY_SECTION_ORDER];
-  }
+  const layout = readLobbyLayout();
+  lobbySectionOrder.value = layout.order;
+  hiddenLobbySections.value = layout.hidden;
+}
+
+function syncLobbyLayout(event) {
+  if (![LOBBY_LAYOUT_STORAGE_KEY, LEGACY_LOBBY_ORDER_STORAGE_KEY].includes(event.key)) return;
+  restoreLobbySectionOrder();
 }
 
 function reorderSection(sourceId, targetId) {
@@ -453,7 +431,11 @@ function moveSectionBy(sectionId, delta) {
 let balanceTimer;
 onMounted(() => {
   restoreLobbySectionOrder();
+  window.addEventListener('storage', syncLobbyLayout);
   balanceTimer = setInterval(() => { balance.value = +(balance.value + (Math.random() * 4 - 1.7)).toFixed(2); }, 5500);
 });
-onUnmounted(()  => clearInterval(balanceTimer));
+onUnmounted(() => {
+  clearInterval(balanceTimer);
+  window.removeEventListener('storage', syncLobbyLayout);
+});
 </script>
