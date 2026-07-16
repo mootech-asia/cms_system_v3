@@ -25,13 +25,6 @@ const PROVIDERS = [
 
 const GAME_TAGS = ['Hot', 'New', '2x', 'Top', '⚡', 'Live', 'VIP'];
 
-function placeholderBg(seed, hue) {
-  const a = `oklch(0.32 0.14 ${hue})`;
-  const b = `oklch(0.22 0.12 ${(hue + 24) % 360})`;
-  const c = `oklch(0.18 0.08 ${(hue + 200) % 360})`;
-  return `linear-gradient(135deg, ${a} 0%, ${b} 55%, ${c} 100%)`;
-}
-
 function makeGames(category, count, hueBase) {
   const titles = {
     slots: ['Neon Vault', 'Cosmic Drift', 'Sugar Rush 9000', 'Golden Hex', 'Wild Riders',
@@ -58,7 +51,6 @@ function makeGames(category, count, hueBase) {
       title: t,
       category,
       provider: PROVIDERS[i % PROVIDERS.length],
-      bg: placeholderBg(`${category}${i}`, hue),
       hue,
       tag: i % 3 === 0 ? GAME_TAGS[i % GAME_TAGS.length] : null,
       players: 80 + ((i * 137) % 4200),
