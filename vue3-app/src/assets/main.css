@@ -4372,6 +4372,7 @@ select.twk-field {
 .section-title-group .section-title { min-width: 0; }
 
 .section-collapse {
+  order: -1;
   width: 32px;
   height: 32px;
   padding: 0;
