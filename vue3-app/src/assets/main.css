@@ -3096,7 +3096,7 @@ select.twk-field {
 .ap-hero-rollover .ap-rollover-title {
   margin-bottom: 6px;
   background: var(--rollover-hero-gradient) !important;
-  font-size: 24px;
+  font-size: var(--type-feature-title);
   font-weight: var(--weight-extrabold) !important;
   letter-spacing: 0 !important;
   filter: none !important;
