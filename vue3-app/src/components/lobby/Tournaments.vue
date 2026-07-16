@@ -1,13 +1,24 @@
 <template>
-  <section class="lobby-section" data-screen-label="Tournaments">
+  <section class="lobby-section" :class="{ 'is-collapsed': collapsed }" data-screen-label="Tournaments">
     <div class="section-head">
       <h2 class="section-title">
         <span class="live-pip"></span>Live sport
       </h2>
-      <a href="#" class="see-all">All tournaments →</a>
+      <div class="section-actions">
+        <a href="#" class="see-all">All tournaments →</a>
+        <button
+          class="section-collapse"
+          :class="{ active: collapsed }"
+          :aria-label="collapsed ? 'Expand live sport' : 'Collapse live sport'"
+          :aria-expanded="!collapsed"
+          @click="collapsed = !collapsed"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </button>
+      </div>
     </div>
 
-    <div class="tourn-grid">
+    <div v-show="!collapsed" class="tourn-grid">
       <div
         v-for="(t, i) in TOURNAMENTS" :key="i"
         class="tourn"
@@ -34,5 +45,8 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { TOURNAMENTS } from '@/data/index.js';
+
+const collapsed = ref(false);
 </script>
