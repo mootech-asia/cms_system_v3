@@ -1,4 +1,4 @@
-/* Compact Back-style Load More override */
+/* Compact Load More using the account Back button states */
 .cv-foot {
   display: flex;
   justify-content: center;
@@ -13,65 +13,44 @@
   width: min(100%, 240px);
   min-height: 48px;
   padding: 0 24px;
-  border: 1px solid #2473ff;
+  border: 1px solid var(--line-hi);
   border-radius: 10px;
-  background: #101724;
-  color: #fff;
+  background: linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 100%);
+  color: var(--text-mid);
   font-family: var(--font-display);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1;
   text-align: center;
   text-shadow: none;
   box-shadow: none;
   filter: none;
+  cursor: pointer;
   transition:
-    background .16s ease,
-    border-color .16s ease,
-    box-shadow .16s ease,
-    color .16s ease,
-    transform .16s ease;
+    color .15s ease,
+    border-color .15s ease,
+    background .15s ease;
 }
 
 .cv-view-all:hover {
-  background: #121d2e;
-  border-color: #3b82ff;
+  border-color: var(--accent);
+  background: linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 100%);
   color: #fff;
-  box-shadow:
-    0 0 0 2px rgba(36, 115, 255, .16),
-    0 8px 20px rgba(36, 115, 255, .18);
+  box-shadow: none;
   filter: none;
-  transform: translateY(-1px);
+  transform: none;
 }
 
 .cv-view-all:active {
-  transform: translateY(0);
-  background: #0c1320;
-  box-shadow: 0 0 0 2px rgba(36, 115, 255, .18);
+  border-color: var(--accent);
+  color: #fff;
+  transform: none;
 }
 
 .cv-view-all:focus-visible {
-  outline: 0;
-  box-shadow:
-    0 0 0 2px rgba(36, 115, 255, .22),
-    0 8px 20px rgba(36, 115, 255, .18);
-}
-
-[data-theme="light"] .cv-view-all {
-  background: #fff;
-  color: var(--text);
-  border-color: #2473ff;
-  box-shadow: none !important;
-}
-
-[data-theme="light"] .cv-view-all:hover {
-  background: #f8fbff !important;
-  color: var(--text) !important;
-  border-color: #2473ff !important;
-  box-shadow:
-    0 0 0 2px rgba(36, 115, 255, .12),
-    0 8px 18px rgba(36, 115, 255, .14) !important;
+  outline: 2px solid color-mix(in oklch, var(--accent) 45%, transparent);
+  outline-offset: 2px;
 }
 
 @media (max-width: 700px) {
