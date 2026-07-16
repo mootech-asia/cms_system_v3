@@ -10,16 +10,51 @@
       <!-- 右側操作區 -->
       <div class="header-actions">
 
-        <!-- 明暗主題切換 -->
-        <button class="tb-icon-btn" :aria-label="theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'" :title="theme === 'dark' ? 'Light mode' : 'Dark mode'" @click="emit('toggle-theme')">
-          <svg v-if="theme === 'dark'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="4.2" />
-            <path d="M12 2v2.4M12 19.6V22M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2 12h2.4M19.6 12H22M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7" />
-          </svg>
-          <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
-          </svg>
-        </button>
+        <!-- Skin selector -->
+        <div class="tb-skin-wrap" ref="skinRef">
+          <button
+            class="tb-icon-btn tb-skin-trigger"
+            aria-label="Choose skin"
+            title="Choose skin"
+            aria-haspopup="listbox"
+            :aria-expanded="skinMenuOpen"
+            @click="skinMenuOpen = !skinMenuOpen; menuOpen = false"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a9 9 0 1 0 0 18h1.2a1.8 1.8 0 0 0 1.3-3l-.2-.2a1.8 1.8 0 0 1 1.3-3h1.9A3.5 3.5 0 0 0 21 11.3 8.3 8.3 0 0 0 12 3Z" />
+              <circle cx="7.5" cy="10" r=".8" fill="currentColor" stroke="none" />
+              <circle cx="10" cy="6.8" r=".8" fill="currentColor" stroke="none" />
+              <circle cx="14.2" cy="7" r=".8" fill="currentColor" stroke="none" />
+            </svg>
+            <span
+              class="tb-skin-trigger-swatch"
+              :style="{ '--skin-color': currentSkin.swatch, '--skin-surface': currentSkin.surface }"
+              aria-hidden="true"
+            ></span>
+          </button>
+
+          <div v-if="skinMenuOpen" class="tb-skin-menu" role="listbox" aria-label="Skin">
+            <button
+              v-for="option in skins"
+              :key="option.id"
+              class="tb-skin-option"
+              :class="{ active: skin === option.id }"
+              role="option"
+              :aria-selected="skin === option.id"
+              @click="selectSkin(option.id)"
+            >
+              <span
+                class="tb-skin-swatch"
+                :style="{ '--skin-color': option.swatch, '--skin-surface': option.surface }"
+                aria-hidden="true"
+              ></span>
+              <span class="tb-skin-label">{{ option.label }}</span>
+              <svg v-if="skin === option.id" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m5 12 4 4 10-10" />
+              </svg>
+            </button>
+          </div>
+        </div>
 
         <!-- 已登入 -->
         <template v-if="user">
@@ -38,7 +73,7 @@
 
           <!-- 用戶頭像 + 下拉選單 -->
           <div class="tb-user-wrap" ref="menuRef">
-            <button class="tb-user-circle" aria-label="Account" @click="menuOpen = !menuOpen">
+            <button class="tb-user-circle" aria-label="Account" @click="menuOpen = !menuOpen; skinMenuOpen = false">
               <span class="tb-avatar circle">{{ initials }}</span>
               <span class="tb-tier-badge" aria-hidden="true">
                 <svg width="10" height="11" viewBox="0 0 12 14" fill="currentColor">
@@ -114,16 +149,24 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 const props = defineProps({
   user:    { type: Object, default: null },
   balance: { type: Number, default: 0   },
-  theme:   { type: String, default: 'dark' },
+  skin:    { type: String, default: 'blue' },
+  skins:   { type: Array, default: () => [] },
 });
 
-const emit = defineEmits(['sign-in', 'logout', 'home', 'navigate', 'toggle-theme']);
+const emit = defineEmits(['sign-in', 'logout', 'home', 'navigate', 'change-skin']);
 
-const scrolled  = ref(false);
-const menuOpen  = ref(false);
-const menuRef   = ref(null);
+const scrolled     = ref(false);
+const menuOpen     = ref(false);
+const menuRef      = ref(null);
+const skinMenuOpen = ref(false);
+const skinRef      = ref(null);
 
-const initials   = computed(() => props.user ? props.user.name.slice(0, 2).toUpperCase() : '');
+const initials = computed(() => props.user ? props.user.name.slice(0, 2).toUpperCase() : '');
+const currentSkin = computed(() =>
+  props.skins.find((option) => option.id === props.skin) ||
+  props.skins[0] ||
+  { swatch: '#2473ff', surface: '#05080f' }
+);
 const balanceFmt = computed(() =>
   props.balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 );
@@ -135,11 +178,18 @@ const menuItems = [
   { name: 'Banking Details',              icon: 'card',   go: 'WithdrawalForm'  },
 ];
 
+function selectSkin(id) {
+  emit('change-skin', id);
+  skinMenuOpen.value = false;
+}
 function navigate(cat) { emit('navigate', cat); menuOpen.value = false; }
 function doLogout()    { emit('logout');         menuOpen.value = false; }
 
-function onScroll()   { scrolled.value  = window.scrollY > 8; }
-function onDocClick(e){ if (menuRef.value && !menuRef.value.contains(e.target)) menuOpen.value = false; }
+function onScroll() { scrolled.value = window.scrollY > 8; }
+function onDocClick(e) {
+  if (menuRef.value && !menuRef.value.contains(e.target)) menuOpen.value = false;
+  if (skinRef.value && !skinRef.value.contains(e.target)) skinMenuOpen.value = false;
+}
 
 onMounted(() => {
   window.addEventListener('scroll', onScroll);
