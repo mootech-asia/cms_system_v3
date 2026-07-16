@@ -42,7 +42,9 @@
         :key="option.id"
         type="button"
         :class="{ active: provider === option.id }"
+        role="tab"
         :aria-selected="provider === option.id"
+        :tabindex="provider === option.id ? 0 : -1"
         @click="provider = option.id"
       >
         <span class="dp-provider-code">{{ option.id.toUpperCase() }}</span>
