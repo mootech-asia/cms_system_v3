@@ -32,6 +32,8 @@
   --positive: oklch(0.78 0.18 145);
   --negative: oklch(0.7 0.22 25);
   --warning: #facc15;
+  --success: var(--positive);
+  --danger: var(--negative);
   --pos: var(--positive);
   --neg: var(--negative);
 
@@ -84,6 +86,7 @@
     0 0 0 3px color-mix(in oklch, var(--accent) 14%, transparent),
     0 0 16px color-mix(in oklch, var(--accent) 55%, transparent),
     0 0 20px color-mix(in oklch, var(--accent) 18%, transparent) inset;
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px color-mix(in oklch, var(--accent) 65%, transparent);
 
   /* Tables */
   --table-header-bg: var(--gradient-primary);
