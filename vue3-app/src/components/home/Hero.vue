@@ -11,7 +11,9 @@
         :style="{
           '--hero-image': `url(${s.image})`,
           '--hero-position': s.position || 'center',
+          '--hero-size': s.size || 'cover',
           '--hero-mobile-position': s.mobilePosition || s.position || 'center',
+          '--hero-mobile-size': s.mobileSize || s.size || 'cover',
         }"
       />
       <div class="hero-content">
