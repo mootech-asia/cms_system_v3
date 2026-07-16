@@ -295,9 +295,13 @@ const DEFAULT_LOBBY_SECTION_ORDER = Object.freeze([
   'slots',
   'live-casino',
   'live-sport',
-  'promotions',
   'top-wins',
+  'promotions',
   'providers',
+]);
+const LEGACY_DEFAULT_LOBBY_SECTION_ORDERS = Object.freeze([
+  ['recently-played', 'slots', 'live-casino', 'top-wins', 'live-sport', 'promotions', 'providers'],
+  ['recently-played', 'slots', 'live-casino', 'live-sport', 'promotions', 'top-wins', 'providers'],
 ]);
 const lobbySectionLabels = Object.freeze({
   'recently-played': 'Recently played',
@@ -331,7 +335,14 @@ function restoreLobbySectionOrder() {
     if (!Array.isArray(saved)) return;
     const known = saved.filter((id) => DEFAULT_LOBBY_SECTION_ORDER.includes(id));
     const missing = DEFAULT_LOBBY_SECTION_ORDER.filter((id) => !known.includes(id));
-    lobbySectionOrder.value = [...new Set([...known, ...missing])];
+    const normalized = [...new Set([...known, ...missing])];
+    const isLegacyDefault = LEGACY_DEFAULT_LOBBY_SECTION_ORDERS.some((order) =>
+      order.length === normalized.length && order.every((id, index) => id === normalized[index])
+    );
+    lobbySectionOrder.value = isLegacyDefault
+      ? [...DEFAULT_LOBBY_SECTION_ORDER]
+      : normalized;
+    if (isLegacyDefault) saveLobbySectionOrder();
   } catch {
     lobbySectionOrder.value = [...DEFAULT_LOBBY_SECTION_ORDER];
   }
