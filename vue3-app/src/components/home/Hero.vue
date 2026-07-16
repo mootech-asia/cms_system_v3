@@ -5,10 +5,6 @@
       v-for="(s, i) in HERO_SLIDES" :key="i"
       class="hero-slide"
       :class="{ active: i === idx }"
-      :style="{
-        '--hero-hue':   `oklch(0.5 0.2 ${s.hue})`,
-        '--hero-hue-2': `oklch(0.55 0.2 ${(s.hue + 60) % 360})`
-      }"
     >
       <div class="hero-bg" />
       <div class="hero-content">
