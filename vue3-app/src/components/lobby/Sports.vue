@@ -89,7 +89,8 @@ const allMatches = PROVIDERS.flatMap((provider, providerIndex) => {
 
 const tabs         = ['All', ...PROVIDERS];
 const filter       = ref('All');
-const visibleCount = ref(4);
+const INITIAL_VISIBLE_COUNT = 8;
+const visibleCount = ref(INITIAL_VISIBLE_COUNT);
 
 const matches = computed(() =>
   filter.value === 'All' ? allMatches : allMatches.filter(m => m.provider === filter.value)
@@ -100,7 +101,7 @@ const canLoadMore    = computed(() => visibleMatches.value.length < matches.valu
 
 function setFilter(tab) {
   filter.value = tab;
-  visibleCount.value = 4;
+  visibleCount.value = INITIAL_VISIBLE_COUNT;
 }
 
 function loadMore() {
