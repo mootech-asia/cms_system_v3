@@ -157,13 +157,16 @@
       <div class="sb-money">
         <button class="sb-deposit"  @click="handleDeposit">Deposit</button>
         <button class="sb-withdraw" @click="handleWithdraw">Withdrawal</button>
+        <button class="sb-collapse sb-collapse-inline" aria-label="Collapse sidebar" @click="emit('update:collapsed', true)">
+          ‹
+        </button>
       </div>
     </div>
 
     <!-- 折疊 -->
     <div class="sidebar-foot">
-      <button class="sb-collapse" aria-label="Toggle sidebar" @click="emit('update:collapsed', !collapsed)">
-        {{ collapsed ? '›' : '‹' }}
+      <button class="sb-collapse sb-collapse-compact" aria-label="Expand sidebar" @click="emit('update:collapsed', false)">
+        ›
       </button>
     </div>
 
