@@ -6,9 +6,9 @@
 html, body {
   margin: 0; padding: 0;
   background: var(--bg);
-  background-image:
+  background-image: var(--page-background,
     radial-gradient(ellipse 70% 50% at 0% 0%, color-mix(in oklch, var(--accent) 10%, transparent) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 100% 100%, color-mix(in oklch, var(--accent) 7%, transparent) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 50% at 100% 100%, color-mix(in oklch, var(--accent) 7%, transparent) 0%, transparent 60%));
   background-attachment: fixed;
   color: var(--text);
   font-family: var(--font-body);
@@ -2573,24 +2573,24 @@ select.twk-field {
 [data-theme="light"] .promo-ribbon { background: var(--bg-elev); border-bottom: 1px solid var(--line); }
 [data-theme="light"] .promo-ribbon .item { color: var(--text-mid); }
 
-[data-theme="light"] .header { background: color-mix(in oklch, #ffffff 92%, transparent); }
-[data-theme="light"] .header.scrolled { background: color-mix(in oklch, #ffffff 98%, transparent); }
+[data-theme="light"] .header { background: color-mix(in oklch, var(--bg-elev) 92%, transparent); }
+[data-theme="light"] .header.scrolled { background: color-mix(in oklch, var(--bg-elev) 98%, transparent); }
 
 [data-theme="light"] .tb-balance,
 [data-theme="light"] .tb-user-circle .tb-avatar.circle,
 [data-theme="light"] .sb-deposit,
 [data-theme="light"] .sb-withdraw {
-  background: linear-gradient(180deg, #ffffff 0%, #f7f6f1 100%) !important;
+  background: var(--bg-grad-card) !important;
 }
 
 [data-theme="light"] .gcard { background: var(--bg-card) !important; }
-[data-theme="light"] .gcard-meta { background: #ffffff; }
+[data-theme="light"] .gcard-meta { background: var(--bg-card); }
 [data-theme="light"] .gcard-art::after { background: linear-gradient(to top, rgba(0,0,0,.55), transparent 50%) !important; }
 
-[data-theme="light"] .sidebar { background: #ffffff; border-right: 1px solid var(--line); }
+[data-theme="light"] .sidebar { background: var(--bg-elev); border-right: 1px solid var(--line); }
 
 [data-theme="light"] .lb-row:hover,
-[data-theme="light"] .gcard:hover { background-color: #f9f8f3; }
+[data-theme="light"] .gcard:hover { background-color: var(--bg-card-hi); }
 
 [data-theme="light"] .cat-tab.active,
 [data-theme="light"] .sb-item.active,
@@ -2611,7 +2611,7 @@ select.twk-field {
 
 [data-theme="light"] .modal,
 [data-theme="light"] .tb-menu,
-[data-theme="light"] .sb-lang-menu { background: #ffffff; }
+[data-theme="light"] .sb-lang-menu { background: var(--bg-card); }
 
 [data-theme="light"] .footer-min-logo img { filter: none; }
 
@@ -4062,7 +4062,7 @@ select.twk-field {
 /* ════════ BATCH FIX (light-theme contrast + layout) ════════ */
 
 /* 1. cat-tab clean border (img1) */
-[data-theme="light"] .cat-tab { background: #fff; border-color: var(--line); }
+[data-theme="light"] .cat-tab { background: var(--control-bg); border-color: var(--line); }
 [data-theme="light"] .cat-tab.active { color: var(--accent-ink) !important; text-shadow: none !important; box-shadow: 0 0 0 1.5px var(--accent) !important; }
 
 /* 2. card art label + tag sit on ALWAYS-DARK art → keep them light in BOTH themes */
@@ -4106,7 +4106,7 @@ select.twk-field {
 [data-theme="light"] .sb-tab.active,
 [data-theme="light"] .cv-tab.active {
   box-shadow: 0 0 0 1.5px var(--accent) !important;
-  background: color-mix(in oklch, var(--accent) 12%, #fff) !important;
+  background: var(--control-active-bg) !important;
   text-shadow: none !important;
 }
 [data-theme="light"] .sb-item.active .sb-icon { color: var(--accent) !important; filter: none !important; }
@@ -4140,8 +4140,8 @@ select.twk-field {
 .play-btn svg path { fill: var(--accent) !important; }
 
 /* light theme: secondary buttons (Login/Register) keep dark text on hover */
-[data-theme="light"] .btn { color: var(--text) !important; background: #fff; border-color: var(--line-hi); }
-[data-theme="light"] .btn:hover { color: var(--text) !important; border-color: var(--accent); background: #fff; }
+[data-theme="light"] .btn { color: var(--text) !important; background: var(--control-bg); border-color: var(--line-hi); }
+[data-theme="light"] .btn:hover { color: var(--text) !important; border-color: var(--accent); background: var(--control-bg); }
 [data-skin="white"] .header-actions > .btn,
 [data-skin="white"] .header-actions > .btn:hover { box-shadow: none !important; }
 
@@ -4253,11 +4253,11 @@ select.twk-field {
 
 /* ════ LIGHT THEME — remove all card corner glows ════ */
 [data-theme="light"] .tourn {
-  background: #ffffff !important;
+  background: var(--bg-card) !important;
 }
 [data-theme="light"] .tourn::before { display: none !important; }
 [data-theme="light"] .promo-card {
-  background: #ffffff !important;
+  background: var(--bg-card) !important;
 }
 [data-theme="light"] .promo-card::before { display: none !important; }
 
@@ -4266,7 +4266,7 @@ select.twk-field {
 [data-theme="light"] .gcard { box-shadow: 0 1px 2px rgba(15,15,23,.05); }
 [data-theme="light"] .gcard:hover {
   box-shadow: 0 6px 18px rgba(15,15,23,.12) !important;
-  background-color: #fff !important;
+  background-color: var(--bg-card-hi) !important;
 }
 
 
@@ -4377,7 +4377,7 @@ select.twk-field {
 [data-theme="light"] .tb-user,
 [data-theme="light"] .tb-icon-btn {
   border-color: var(--line-hi) !important;
-  background: #ffffff !important;
+  background: var(--control-bg) !important;
   color: var(--text) !important;
 }
 [data-theme="light"] .cv-tab:hover:not(.active),
@@ -4390,7 +4390,7 @@ select.twk-field {
 [data-theme="light"] .promo-card-cta:hover,
 [data-theme="light"] .tb-icon-btn:hover {
   border-color: var(--control-hover-border) !important;
-  background: #ffffff !important;
+  background: var(--control-bg) !important;
   color: var(--text) !important;
 }
 /* keep active states as defined (accent outline) */
@@ -4398,7 +4398,7 @@ select.twk-field {
 [data-theme="light"] .cat-tab.active,
 [data-theme="light"] .sb-tab.active,
 [data-theme="light"] .rt.active {
-  background: color-mix(in oklch, var(--accent) 10%, #fff) !important;
+  background: var(--control-active-bg) !important;
   border: 1.5px solid var(--accent) !important;
 }
 

@@ -1,52 +1,55 @@
-/* CMS v3 White skin.
-   This is the former light appearance, promoted to a complete named skin. */
+/* CMS v3 Pearl Signature skin.
+   A restrained ivory palette with warm graphite contrast. */
 :root[data-skin="white"] {
   color-scheme: light;
 
   /* Surfaces */
-  --bg: #f3f6f5;
-  --bg-elev: #ffffff;
-  --bg-card: #ffffff;
-  --bg-card-hi: #f6f9f8;
-  --line: rgba(15, 23, 32, 0.08);
-  --line-hi: rgba(15, 23, 32, 0.18);
+  --bg: #ebe8df;
+  --bg-elev: #f5f2e9;
+  --bg-card: #faf8f2;
+  --bg-card-hi: #f0ece3;
+  --line: rgba(58, 53, 44, 0.11);
+  --line-hi: rgba(58, 53, 44, 0.24);
+  --page-background:
+    radial-gradient(ellipse 72% 48% at 0% 0%, rgba(255, 253, 246, 0.72) 0%, transparent 62%),
+    radial-gradient(ellipse 54% 44% at 100% 100%, rgba(166, 137, 88, 0.10) 0%, transparent 66%);
 
   /* Content */
-  --text: #10161d;
-  --text-mid: rgba(16, 22, 29, 0.72);
-  --text-dim: rgba(16, 22, 29, 0.46);
+  --text: #27241f;
+  --text-mid: rgba(39, 36, 31, 0.72);
+  --text-dim: rgba(39, 36, 31, 0.48);
   --text-on-accent: #ffffff;
-  --text-on-accent-soft: #eff8ff;
-  --icon-muted: rgba(16, 22, 29, 0.56);
+  --text-on-accent-soft: #f8f4ea;
+  --icon-muted: rgba(39, 36, 31, 0.58);
   --cal-icon: var(--icon-muted);
   --calendar-indicator-filter: invert(26%) brightness(0.86);
   --calendar-indicator-hover-filter: invert(24%) brightness(0.9);
   --calendar-indicator-opacity: 0.72;
 
   /* Brand and status */
-  --accent: #343a42;
-  --accent-2: #555d66;
-  --accent-3: #d99a08;
-  --accent-ink: #10161d;
-  --accent-shade: #ffffff;
-  --primary-start: #4b535d;
-  --primary: #30363d;
-  --primary-end: #1d2228;
+  --accent: #4d4941;
+  --accent-2: #746d61;
+  --accent-3: #b18444;
+  --accent-ink: #27241f;
+  --accent-shade: #faf8f2;
+  --primary-start: #625c52;
+  --primary: #454139;
+  --primary-end: #2c2924;
   --live: #e53945;
   --positive: #1f9d68;
   --negative: #d8424d;
-  --warning: #d99a08;
+  --warning: #b18444;
   --success: var(--positive);
   --danger: var(--negative);
   --pos: var(--positive);
   --neg: var(--negative);
   --tier-next: #ad6d1f;
-  --status-success-bg: #e7f7ef;
+  --status-success-bg: #e5f2e9;
   --status-success-text: #1f8a5b;
   --status-success-border: #bfe6d2;
-  --badge-highlight-bg: #eef0f2;
-  --badge-highlight-text: #252b31;
-  --badge-highlight-border: #b8bec5;
+  --badge-highlight-bg: #ebe6db;
+  --badge-highlight-text: #37332c;
+  --badge-highlight-border: #bdb5a6;
   --badge-highlight-shadow: none;
 
   /* Reusable fills */
@@ -63,9 +66,9 @@
   );
   --rollover-title-gradient: linear-gradient(
     90deg,
-    #59616a 0%,
+    #777064 0%,
     var(--primary) 48%,
-    #171b20 100%
+    #28251f 100%
   );
   --rollover-hero-gradient: linear-gradient(
     95deg,
@@ -73,54 +76,54 @@
     #a96800 52%,
     #8a5400 100%
   );
-  --accent-grad: #d6dadd;
+  --accent-grad: #d9d3c7;
   --accent-grad-soft: linear-gradient(
     135deg,
     color-mix(in oklch, var(--accent) 14%, transparent) 0%,
     color-mix(in oklch, var(--accent) 4%, transparent) 100%
   );
-  --bg-grad-card: linear-gradient(180deg, #ffffff 0%, #f6f9f8 100%);
+  --bg-grad-card: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-card-hi) 100%);
 
   /* Shared component states */
-  --control-bg: #ffffff;
+  --control-bg: var(--bg-card);
   --control-border: var(--line-hi);
   --control-text: var(--text-mid);
-  --control-hover-border: #59616a;
+  --control-hover-border: #71695d;
   --control-hover-text: var(--text);
-  --control-active-bg: #eceff1;
+  --control-active-bg: #e7e2d8;
   --control-active-border: var(--accent);
-  --control-active-text: #181d22;
+  --control-active-text: #2c2924;
   --control-active-text-shadow: none;
   --control-active-shadow: 0 0 0 1px var(--accent);
-  --focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px rgba(52, 58, 66, 0.42);
+  --focus-ring: 0 0 0 2px var(--bg-card), 0 0 0 4px rgba(77, 73, 65, 0.42);
 
   /* Tables and feature surfaces */
   --table-header-bg: var(--gradient-primary);
   --table-header-text: var(--text-on-accent);
-  --table-row-bg: #ffffff;
+  --table-row-bg: var(--bg-card);
   --table-row-border: var(--line);
-  --record-total-bg: #ffffff;
+  --record-total-bg: var(--bg-card);
   --record-total-border: var(--line-hi);
-  --rewards-banner-bg: #ffffff;
+  --rewards-banner-bg: var(--bg-card);
   --rewards-banner-border: var(--line);
   --rewards-banner-shadow: 0 1px 0 rgba(15, 23, 32, 0.04), 0 4px 14px rgba(15, 23, 32, 0.06);
-  --account-hero-bg: #ffffff;
+  --account-hero-bg: var(--bg-card);
   --account-hero-border: var(--line);
   --account-hero-shadow: 0 1px 0 rgba(15, 23, 32, 0.04), 0 4px 14px rgba(15, 23, 32, 0.06);
-  --secondary-button-bg: #ffffff;
+  --secondary-button-bg: var(--bg-card);
   --secondary-button-border: var(--line);
   --secondary-button-text: var(--text);
   --secondary-button-hover-border: var(--accent);
   --secondary-button-hover-text: var(--text);
 
   /* Shadows */
-  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 4px 14px rgba(15, 23, 32, 0.08);
-  --shadow-primary: 0 2px 8px rgba(15, 23, 32, 0.16);
-  --shadow-primary-sm: 0 2px 8px rgba(15, 23, 32, 0.16);
+  --shadow-card: 0 1px 0 rgba(255, 253, 246, 0.72) inset, 0 4px 14px rgba(58, 53, 44, 0.08);
+  --shadow-primary: 0 2px 8px rgba(58, 53, 44, 0.16);
+  --shadow-primary-sm: 0 2px 8px rgba(58, 53, 44, 0.16);
   --shadow-glow:
     0 0 0 1px var(--accent),
-    0 5px 16px rgba(15, 23, 32, 0.14);
+    0 5px 16px rgba(58, 53, 44, 0.14);
   --accent-glow:
-    0 4px 14px rgba(15, 23, 32, 0.14),
-    0 0 0 1px rgba(15, 23, 32, 0.22) inset;
+    0 4px 14px rgba(58, 53, 44, 0.14),
+    0 0 0 1px rgba(58, 53, 44, 0.22) inset;
 }
