@@ -36,19 +36,37 @@
     </button>
     <h1 class="ap-h1">Deposit</h1>
 
-    <div class="dp-method-tabs">
-      <button :class="{ active: method === 'bank' }" @click="method = 'bank'">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 10h18" /></svg>
-        <span>Bank Card</span>
-      </button>
-      <button :class="{ active: method === 'crypto' }" @click="method = 'crypto'">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><circle cx="12" cy="12" r="9" /><path d="M9.5 8h4a2.2 2.2 0 0 1 0 4.4h-4Zm0 4.4h4.3a2.2 2.2 0 0 1 0 4.4H9.5Zm.5-6.4v12M13 6v2M13 16v2" /></svg>
-        <span>Crypto Wallet</span>
+    <div class="dp-provider-tabs" role="tablist" aria-label="Payment gateway provider">
+      <button
+        v-for="option in providers"
+        :key="option.id"
+        type="button"
+        :class="{ active: provider === option.id }"
+        :aria-selected="provider === option.id"
+        @click="provider = option.id"
+      >
+        <span class="dp-provider-code">{{ option.id.toUpperCase() }}</span>
+        <span>{{ option.label }}</span>
       </button>
     </div>
 
-    <!-- Bank Card -->
-    <div v-if="method === 'bank'" class="ap-form-card">
+    <div class="dp-method-tabs">
+      <button
+        v-for="option in availableMethods"
+        :key="option.id"
+        type="button"
+        :class="{ active: method === option.id }"
+        @click="method = option.id"
+      >
+        <svg v-if="option.id === 'bank'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 10h18" /></svg>
+        <svg v-else-if="option.id === 'linepay'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-4 3v-3H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" /></svg>
+        <span v-else class="dp-method-coin">₮</span>
+        <span>{{ option.label }}</span>
+      </button>
+    </div>
+
+    <!-- Bank Card / LinePay -->
+    <div v-if="!isCrypto" class="ap-form-card">
       <h3 class="ap-section-h"><span class="ap-mark"></span>Deposit Amount</h3>
       <div class="ap-amount-grid">
         <button
@@ -92,16 +110,13 @@
         </label>
       </div>
 
-      <button class="ap-btn-wide ap-grad" :disabled="!promo" @click="step = 2">Next</button>
+      <button class="ap-btn-wide ap-grad" :disabled="!promo" @click="submitApplication">Apply for Deposit</button>
       <button class="ap-btn-wide outline" @click="emit('navigate', 'Account Overview')">Back</button>
     </div>
 
-    <!-- Crypto Wallet -->
+    <!-- USDT -->
     <div v-else class="ap-form-card">
       <h3 class="ap-section-h"><span class="ap-mark"></span>Deposit Info</h3>
-      <div class="dp-crypto-method">
-        <span class="dp-usdt">₮</span> USDT TRC20
-      </div>
       <div class="dp-crypto-grid">
         <label>Deposit Amounts:</label>
         <div>
@@ -128,14 +143,33 @@
         <span class="dp-crypto-amt">≥₩ 10,000.00</span>
       </button>
 
-      <button class="ap-btn-wide ap-grad" :disabled="!cryptoReady" @click="emit('navigate', 'Account Overview')">Apply for Deposit</button>
+      <button class="ap-btn-wide ap-grad" :disabled="!cryptoReady" @click="submitApplication">Apply for Deposit</button>
       <button class="ap-btn-wide outline" @click="emit('navigate', 'Account Overview')">Back</button>
+    </div>
+
+    <div v-if="applicationResult" class="modal-bg" @click="closeApplicationResult">
+      <div class="pi-success deposit-result" @click.stop>
+        <div class="pi-success-check" :class="{ warn: applicationResult.type !== 'success' }">
+          <svg v-if="applicationResult.type === 'success'" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10" /></svg>
+          <svg v-else width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 7v6M12 17h.01" /></svg>
+        </div>
+        <div class="pi-success-title">{{ applicationResult.title }}</div>
+        <div v-if="applicationResult.message" class="pi-success-sub">{{ applicationResult.message }}</div>
+        <button class="ap-btn-wide ap-grad" @click="closeApplicationResult">
+          {{ applicationResult.type === 'success' && method === 'bank' ? 'Continue' : 'Got It' }}
+        </button>
+        <button
+          v-if="applicationResult.type !== 'success'"
+          class="ap-btn-wide outline"
+          @click="emit('navigate', 'Customer Service')"
+        >Contact Customer Support</button>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 const emit = defineEmits(['navigate']);
 
@@ -145,6 +179,31 @@ const custom  = ref('10,000');
 const promo   = ref(null);
 const step    = ref(1);
 const method  = ref('bank');
+const provider = ref('a');
+const applicationResult = ref(null);
+
+const providers = [
+  { id: 'a', label: 'Payment Gateway Provider A', methodCount: 4 },
+  { id: 'b', label: 'Payment Gateway Provider B', methodCount: 3 },
+  { id: 'c', label: 'Payment Gateway Provider C', methodCount: 2 },
+  { id: 'd', label: 'Payment Gateway Provider D', methodCount: 1 },
+];
+const paymentMethods = [
+  { id: 'bank', label: 'Bank Card' },
+  { id: 'linepay', label: 'LinePay' },
+  { id: 'usdt-trc20', label: 'USDT-TRC20' },
+  { id: 'usdt-erc20', label: 'USDT-ERC20' },
+];
+const applicationMessages = {
+  a: { type: 'success', title: 'Success!', message: '' },
+  b: { type: 'warning', title: 'Application Notice', message: 'The maximum number of application attempts has been reached. Please contact customer support for assistance.' },
+  c: { type: 'warning', title: 'Application Notice', message: 'Your application has been temporarily suspended due to too many failed transaction attempts. Please contact customer support for assistance.' },
+  d: { type: 'warning', title: 'Application Notice', message: 'The requested amount has reached the maximum limit. Please contact customer support for assistance.' },
+};
+
+const activeProvider = computed(() => providers.find((option) => option.id === provider.value) || providers[0]);
+const availableMethods = computed(() => paymentMethods.slice(0, activeProvider.value.methodCount));
+const isCrypto = computed(() => method.value.startsWith('usdt-'));
 
 const cryptoAmount = ref('');
 const cryptoPromo  = ref(null);
@@ -162,8 +221,22 @@ const cryptoReady = computed(() =>
   Number(String(cryptoAmount.value).replace(/[^\d]/g, '')) > 0 && cryptoPromo.value !== null
 );
 
+watch(availableMethods, (methods) => {
+  if (!methods.some((option) => option.id === method.value)) method.value = methods[0].id;
+});
+
 function pick(n) {
   amount.value = n;
   custom.value = n.toLocaleString();
+}
+
+function submitApplication() {
+  applicationResult.value = applicationMessages[provider.value];
+}
+
+function closeApplicationResult() {
+  const continueToTransfer = applicationResult.value?.type === 'success' && method.value === 'bank';
+  applicationResult.value = null;
+  if (continueToTransfer) step.value = 2;
 }
 </script>
