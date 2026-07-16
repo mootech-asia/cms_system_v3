@@ -42,6 +42,11 @@
     var(--primary) 60%,
     var(--primary-end) 100%
   );
+  --gradient-primary-short: linear-gradient(
+    180deg,
+    var(--primary-start) 0%,
+    var(--primary) 100%
+  );
   --accent-grad: linear-gradient(
     135deg,
     color-mix(in oklch, var(--accent) 100%, white 20%) 0%,
