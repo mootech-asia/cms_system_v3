@@ -1,10 +1,9 @@
-name: Deploy Preview (GitHub Pages)
+name: Deploy GitHub Pages
 
 on:
   push:
     branches:
       - main
-      - claude/folder-upload-preview-url-5tzplm
   workflow_dispatch:
 
 permissions:
