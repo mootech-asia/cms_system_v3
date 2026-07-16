@@ -4589,7 +4589,6 @@ select.twk-field {
 /* ── TOPBAR SKIN SELECTOR ───────────────── */
 .tb-skin-wrap { position: relative; }
 .tb-skin-trigger { position: relative; }
-.tb-skin-trigger-swatch,
 .tb-skin-swatch {
   background:
     linear-gradient(
@@ -4598,17 +4597,8 @@ select.twk-field {
       var(--skin-color) 48%,
       var(--skin-surface) 48%,
       var(--skin-surface) 100%
-    );
+  );
   border: 1px solid color-mix(in oklch, var(--text) 24%, transparent);
-}
-.tb-skin-trigger-swatch {
-  position: absolute;
-  right: 4px;
-  bottom: 4px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  box-shadow: 0 0 0 2px var(--bg-card);
 }
 .tb-skin-menu {
   position: absolute;
