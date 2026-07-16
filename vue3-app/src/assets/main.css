@@ -1,62 +1,6 @@
 /* 100% Games Lobby */
-:root {
-  --bg: #05080f;
-  --bg-elev: #0a0f1a;
-  --bg-card: #0f1623;
-  --bg-card-hi: #161f30;
-  --line: rgba(160,210,255,0.07);
-  --line-hi: rgba(160,210,255,0.16);
-  --text: #eaf5ff;
-  --text-mid: rgba(234,245,255,0.7);
-  --text-dim: rgba(234,245,255,0.42);
-  --accent: #1fd373;
-  --accent-2: #29e8a3;
-  --accent-3: #b6f37c;
-  --accent-ink: #04101a;
-  --accent-shade: #000;
-  --live: #ff3b3b;
-  --pos: #1fd373;
-  --neg: #ef4444;
-  --pos: oklch(0.78 0.18 145);
-  --neg: oklch(0.7 0.22 25);
-  --accent-grad: linear-gradient(135deg,
-    color-mix(in oklch, var(--accent) 100%, white 20%) 0%,
-    var(--accent) 38%,
-    color-mix(in oklch, var(--accent) 78%, #000) 100%);
-  --accent-grad-soft: linear-gradient(135deg,
-    color-mix(in oklch, var(--accent) 22%, transparent) 0%,
-    color-mix(in oklch, var(--accent) 6%, transparent) 100%);
-  --bg-grad-card: linear-gradient(180deg, var(--bg-card) 0%, color-mix(in oklch, var(--bg-card) 80%, #000) 100%);
-  --accent-glow: 0 6px 26px color-mix(in oklch, var(--accent) 38%, transparent),
-                 0 0 0 1px color-mix(in oklch, var(--accent) 50%, transparent) inset,
-                 0 0 22px color-mix(in oklch, var(--accent) 28%, transparent) inset;
-  --radius: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
-  --card-pad: 14px;
-  --rail-gap: 12px;
-  --card-aspect: 0.74;
-  --container: 1440px;
-  --header-h: 64px;
-  --shadow-card: 0 1px 0 rgba(255,255,255,.04) inset, 0 6px 18px rgba(0,0,0,.4);
-  --shadow-glow: 0 0 0 1px var(--accent), 0 8px 28px color-mix(in oklch, var(--accent) 30%, transparent);
-  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-}
-
-[data-theme="light"] {
-  --bg: #f4f3ef;
-  --bg-elev: #ffffff;
-  --bg-card: #ffffff;
-  --bg-card-hi: #f7f6f1;
-  --line: rgba(15,15,23,0.08);
-  --line-hi: rgba(15,15,23,0.18);
-  --text: #0f0f17;
-  --text-mid: rgba(15,15,23,0.72);
-  --text-dim: rgba(15,15,23,0.45);
-  --shadow-card: 0 1px 0 rgba(255,255,255,.6) inset, 0 4px 14px rgba(15,15,23,.08);
-}
+/* Structural tokens and skin colors are loaded from assets/design-system
+   and assets/skins before these application-specific rules. */
 
 * { box-sizing: border-box; }
 html, body {
@@ -77,23 +21,7 @@ button { font-family: inherit; cursor: pointer; }
 a { color: inherit; text-decoration: none; }
 img { display: block; }
 
-/* layout */
-.container {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 28px;
-}
-
-/* app shell with sidebar */
-.shell { display: flex; min-height: 100vh; }
-.shell-main {
-  flex: 1;
-  min-width: 0;
-  margin-left: 248px;
-  transition: margin-left .25s;
-}
-.shell.collapsed .shell-main { margin-left: 64px; }
-
+/* Shell and container geometry live in assets/layout.css. */
 .sidebar-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -2721,11 +2649,11 @@ select.twk-field {
 }
 .ap-amount-btn:hover:not(.active) { border-color: var(--accent); color: #fff; }
 .ap-amount-btn.active {
-  background: linear-gradient(180deg, #38bdf8 0%, #2473ff 60%, #1e5fd8 100%);
+  background: var(--gradient-primary);
   color: #fff;
   border-color: transparent;
   font-weight: 700;
-  box-shadow: 0 0 12px color-mix(in oklch, #2473ff 45%, transparent);
+  box-shadow: 0 0 12px color-mix(in oklch, var(--primary) 45%, transparent);
 }
 .ap-input {
   display: block;
@@ -3181,12 +3109,12 @@ select.twk-field {
 
 /* clearer Deposit primary button on Account Overview */
 .ap-btn.primary {
-  background: linear-gradient(180deg, #38bdf8 0%, #2473ff 60%, #1e5fd8 100%) !important;
+  background: var(--gradient-primary) !important;
   color: #fff !important;
   border: 0 !important;
   font-weight: 700 !important;
   text-shadow: 0 1px 2px rgba(0,0,0,.35) !important;
-  box-shadow: 0 0 16px color-mix(in oklch, #2473ff 40%, transparent), 0 4px 12px rgba(0,0,0,.3) !important;
+  box-shadow: 0 0 16px color-mix(in oklch, var(--primary) 40%, transparent), 0 4px 12px rgba(0,0,0,.3) !important;
 }
 .ap-btn.primary:hover { filter: brightness(1.08) !important; }
 
@@ -3232,7 +3160,7 @@ select.twk-field {
 
 /* vivid rollover title gradient */
 .ap-rollover-title {
-  background: linear-gradient(90deg, #22d3ee 0%, #2473ff 35%, #a855f7 65%, #facc15 100%) !important;
+  background: linear-gradient(90deg, #22d3ee 0%, var(--primary) 35%, #a855f7 65%, #facc15 100%) !important;
   -webkit-background-clip: text !important; background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   filter: drop-shadow(0 0 14px color-mix(in oklch, var(--accent) 45%, transparent));
@@ -3345,9 +3273,9 @@ select.twk-field {
   margin-bottom: 10px;
 }
 .ap-btn-wide.ap-grad {
-  background: linear-gradient(180deg, #38bdf8 0%, #2473ff 60%, #1e5fd8 100%);
+  background: var(--gradient-primary);
   color: #fff;
-  box-shadow: 0 0 16px color-mix(in oklch, #2473ff 40%, transparent);
+  box-shadow: 0 0 16px color-mix(in oklch, var(--primary) 40%, transparent);
 }
 .ap-btn-wide.ap-grad:hover { filter: brightness(1.08); }
 .ap-btn-wide.outline {
@@ -3558,10 +3486,10 @@ select.twk-field {
   padding: 10px 20px;
   border-radius: 10px;
   border: 0;
-  background: linear-gradient(180deg, #38bdf8 0%, #2473ff 60%, #1e5fd8 100%);
+  background: var(--gradient-primary);
   color: #fff; font: inherit; font-weight: 700; font-size: 13.5px;
   cursor: pointer;
-  box-shadow: 0 0 14px color-mix(in oklch, #2473ff 35%, transparent);
+  box-shadow: 0 0 14px color-mix(in oklch, var(--primary) 35%, transparent);
 }
 .rec-confirm:hover { filter: brightness(1.08); }
 .rec-refresh {
@@ -3595,7 +3523,7 @@ select.twk-field {
   font-size: 13.5px;
 }
 .rec-table thead th {
-  background: linear-gradient(180deg, #38bdf8 0%, #2473ff 60%, #1e5fd8 100%);
+  background: var(--gradient-primary);
   color: #fff;
   font-weight: 700;
   font-size: 12.5px;
@@ -4098,11 +4026,11 @@ select.twk-field {
 [data-theme="light"] .tourn .btn.primary,
 [data-theme="light"] .signin-tab.active,
 [data-theme="light"] .modal-foot .btn.primary {
-  background: linear-gradient(180deg, #38bdf8 0%, #2473ff 100%) !important;
+  background: var(--gradient-primary-short) !important;
   color: #fff !important;
   border: 0 !important;
   text-shadow: none !important;
-  box-shadow: 0 4px 14px color-mix(in oklch, #2473ff 30%, transparent) !important;
+  box-shadow: 0 4px 14px color-mix(in oklch, var(--primary) 30%, transparent) !important;
 }
 [data-theme="light"] .signin-tab.active { color: #fff !important; }
 
@@ -4620,9 +4548,9 @@ select.twk-field {
 .dp-method-tabs button:hover:not(.active) { border-color: var(--accent); color: var(--text); }
 .dp-method-tabs button.active {
   border-color: transparent;
-  background: linear-gradient(180deg, #38bdf8 0%, #2473ff 60%, #1e5fd8 100%);
+  background: var(--gradient-primary);
   color: #fff;
-  box-shadow: 0 0 16px color-mix(in oklch, #2473ff 40%, transparent);
+  box-shadow: 0 0 16px color-mix(in oklch, var(--primary) 40%, transparent);
 }
 
 /* Crypto Wallet form */
