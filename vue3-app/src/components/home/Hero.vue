@@ -14,6 +14,7 @@
           '--hero-size': s.size || 'cover',
           '--hero-mobile-position': s.mobilePosition || s.position || 'center',
           '--hero-mobile-size': s.mobileSize || s.size || 'cover',
+          '--hero-overlay': s.overlay,
         }"
       />
       <div class="hero-content">

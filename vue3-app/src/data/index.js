@@ -74,8 +74,32 @@ const HERO_SLIDES = [
   { eyebrow: 'WEEKLY DROP',  title: '$250,000 Vault\nUnlock Saturday',  sub: 'Spin any qualifying slot to enter. The bigger you bet, the bigger your slice.', hue: 290, badge: 'LIVE NOW', image: assetPath('assets/mock/hero-1.webp'), position: 'center', mobilePosition: '68% center' },
   { eyebrow: 'NEW ORIGINAL', title: 'Crash 100 is\nlive in beta',       sub: 'Our flagship original — provably fair multipliers up to 1,000,000×.',           hue: 200, badge: 'BETA', image: assetPath('assets/mock/hero-2.webp'), position: 'center', mobilePosition: '70% center' },
   { eyebrow: 'TOURNAMENT',   title: 'Race for $50K\nin 72 hours',        sub: 'Top 100 players split the prize pool. Climb the leaderboard live.',              hue: 340, badge: 'ENDS 2D 14H', image: assetPath('assets/mock/hero-3.webp'), position: 'center', mobilePosition: '72% center' },
-  { eyebrow: 'PRIVATE ACCESS', title: 'Private tables.\nPriority rewards.', sub: 'A premium gaming experience backed by fast settlement and transparent account controls.', hue: 42, badge: 'INVITATION', image: assetPath('assets/mock/hero-4.png'), position: 'right center', size: 'auto 100%', mobilePosition: 'right center', mobileSize: 'auto 100%' },
-  { eyebrow: 'GLOBAL FOOTBALL', title: 'The world plays.\nYou set the odds.', sub: 'Follow marquee matches, live markets, and championship moments from one secure account.', hue: 48, badge: 'MATCHDAY', image: assetPath('assets/mock/hero-5.png'), position: 'right center', size: 'auto 100%', mobilePosition: 'right center', mobileSize: 'auto 100%' }
+  {
+    eyebrow: 'PRIVATE ACCESS',
+    title: 'Private tables.\nPriority rewards.',
+    sub: 'A premium gaming experience backed by fast settlement and transparent account controls.',
+    hue: 42,
+    badge: 'INVITATION',
+    image: assetPath('assets/mock/hero-4.png'),
+    position: 'right center',
+    size: 'auto 100%',
+    mobilePosition: 'right center',
+    mobileSize: 'auto 100%',
+    overlay: 'linear-gradient(90deg, rgba(9, 8, 7, .98) 0%, rgba(31, 22, 13, .92) 32%, rgba(113, 73, 25, .38) 56%, rgba(5, 7, 10, .04) 80%)',
+  },
+  {
+    eyebrow: 'GLOBAL FOOTBALL',
+    title: 'The world plays.\nYou set the odds.',
+    sub: 'Follow marquee matches, live markets, and championship moments from one secure account.',
+    hue: 48,
+    badge: 'MATCHDAY',
+    image: assetPath('assets/mock/hero-5.png'),
+    position: 'right center',
+    size: 'auto 100%',
+    mobilePosition: 'right center',
+    mobileSize: 'auto 100%',
+    overlay: 'linear-gradient(90deg, rgba(5, 9, 10, .98) 0%, rgba(15, 24, 22, .92) 32%, rgba(105, 79, 27, .36) 56%, rgba(5, 7, 10, .03) 80%)',
+  }
 ];
 
 const PROMOS = [
