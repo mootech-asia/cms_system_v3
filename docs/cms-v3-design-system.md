@@ -4,7 +4,11 @@
 >
 > 重構前備份：`backup/pre-design-system-complete-20260716`
 >
+> Skin 擴充前備份：`backup/pre-green-skin-20260716`
+>
 > 目前預設 skin：`blue`
+>
+> 可用 skin：`blue`、`night-esports-green`、`white`
 >
 > 本文件是全站 UI、內容層級與 skin 的唯一規格來源。新增頁面或 skin 前，應先在此補上角色與 token，再進入元件實作。
 
@@ -483,62 +487,35 @@ Surface：
 
 4、8、12、16、20、24、28、32、40、48、64px。
 
-## 9. Blue Skin
+## 9. Skin 系統
 
-Blue skin 負責：
+Skin 只負責顏色、surface、邊框、狀態色、漸層與陰影，不負責元件尺寸、Grid / Flex、字級、內容、頁面順序或 RWD breakpoint。
 
-- 背景與 surface
-- 文字與邊框
-- 主色、輔助色
-- Primary gradient
-- Active tab
-- Table header
-- Status colors
-- Shadow 與 glow
-
-Blue skin 不負責：
-
-- 元件寬高
-- Grid / Flex
-- 字級
-- 內容字串
-- 頁面順序
-- RWD breakpoint
-
-目前藍色核心：
-
-- Primary：#2473ff
-- Primary light：#38bdf8
-- Primary dark：#1e5fd8
-- Accent 3：#fbbf24
-- Dark page：#05080f
-- Dark card：#0f1623
-
-切換介面：
-
-```js
-document.documentElement.setAttribute('data-skin', 'blue')
-document.documentElement.setAttribute('data-theme', 'dark')
-```
+| ID | 顯示名稱 | 模式 | Primary | Page | 用途 |
+|---|---|---|---|---|---|
+| `blue` | Blue | dark | `#2473ff` | `#05080f` | 預設主設計 |
+| `night-esports-green` | Night Esports Green | dark | `#22e06f` | `#050806` | 黑夜電競綠 |
+| `white` | White | light | `#2473ff` | `#f3f6f5` | 原白色版本，已獨立命名 |
 
 程式內切換：
 
 ```js
 const { setTweak, skins } = useTweaks()
 
-setTweak('skin', 'blue')
+setTweak('skin', 'night-esports-green')
 ```
 
-`useTweaks` 會驗證 skin 名稱、寫入 `data-skin`，並使用 `cms_skin` 保存選擇；無效名稱會回到 `blue`。
+`useTweaks` 會驗證 skin 名稱、設定 `data-skin`、同步對應的 `data-theme`，並使用 `cms_skin` 保存選擇；無效名稱會回到 `blue`。TopBar skin 選單直接讀取 `src/skins/index.js`，新增 registry 項目後會自動顯示選項。
 
 新增 skin：
 
-1. 複製 `src/assets/skins/blue.css`。
-2. 將 selector 改為新的 `data-skin` 名稱。
-3. 只修改 skin tokens，不放尺寸、grid 或內容規則。
-4. 在 `src/skins/index.js` 匯入 CSS 並註冊 `id / label`。
-5. 不修改頁面元件 CSS。
-6. 檢查 dark / light、hover、active、disabled、focus。
+1. 複製任一完整 skin 檔案。
+2. 將 selector 改為新的 `data-skin` ID。
+3. 保持與既有 skin 相同的完整 semantic token 清單。
+4. 只修改 skin tokens，不放尺寸、Grid 或內容規則。
+5. 在 `src/skins/index.js` 匯入並註冊 `id / label / theme / swatch / surface`。
+6. 檢查 hover、active、disabled、focus、table header 與 record total。
+7. 執行 token 完整性檢查與 `npm run build`。
 
 ## 10. 檔案責任
 
@@ -550,7 +527,13 @@ src/assets/design-system/components.css
   共用 UI 角色：button、tab、title、table、focus
 
 src/assets/skins/blue.css
-  藍色 skin：顏色、漸層、陰影、狀態色
+  預設藍色 dark skin
+
+src/assets/skins/night-esports-green.css
+  黑夜電競綠 dark skin
+
+src/assets/skins/white.css
+  獨立白色 light skin
 
 src/assets/layout.css
   App shell、sidebar、header、container、mobile nav
@@ -565,7 +548,7 @@ src/skins/index.js
   可用 skin 清單與預設 skin
 
 src/composables/useTweaks.js
-  theme、skin、density、aspect 與 localStorage
+  skin 驗證、theme 同步、density、aspect 與 localStorage
 ```
 
 ## 11. 已落地的整理
