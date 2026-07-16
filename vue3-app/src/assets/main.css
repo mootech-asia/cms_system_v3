@@ -2386,14 +2386,17 @@ select.twk-field {
 /* Hero */
 .ap-hero {
   position: relative;
-  display: flex; align-items: center; gap: 22px;
-  padding: 22px 28px;
-  border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 100%);
-  border: 1px solid var(--line-hi);
+  display: flex;
+  align-items: center;
+  gap: 22px;
   margin-bottom: 16px;
+  padding: 22px 28px;
   overflow: hidden;
   isolation: isolate;
+  border: 1px solid var(--account-hero-border);
+  border-radius: var(--radius-lg);
+  background: var(--account-hero-bg);
+  box-shadow: var(--account-hero-shadow) !important;
 }
 .ap-hero-bg {
   position: absolute; inset: 0;
@@ -2471,21 +2474,29 @@ select.twk-field {
   margin: 0 0 16px;
 }
 .ap-btn {
-  display: block; width: 100%;
-  padding: 13px 18px;
-  border-radius: 10px;
-  background: transparent;
-  border: 1px solid var(--line-hi);
-  color: var(--text);
-  font: inherit;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
+  display: block;
+  width: 100%;
   margin-bottom: 10px;
-  transition: filter .15s, border-color .15s, color .15s;
+  padding: 13px 18px;
+  border: 1px solid var(--secondary-button-border);
+  border-radius: var(--radius-control);
+  background: var(--secondary-button-bg);
+  color: var(--secondary-button-text);
+  font: inherit;
+  font-size: var(--type-body);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition:
+    filter var(--duration-fast),
+    border-color var(--duration-fast),
+    color var(--duration-fast);
 }
 .ap-btn:last-child { margin-bottom: 0; }
-.ap-btn:hover { color: #fff; border-color: var(--accent); filter: brightness(1.06); }
+.ap-btn:hover {
+  color: var(--secondary-button-hover-text);
+  border-color: var(--secondary-button-hover-border);
+  filter: brightness(1.06);
+}
 .ap-btn.primary {
   background: var(--gradient-primary) !important;
   color: var(--text-on-accent) !important;
@@ -3914,17 +3925,9 @@ select.twk-field {
 /* ── account overview hero: readable text + no glow ── */
 .ap-hero-name { color: var(--text) !important; text-shadow: none !important; }
 [data-theme="light"] .ap-hero-name { color: var(--text) !important; }
-.ap-hero, .ap-hero-rollover {
-  box-shadow: none !important;
-}
+.ap-hero-rollover { box-shadow: none !important; }
 .ap-hero::before, .ap-hero::after { display: none !important; }
-[data-theme="light"] .ap-hero {
-  background: linear-gradient(180deg, #ffffff 0%, #f6f5f0 100%) !important;
-}
 /* Quick Actions secondary (Withdraw) button readable */
-.ap-btn { color: var(--text); }
-[data-theme="light"] .ap-btn:not(.primary) { color: var(--text) !important; background: #fff; border: 1px solid var(--line-hi); }
-[data-theme="light"] .ap-btn:not(.primary):hover { border-color: var(--accent); color: var(--text) !important; }
 
 
 /* ════ FINAL light-theme fixes (appended last = wins) ════ */
@@ -3969,12 +3972,6 @@ select.twk-field {
 
 
 /* light theme: remove blue glow layer behind Rollover hero */
-[data-theme="light"] .ap-hero-bg { display: none !important; }
-[data-theme="light"] .ap-hero {
-  background: #ffffff !important;
-  border: 1px solid var(--line) !important;
-  box-shadow: none !important;
-}
 
 
 /* ════ refined "Approved" status badge ════ */
@@ -4057,8 +4054,7 @@ select.twk-field {
 
 /* tournament / promo / rewards / hero corner glows (reinforce) */
 [data-theme="light"] .tourn,
-[data-theme="light"] .promo-card,
-[data-theme="light"] .ap-hero { box-shadow: 0 1px 0 rgba(15,15,23,.04), 0 4px 14px rgba(15,15,23,.06) !important; }
+[data-theme="light"] .promo-card { box-shadow: 0 1px 0 rgba(15,15,23,.04), 0 4px 14px rgba(15,15,23,.06) !important; }
 [data-theme="light"] .tourn::before,
 [data-theme="light"] .promo-card::before,
 [data-theme="light"] .ap-hero-bg { display: none !important; }
@@ -4076,10 +4072,6 @@ select.twk-field {
 [data-theme="light"] .tb-balance,
 [data-theme="light"] .tb-user,
 [data-theme="light"] .tb-icon-btn,
-[data-theme="light"] .ap-btn:not(.primary) {
-  background: #ffffff !important;
-  border: 1px solid var(--line) !important;
-}
 [data-theme="light"] .cv-tab:hover,
 [data-theme="light"] .cat-tab:hover,
 [data-theme="light"] .sb-tab:hover:not(.active),
@@ -4107,9 +4099,6 @@ select.twk-field {
 [data-theme="light"] .sb-tab,
 [data-theme="light"] .rt,
 [data-theme="light"] .promo-card-cta,
-[data-theme="light"] .ap-btn:not(.primary) {
-  color: var(--text) !important;
-}
 [data-theme="light"] .sb-deposit:hover,
 [data-theme="light"] .sb-withdraw:hover,
 [data-theme="light"] .btn:hover,
