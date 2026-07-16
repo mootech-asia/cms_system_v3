@@ -35,6 +35,11 @@
     <DesignStudio v-if="activeCat === 'Design Studio'"
       @navigate="activeCat = $event; if ($event === 'Lobby') catTab = 'Lobby'"
     />
+    <PromotionDetail v-else-if="activeCat === 'Promotion Detail' && selectedPromotion"
+      :promotion="selectedPromotion"
+      @back="closePromotionDetail"
+      @navigate="activeCat = $event"
+    />
     <AccountOverview v-else-if="activeCat === 'Account Overview'"
       :user="user" :balance="balance" :nickname="nickname"
       @navigate="activeCat = $event"
@@ -145,7 +150,7 @@
             />
             <Leaderboard v-else-if="sectionId === 'top-wins'" />
             <Tournaments v-else-if="sectionId === 'live-sport'" />
-            <Promotion v-else-if="sectionId === 'promotions'" />
+            <Promotion v-else-if="sectionId === 'promotions'" @open="openPromotionDetail" />
             <Providers v-else-if="sectionId === 'providers'" />
           </div>
         </div>
@@ -197,7 +202,7 @@
       <Sports v-else-if="catTab === 'Sports'" />
 
       <!-- Promotion tab -->
-      <Promotion v-else-if="catTab === 'Promotion'" enable-load-more />
+      <Promotion v-else-if="catTab === 'Promotion'" enable-load-more @open="openPromotionDetail" />
 
       <!-- About Us / FAQ tab (inline) -->
       <SupportPage
@@ -248,7 +253,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue';
 import AppLayout      from '@/layouts/AppLayout.vue';
 import Sidebar        from '@/components/layout/Sidebar.vue';
 import TopBar         from '@/components/layout/TopBar.vue';
@@ -264,6 +269,7 @@ import Leaderboard            from '@/components/lobby/Leaderboard.vue';
 import Tournaments            from '@/components/lobby/Tournaments.vue';
 import Sports                 from '@/components/lobby/Sports.vue';
 import Promotion              from '@/components/lobby/Promotion.vue';
+import PromotionDetail        from '@/components/lobby/PromotionDetail.vue';
 import Providers              from '@/components/lobby/Providers.vue';
 import GameModal              from '@/components/modal/GameModal.vue';
 import SignInModal            from '@/components/modal/SignInModal.vue';
@@ -295,6 +301,9 @@ const showSignIn        = ref(false);
 const balance           = ref(1284.32);
 const user              = ref(null);
 const nickname          = ref('Meow');
+const selectedPromotion = ref(null);
+const promotionReturnTab = ref('Lobby');
+const promotionReturnScroll = ref(0);
 
 const LOBBY_SECTION_STORAGE_KEY = 'cms-v3:lobby-section-order';
 const DEFAULT_LOBBY_SECTION_ORDER = Object.freeze([
@@ -327,6 +336,22 @@ const touchDragPointerId = ref(null);
 // showPromos 從 tweaks 驅動
 const showPromos = computed(() => t.showPromos);
 const isSupportView = computed(() => ['About Us', 'FAQ'].includes(catTab.value));
+
+function openPromotionDetail(promotion) {
+  selectedPromotion.value = promotion;
+  promotionReturnTab.value = catTab.value;
+  promotionReturnScroll.value = window.scrollY;
+  activeCat.value = 'Promotion Detail';
+  mobileSidebarOpen.value = false;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function closePromotionDetail() {
+  activeCat.value = 'Lobby';
+  catTab.value = promotionReturnTab.value;
+  selectedPromotion.value = null;
+  nextTick(() => window.scrollTo({ top: promotionReturnScroll.value, behavior: 'instant' }));
+}
 
 function saveLobbySectionOrder() {
   try {
