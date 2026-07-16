@@ -1,6 +1,6 @@
 <svg xmlns='http://www.w3.org/2000/svg' width='3600' height='2600' viewBox='0 0 3600 2600' role='img' aria-labelledby='title desc'>
-  <title id='title'>cms_v3 Website Structure Diagram</title>
-  <desc id='desc'>A single-page large format structure diagram for the cms_v3 Vue 3 website, based on the existing repository content.</desc>
+  <title id='title'>cms_system_v3 Website Structure Diagram</title>
+  <desc id='desc'>A single-page large format structure diagram for the cms_system_v3 Vue 3 website, based on the existing repository content.</desc>
   <defs>
     <linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'>
       <stop offset='0%' stop-color='#08111f'/>
@@ -53,9 +53,9 @@
   <rect class='bg' width='3600' height='2600'/>
   <rect x='44' y='44' width='3512' height='2512' rx='34' class='sheet'/>
 
-  <text x='100' y='118' class='title'>cms_v3 網站結構圖</text>
+  <text x='100' y='118' class='title'>cms_system_v3 網站結構圖</text>
   <text x='100' y='160' class='subtitle'>Vue 3 + Vite 單頁應用。依據 README.md、App.vue、layout、navigation、data 與主要 components 整理。</text>
-  <text x='2860' y='120' class='tag'>repo: mootech-asia/cms_v3</text>
+  <text x='2860' y='120' class='tag'>repo: mootech-asia/cms_system_v3</text>
   <text x='2860' y='154' class='tag'>branch: claude/folder-upload-preview-url-5tzplm</text>
 
   <rect x='100' y='205' width='740' height='135' rx='18' class='box-blue'/>

@@ -1,4 +1,4 @@
-# cms_v3 全站設計系統與內容規格
+# cms_system_v3 全站設計系統與內容規格
 
 > 基準分支：`claude/folder-upload-preview-url-5tzplm`
 >

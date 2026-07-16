@@ -22,4 +22,4 @@ The design medium is **HTML/CSS/JS** — these are prototypes, not production co
 
 - `README.md` — this file
 - `chats/` — conversation transcripts (read these!)
-- `project/` — the `cms_v3.0` project files (HTML prototypes, assets, components)
+- `project/` — the `cms_system_v3` project files (HTML prototypes, assets, components)

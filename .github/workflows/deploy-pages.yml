@@ -30,7 +30,7 @@ jobs:
         working-directory: vue3-app
         run: |
           npm ci
-          npx vite build --base=/cms_v3/
+          npx vite build --base=/cms_system_v3/
 
       - name: Assemble site
         run: |
