@@ -866,9 +866,9 @@ img { display: block; }
   padding: 18px 24px;
   border-radius: var(--radius-lg);
   position: relative;
-  background: linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 100%) !important;
-  border: 1px solid var(--line) !important;
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.18) !important;
+  background: var(--rewards-banner-bg) !important;
+  border: 1px solid var(--rewards-banner-border) !important;
+  box-shadow: var(--rewards-banner-shadow) !important;
   isolation: isolate;
   overflow: hidden;
 }
@@ -2310,11 +2310,6 @@ select.twk-field {
 [data-theme="light"] .hero-sub { color: #f3f1ff !important; }
 [data-theme="light"] .hero-sub { color: rgba(243,241,255,0.78) !important; }
 
-[data-theme="light"] .rewards-banner {
-  background:
-    radial-gradient(ellipse 70% 80% at 0% 50%, color-mix(in oklch, var(--accent) 14%, transparent) 0%, transparent 60%),
-    linear-gradient(180deg, #ffffff 0%, #f4f3ef 100%) !important;
-}
 [data-theme="light"] .rb-username { text-shadow: 0 0 14px color-mix(in oklch, var(--accent) 30%, transparent); }
 [data-theme="light"] .rb-progress-track { background: rgba(15,15,23,.08) !important; }
 
@@ -3869,9 +3864,6 @@ select.twk-field {
 
 
 /* remove blue glow wash on rewards banner (both themes), keep clean card */
-[data-theme="light"] .rewards-banner {
-  background: linear-gradient(180deg, #ffffff 0%, #f6f5f0 100%) !important;
-}
 .rewards-banner::before { display: none !important; }
 /* username readable */
 [data-theme="light"] .rb-username { color: var(--text) !important; }
@@ -3937,13 +3929,6 @@ select.twk-field {
 
 /* ════ FINAL light-theme fixes (appended last = wins) ════ */
 /* rewards banner: remove ALL blue glow/wash in light */
-[data-theme="light"] .rewards-banner {
-  background: #fbfaf7 !important;
-  box-shadow: 0 1px 0 rgba(15,15,23,.04), 0 4px 14px rgba(15,15,23,.06) !important;
-  border: 1px solid var(--line) !important;
-}
-[data-theme="light"] .rewards-banner::before,
-[data-theme="light"] .rewards-banner::after { display: none !important; }
 
 /* username "player" — readable */
 [data-theme="light"] .rb-username { color: #0f0f17 !important; }
@@ -3968,13 +3953,6 @@ select.twk-field {
   background: #ffffff !important;
 }
 [data-theme="light"] .promo-card::before { display: none !important; }
-[data-theme="light"] .rewards-banner {
-  background: #ffffff !important;
-  box-shadow: 0 1px 0 rgba(15,15,23,.04), 0 4px 14px rgba(15,15,23,.06) !important;
-  border: 1px solid var(--line) !important;
-}
-[data-theme="light"] .rewards-banner::before,
-[data-theme="light"] .rewards-banner::after { display: none !important; }
 
 
 /* light theme: soft clean card hover shadow (no heavy dark drop) */
@@ -4080,12 +4058,9 @@ select.twk-field {
 /* tournament / promo / rewards / hero corner glows (reinforce) */
 [data-theme="light"] .tourn,
 [data-theme="light"] .promo-card,
-[data-theme="light"] .rewards-banner,
 [data-theme="light"] .ap-hero { box-shadow: 0 1px 0 rgba(15,15,23,.04), 0 4px 14px rgba(15,15,23,.06) !important; }
 [data-theme="light"] .tourn::before,
 [data-theme="light"] .promo-card::before,
-[data-theme="light"] .rewards-banner::before,
-[data-theme="light"] .rewards-banner::after,
 [data-theme="light"] .ap-hero-bg { display: none !important; }
 
 
