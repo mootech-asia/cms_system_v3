@@ -8,12 +8,16 @@
       </h2>
     </div>
 
-    <div class="cv-tabs">
+    <div
+      class="cv-tabs"
+      style="display:flex;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;scrollbar-width:none"
+    >
       <button
         v-for="tb in tabs" :key="tb"
         class="cv-tab"
+        style="flex:0 0 auto"
         :class="{ active: filter === tb }"
-        @click="filter = tb; expanded = false"
+        @click="setFilter(tb)"
       >
         <svg v-if="tb === 'Favorites'" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 20s-7-4.6-9.3-9C1.2 8 2.6 4.5 6 4.5c2 0 3.2 1.2 4 2.4.8-1.2 2-2.4 4-2.4 3.4 0 4.8 3.5 3.3 6.5C19 15.4 12 20 12 20Z"/>
@@ -24,9 +28,7 @@
     </div>
 
     <div v-if="shown.length === 0" class="cv-empty">
-      {{ filter === 'Favorites'
-        ? 'No favorites yet — tap the ♥ on any game to save it here.'
-        : 'No games to show.' }}
+      {{ emptyText }}
     </div>
     <div v-else class="grid">
       <GameCard
@@ -39,37 +41,68 @@
       />
     </div>
 
-    <div v-if="filtered.length > 50" class="cv-foot">
-      <button class="cv-view-all" @click="expanded = !expanded">
-        {{ expanded ? 'Show less ↑' : `View all (${filtered.length}) →` }}
+    <div v-if="enableLoadMore && canLoadMore" class="cv-foot">
+      <button class="cv-view-all" @click="loadMore">
+        Load More
       </button>
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useFavorites } from '@/composables/useFavorites.js';
+import { PROVIDERS } from '@/data/index.js';
 import Icon     from '@/components/ui/Icon.vue';
 import GameCard from '@/components/game/GameCard.vue';
 
 const props = defineProps({
-  title: { type: String, required: true },
-  icon:  { type: String, default: null },
-  games: { type: Array,  default: () => [] },
+  title:          { type: String, required: true },
+  icon:           { type: String, default: null },
+  games:          { type: Array,  default: () => [] },
+  enableLoadMore: { type: Boolean, default: false },
+  pageSize:       { type: Number,  default: 10 },
 });
 const emit = defineEmits(['open']);
 
 const { favs, toggle } = useFavorites();
 
-const filter   = ref('All');
-const expanded = ref(false);
-const tabs     = ['All', 'Favorites'];
+const filter       = ref('All');
+const visibleCount = ref(props.pageSize);
+const tabs         = computed(() => ['All', 'Favorites', ...PROVIDERS]);
 
 const filtered = computed(() => {
   if (filter.value === 'Favorites') return props.games.filter(g => favs.value.has(g.id));
+  if (filter.value !== 'All') return props.games.filter(g => g.provider === filter.value);
   return props.games;
 });
 
-const shown = computed(() => expanded.value ? filtered.value : filtered.value.slice(0, 50));
+const shown = computed(() =>
+  props.enableLoadMore ? filtered.value.slice(0, visibleCount.value) : filtered.value
+);
+
+const canLoadMore = computed(() => shown.value.length < filtered.value.length);
+
+const emptyText = computed(() => {
+  if (filter.value === 'Favorites') return 'No favorites yet - tap the heart on any game to save it here.';
+  if (filter.value !== 'All') return `No games from ${filter.value} yet.`;
+  return 'No games to show.';
+});
+
+function setFilter(tab) {
+  filter.value = tab;
+  visibleCount.value = props.pageSize;
+}
+
+function loadMore() {
+  visibleCount.value += props.pageSize;
+}
+
+watch(
+  () => [props.title, props.games],
+  () => {
+    filter.value = 'All';
+    visibleCount.value = props.pageSize;
+  }
+);
 </script>
