@@ -961,7 +961,7 @@ img { display: block; }
 
 .rewards-banner {
   display: grid;
-  grid-template-columns: 1.2fr 1.8fr;
+  grid-template-columns: 230px minmax(0, 1fr);
   gap: 22px;
   align-items: center;
   padding: 18px 24px;
@@ -1181,7 +1181,7 @@ img { display: block; }
 .rt.active .rt-icon { color: #fff; filter: drop-shadow(0 0 6px var(--accent)); }
 
 @media (max-width: 1100px) {
-  .rewards-banner { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .rewards-banner { grid-template-columns: 230px minmax(0, 1fr); gap: 14px; }
   .rb-timer { align-items: flex-start; text-align: left; padding-right: 0; }
   .rb-lock { right: auto; left: auto; position: static; transform: none; margin-top: 6px; }
 }
