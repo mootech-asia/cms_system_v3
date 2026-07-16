@@ -335,7 +335,7 @@ img { display: block; }
   border: 1px solid transparent;
   margin-bottom: 6px;
 }
-.sb-item:hover { color: var(--text); background: var(--bg-card); }
+.sb-item:hover:not(.active) { color: var(--text); background: transparent; }
 .sb-item.active {
   background: var(--control-active-bg);
   color: var(--control-active-text);
