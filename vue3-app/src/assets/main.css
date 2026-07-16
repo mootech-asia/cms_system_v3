@@ -465,20 +465,23 @@ img { display: block; }
 
 .sb-money {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 42px;
-  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 34px;
+  gap: 6px;
   align-items: stretch;
 }
 .sb-deposit,
 .sb-withdraw {
-  padding: 12px 14px;
+  min-width: 0;
+  width: 100%;
+  padding: 10px 6px;
   border-radius: 12px;
   border: 1px solid var(--line);
   background: transparent;
   color: var(--text-mid);
   font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.01em;
+  font-size: 12.5px;
+  letter-spacing: 0;
+  white-space: nowrap;
   cursor: pointer;
   font-family: inherit;
   transition: border-color .15s, color .15s, background .15s, box-shadow .15s;
@@ -2338,7 +2341,7 @@ select.twk-field {
 [data-theme="light"] .hero-sub { color: #f3f1ff !important; }
 [data-theme="light"] .hero-sub { color: rgba(243,241,255,0.78) !important; }
 
-[data-theme="light"] .rb-username { text-shadow: 0 0 14px color-mix(in oklch, var(--accent) 30%, transparent); }
+[data-theme="light"] .rb-username { text-shadow: none !important; }
 [data-theme="light"] .rb-progress-track { background: rgba(15,15,23,.08) !important; }
 
 [data-theme="light"] .promo-ribbon { background: var(--bg-elev); border-bottom: 1px solid var(--line); }
@@ -3870,15 +3873,15 @@ select.twk-field {
 [data-theme="light"] .btn:hover { color: var(--text) !important; border-color: var(--accent); background: #fff; }
 
 
-/* topbar avatar initials — readable on light gradient */
-.tb-avatar { color: var(--accent) !important; text-shadow: none !important; }
-.tb-avatar.circle, .tb-avatar.lg, .rb-big-avatar { color: var(--accent) !important; text-shadow: none !important; font-weight: 800 !important; }
-[data-theme="light"] .tb-avatar { color: var(--accent) !important; }
-
-/* all avatar initials (PL) — white text */
-.tb-avatar, .tb-avatar.circle, .tb-avatar.lg, .rb-big-avatar,
-[data-theme="light"] .tb-avatar, [data-theme="light"] .tb-avatar.circle,
-[data-theme="light"] .tb-avatar.lg, [data-theme="light"] .rb-big-avatar { color: #fff !important; }
+/* Avatar initials follow the active skin and remain readable in every theme. */
+.tb-avatar,
+.tb-avatar.circle,
+.tb-avatar.lg,
+.rb-big-avatar {
+  color: var(--accent) !important;
+  text-shadow: none !important;
+  font-weight: 800 !important;
+}
 
 
 /* ════ light-theme white-text sweep (tables + panel headings) ════ */
@@ -4119,7 +4122,7 @@ select.twk-field {
 }
 
 
-/* light theme: ensure dark text on white pill/tab controls */
+/* Light skin changes contrast only; component geometry remains inherited. */
 [data-theme="light"] .sb-deposit,
 [data-theme="light"] .sb-withdraw,
 [data-theme="light"] .btn,
@@ -4132,7 +4135,9 @@ select.twk-field {
 [data-theme="light"] .sb-withdraw:hover,
 [data-theme="light"] .btn:hover,
 [data-theme="light"] .cv-tab:hover,
-[data-theme="light"] .cat-tab:hover,
+[data-theme="light"] .cat-tab:hover {
+  color: var(--text) !important;
+}
 
 
 /* ── shared centered section pill (Deposit / Withdrawal / Banking) ── */
@@ -4573,9 +4578,9 @@ select.twk-field {
 
 /* Sidebar collapse placement */
 .sb-collapse-inline {
-  width: 42px;
+  width: 34px;
   height: 100%;
-  min-height: 42px;
+  min-height: 38px;
   border-radius: 10px;
 }
 .sidebar-foot { display: none; }
@@ -4589,4 +4594,16 @@ select.twk-field {
   .sidebar-foot,
   .sidebar.collapsed .sidebar-foot { display: none; }
   .sb-collapse-inline { display: grid; }
+}
+
+
+/* Profile identity uses semantic skin color without glow. */
+.rb-username,
+[data-theme="light"] .rb-username {
+  color: var(--accent) !important;
+  text-shadow: none !important;
+}
+.rb-day,
+.rb-brand-text {
+  text-shadow: none !important;
 }
