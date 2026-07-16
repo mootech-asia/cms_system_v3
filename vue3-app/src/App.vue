@@ -9,9 +9,10 @@
       <Sidebar
         v-model:collapsed="sidebarCollapsed"
         v-model:activeCat="activeCat"
+        v-model:activeTab="catTab"
         :user="user"
         @sign-in="showSignIn = true"
-        @support="activeCat = 'Lobby'; catTab = 'About Us'"
+        @close-menu="mobileSidebarOpen = false"
       />
     </template>
 
@@ -68,9 +69,9 @@
 
     <!-- 首頁區塊 -->
     <template v-else-if="activeCat === 'Lobby'">
-      <Hero v-if="catTab !== 'About Us'" />
-      <PromoRibbon v-if="showPromos && catTab !== 'About Us'" />
-      <RewardsBanner v-if="user && catTab !== 'About Us'" :user="user" />
+      <Hero v-if="!isSupportView" />
+      <PromoRibbon v-if="showPromos && !isSupportView" />
+      <RewardsBanner v-if="user && !isSupportView" :user="user" />
       <Promos v-if="showPromos" v-model:active="catTab" />
 
       <!-- Lobby tab -->
@@ -98,7 +99,6 @@
           @see-all="catTab = $event"
           @open="openGame = $event"
         />
-        <FilteredGrid @open="openGame = $event" />
         <Leaderboard />
         <Tournaments />
         <Promotion />
@@ -153,7 +153,11 @@
       <Promotion v-else-if="catTab === 'Promotion'" enable-load-more />
 
       <!-- About Us / FAQ tab (inline) -->
-      <SupportPage v-else-if="catTab === 'About Us'" inline />
+      <SupportPage
+        v-else-if="isSupportView"
+        inline
+        :initial-tab="catTab === 'FAQ' ? 'FAQ' : 'About'"
+      />
 
       <!-- Fallback -->
       <div v-else style="color:var(--text-dim);padding:40px 0;text-align:center;font-family:var(--font-mono);font-size:13px">
@@ -194,10 +198,6 @@
     @close="showSignIn = false"
     @login="user = $event"
   />
-  <CustomerServiceModal
-    v-if="showSupport"
-    @close="showSupport = false"
-  />
 </template>
 
 <script setup>
@@ -212,7 +212,6 @@ import PromoRibbon    from '@/components/home/PromoRibbon.vue';
 import RewardsBanner  from '@/components/home/RewardsBanner.vue';
 import Promos         from '@/components/home/Promos.vue';
 import Rail           from '@/components/game/Rail.vue';
-import FilteredGrid   from '@/components/game/FilteredGrid.vue';
 import CategoryView   from '@/components/game/CategoryView.vue';
 import Leaderboard            from '@/components/lobby/Leaderboard.vue';
 import Tournaments            from '@/components/lobby/Tournaments.vue';
@@ -221,7 +220,6 @@ import Promotion              from '@/components/lobby/Promotion.vue';
 import Providers              from '@/components/lobby/Providers.vue';
 import GameModal              from '@/components/modal/GameModal.vue';
 import SignInModal            from '@/components/modal/SignInModal.vue';
-import CustomerServiceModal   from '@/components/modal/CustomerServiceModal.vue';
 import AccountOverview        from '@/components/account/AccountOverview.vue';
 import DepositPage            from '@/components/account/DepositPage.vue';
 import WithdrawalPage         from '@/components/account/WithdrawalPage.vue';
@@ -243,12 +241,12 @@ const mobileSidebarOpen = ref(false);
 const activeCat         = ref('Lobby');
 const catTab            = ref('Lobby');
 const showSignIn        = ref(false);
-const showSupport       = ref(false);
 const balance           = ref(1284.32);
 const user              = ref(null);
 
 // showPromos 從 tweaks 驅動
 const showPromos = computed(() => t.showPromos);
+const isSupportView = computed(() => ['About Us', 'FAQ'].includes(catTab.value));
 
 // 模擬餘額浮動
 let balanceTimer;
