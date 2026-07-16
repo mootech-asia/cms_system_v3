@@ -69,6 +69,12 @@
     #a855f7 65%,
     #facc15 100%
   );
+  --rollover-hero-gradient: linear-gradient(
+    95deg,
+    #fde68a 0%,
+    #facc15 50%,
+    #f59e0b 100%
+  );
   --accent-grad: linear-gradient(
     135deg,
     color-mix(in oklch, var(--accent) 100%, white 20%) 0%,
