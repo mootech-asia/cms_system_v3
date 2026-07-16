@@ -66,6 +66,13 @@
           </div>
         </div>
 
+        <MediaUploadField
+          v-if="selectedMediaSpec"
+          :key="selectedModuleId"
+          :spec="selectedMediaSpec"
+          @change="replacePreviewAsset"
+        />
+
         <div class="studio-variant-grid" role="radiogroup" :aria-label="`${selectedModule.label} variants`">
           <button
             v-for="variant in variants"
@@ -204,7 +211,10 @@
                 </div>
 
                 <article v-else-if="selectedModuleId === 'profile'" class="ap-hero studio-sample-profile">
-                  <div class="studio-profile-avatar">PL</div>
+                  <div class="studio-profile-avatar" :class="{ 'has-image': assets.avatar }">
+                    <img v-if="assets.avatar" :src="assets.avatar" alt="Profile avatar preview" />
+                    <span v-else>PL</span>
+                  </div>
                   <div class="studio-profile-copy">
                     <span>MEMBER IDENTITY</span>
                     <h3>player</h3>
@@ -227,6 +237,7 @@
                 </article>
 
                 <nav v-else-if="selectedModuleId === 'navigation'" class="studio-sample-nav">
+                  <div class="studio-sample-brand"><img :src="assets.logo" alt="Brand logo preview" /></div>
                   <a class="sb-item active" href="#" @click.prevent><span class="studio-nav-icon">⌂</span><span class="sb-label">Lobby</span></a>
                   <a class="sb-item" href="#" @click.prevent><span class="studio-nav-icon">◇</span><span class="sb-label">Markets</span></a>
                   <a class="sb-item" href="#" @click.prevent><span class="studio-nav-icon">□</span><span class="sb-label">Portfolio</span></a>
@@ -262,8 +273,10 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, onBeforeUnmount, reactive, ref } from 'vue';
+import MediaUploadField from '@/components/design/MediaUploadField.vue';
 import { DEFAULT_DESIGN_MODULES } from '@/design/registry.js';
+import { MEDIA_UPLOAD_SPECS } from '@/design/mediaSpecs.js';
 import { useDesignStudio } from '@/composables/useDesignStudio.js';
 
 const emit = defineEmits(['navigate']);
@@ -283,11 +296,14 @@ const previewMode = ref('desktop');
 const notice = ref('');
 const importInput = ref(null);
 
-const assets = Object.freeze({
+const assets = reactive({
   game: `${import.meta.env.BASE_URL}assets/mock/game-04.webp`,
   promo: `${import.meta.env.BASE_URL}assets/mock/promo-4.webp`,
   hero: `${import.meta.env.BASE_URL}assets/mock/hero-1.webp`,
+  avatar: '',
+  logo: `${import.meta.env.BASE_URL}assets/logo.png`,
 });
+const objectUrls = new Set();
 
 const moduleGroups = computed(() => {
   const categories = [...new Set(modules.map((module) => module.category))];
@@ -299,6 +315,7 @@ const moduleGroups = computed(() => {
 
 const selectedModule = computed(() => modules.find((module) => module.id === selectedModuleId.value));
 const selectedVariant = computed(() => variantById(draft[selectedModuleId.value]));
+const selectedMediaSpec = computed(() => MEDIA_UPLOAD_SPECS[selectedModuleId.value] || null);
 const previewAttributes = computed(() => makeDesignAttributes(draft));
 const previewStyle = computed(() => makeDesignStyle(draft));
 const dirty = computed(() => JSON.stringify(draft) !== JSON.stringify(design.modules));
@@ -314,6 +331,18 @@ function moduleIndex(id) {
 function replaceDraft(value) {
   const normalized = normalizeDesignModules(value);
   modules.forEach((module) => { draft[module.id] = normalized[module.id]; });
+}
+
+function replacePreviewAsset({ url }) {
+  const spec = selectedMediaSpec.value;
+  if (!spec) return;
+  const previous = assets[spec.assetKey];
+  if (previous?.startsWith('blob:')) {
+    URL.revokeObjectURL(previous);
+    objectUrls.delete(previous);
+  }
+  assets[spec.assetKey] = url;
+  objectUrls.add(url);
 }
 
 function showNotice(message) {
@@ -367,4 +396,8 @@ async function importConfig(event) {
     event.target.value = '';
   }
 }
+
+onBeforeUnmount(() => {
+  objectUrls.forEach((url) => URL.revokeObjectURL(url));
+});
 </script>
