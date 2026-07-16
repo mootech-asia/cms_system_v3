@@ -121,6 +121,9 @@
   --table-row-border: var(--line);
   --record-total-bg: linear-gradient(180deg, #1a1f2b 0%, #12151d 100%);
   --record-total-border: var(--line-hi);
+  --rewards-banner-bg: linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 100%);
+  --rewards-banner-border: var(--line);
+  --rewards-banner-shadow: 0 8px 26px rgba(0, 0, 0, 0.18);
 
   /* Shadows */
   --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 6px 18px rgba(0, 0, 0, 0.4);
@@ -168,6 +171,9 @@
   --table-row-bg: #ffffff;
   --record-total-bg: #ffffff;
   --record-total-border: var(--line-hi);
+  --rewards-banner-bg: #ffffff;
+  --rewards-banner-border: var(--line);
+  --rewards-banner-shadow: 0 1px 0 rgba(15, 15, 23, 0.04), 0 4px 14px rgba(15, 15, 23, 0.06);
   --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 4px 14px rgba(15, 15, 23, 0.08);
   --shadow-primary: 0 2px 8px rgba(36, 115, 255, 0.18);
   --shadow-primary-sm: 0 2px 8px rgba(36, 115, 255, 0.18);
