@@ -215,12 +215,12 @@ const sections = [
       { name: 'Live',       icon: 'live',    cat: 'Lobby', tab: 'Live',       public: true },
       { name: 'Fish',       icon: 'fish',    cat: 'Lobby', tab: 'Fish',       public: true },
       { name: 'Promotion',  icon: 'gift',    cat: 'Lobby', tab: 'Promotion',  public: true },
-      { name: 'FAQ',        icon: 'help',    cat: 'Lobby', tab: 'FAQ',        public: true },
     ],
   },
   {
     label: 'My Account',
     items: [
+      { name: 'FAQ',               icon: 'help', cat: 'Lobby', tab: 'FAQ', public: true },
       { name: 'Account Overview',  icon: 'grid'   },
       { name: 'Betting Record',    icon: 'ticket' },
       { name: 'Deposit Record',    icon: 'down'   },
