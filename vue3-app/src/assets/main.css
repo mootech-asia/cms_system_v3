@@ -3913,6 +3913,8 @@ select.twk-field {
 /* light theme: secondary buttons (Login/Register) keep dark text on hover */
 [data-theme="light"] .btn { color: var(--text) !important; background: #fff; border-color: var(--line-hi); }
 [data-theme="light"] .btn:hover { color: var(--text) !important; border-color: var(--accent); background: #fff; }
+[data-skin="white"] .header-actions > .btn,
+[data-skin="white"] .header-actions > .btn:hover { box-shadow: none !important; }
 
 
 /* Avatar initials follow the active skin and remain readable in every theme. */
