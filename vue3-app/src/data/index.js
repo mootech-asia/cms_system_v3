@@ -1,6 +1,27 @@
 // Mock data for the games lobby
 
-const PROVIDERS = ['Saba', 'Bti'];
+const PROVIDERS = [
+  'Saba',
+  'Bti',
+  'Evolution',
+  'Pragmatic Play',
+  'PG Soft',
+  'Microgaming',
+  'Playtech',
+  'NetEnt',
+  'JDB',
+  'CQ9',
+  'Jili',
+  'Spadegaming',
+  'Habanero',
+  'Yggdrasil',
+  'Red Tiger',
+  'NoLimit City',
+  'Relax Gaming',
+  'Hacksaw Gaming',
+  'Spribe',
+  'Ezugi',
+];
 
 const GAME_TAGS = ['Hot', 'New', '2x', 'Top', '⚡', 'Live', 'VIP'];
 
