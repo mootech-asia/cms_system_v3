@@ -76,10 +76,11 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue';
+import { ref, computed, reactive, watch } from 'vue';
 
-defineProps({
-  inline: { type: Boolean, default: false },
+const props = defineProps({
+  inline:     { type: Boolean, default: false },
+  initialTab: { type: String, default: 'FAQ' },
 });
 const emit = defineEmits(['navigate']);
 
@@ -163,7 +164,7 @@ const FAQ_GROUPS = [
   ]},
 ];
 
-const tab      = ref('FAQ');
+const tab      = ref(props.initialTab);
 const exFilter = ref('All');
 const exQuery  = ref('');
 
@@ -174,6 +175,10 @@ const openMap = reactive((() => {
 })());
 
 function toggle(k) { openMap[k] = !openMap[k]; }
+
+watch(() => props.initialTab, (value) => {
+  if (TABS.includes(value)) tab.value = value;
+});
 
 const exTypes = computed(() => ['All', ...new Set(EXCLUSION.map(e => e.type))]);
 const exList  = computed(() =>
