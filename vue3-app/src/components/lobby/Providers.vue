@@ -1,8 +1,8 @@
 <template>
   <section class="lobby-section" :class="{ 'is-collapsed': collapsed }" data-screen-label="Providers">
     <div class="section-head">
-      <h2 class="section-title">Providers<span class="count">{{ PROVIDERS.length }}</span></h2>
-      <div class="section-actions">
+      <div class="section-title-group">
+        <h2 class="section-title">Providers<span class="count">{{ PROVIDERS.length }}</span></h2>
         <button
           class="section-collapse"
           :class="{ active: collapsed }"
