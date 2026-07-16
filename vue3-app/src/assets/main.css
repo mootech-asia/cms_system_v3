@@ -4358,6 +4358,14 @@ select.twk-field {
 .sidebar.collapsed .sb-section-toggle { display: none; }
 .sidebar-foot { justify-content: flex-end; }
 
+.section-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.section-title-group .section-title { min-width: 0; }
+
 .section-collapse {
   width: 32px;
   height: 32px;
