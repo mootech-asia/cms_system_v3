@@ -1889,6 +1889,9 @@ section.lobby-section { margin-top: 44px; }
   color: var(--text-dim);
   font-family: var(--font-mono);
 }
+@media (max-width: 768px) {
+  .footer-min.mobile-inner-hidden { display: none; }
+}
 
 .footer {
   margin-top: 80px;
@@ -3666,18 +3669,21 @@ select.twk-field {
 
 /* ── RECORD TOOLBAR — mobile polish ─────── */
 @media (max-width: 700px) {
-  .rec-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
-  .rec-filters {
-    flex-direction: row;
-    flex-wrap: wrap;
+  .rec-toolbar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
-    gap: 8px;
-    width: 100%;
+    gap: 12px 8px;
   }
-  .rec-status-wrap { flex: 0 0 auto; }
+  .rec-filters {
+    display: contents;
+  }
+  .rec-status-wrap { grid-column: 1 / -1; grid-row: 1; justify-self: start; }
   .rec-status-btn { width: auto; justify-content: space-between; }
   .rec-date {
-    flex: 1 1 100%;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
     min-width: 0;
     justify-content: flex-start;
     flex-wrap: nowrap;
@@ -3685,12 +3691,16 @@ select.twk-field {
   }
   .rec-date-btn { font-size: 13px; padding: 4px 2px; }
   .rec-actions {
-    width: 100%;
-    justify-content: space-between;
-    gap: 10px;
+    display: contents;
   }
-  .rec-confirm { width: auto; padding: 10px 24px; }
-  .rec-refresh { margin: 0; }
+  .rec-confirm { grid-column: 1; grid-row: 3; width: auto; padding: 10px 24px; justify-self: start; }
+  .rec-refresh {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: end;
+    margin: 0;
+    white-space: nowrap;
+  }
 }
 
 
