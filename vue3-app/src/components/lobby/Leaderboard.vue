@@ -1,15 +1,24 @@
 <template>
-  <section class="lobby-section" data-screen-label="Leaderboard">
+  <section class="lobby-section" :class="{ 'is-collapsed': collapsed }" data-screen-label="Leaderboard">
     <div class="section-head">
       <h2 class="section-title">
         <Icon name="bolt" :size="18" />Top wins · last hour
       </h2>
       <div class="section-actions">
         <a href="#" class="see-all">All winners →</a>
+        <button
+          class="section-collapse"
+          :class="{ active: collapsed }"
+          :aria-label="collapsed ? 'Expand leaderboard' : 'Collapse leaderboard'"
+          :aria-expanded="!collapsed"
+          @click="collapsed = !collapsed"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </button>
       </div>
     </div>
 
-    <div class="leaderboard-wrap">
+    <div v-show="!collapsed" class="leaderboard-wrap">
       <div class="leaderboard">
         <div class="lb-head">
           <span>#</span><span>Player</span><span>Game</span>
@@ -55,6 +64,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import Icon from '@/components/ui/Icon.vue';
 import { WINNERS } from '@/data/index.js';
 
+const collapsed = ref(false);
 const rows    = ref(WINNERS.slice(0, 10));
 const freshId = ref(null);
 let timer;
