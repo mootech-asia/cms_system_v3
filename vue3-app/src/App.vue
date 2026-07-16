@@ -178,7 +178,7 @@
 
     <!-- 頁尾 -->
     <template #footer>
-      <AppFooter />
+      <AppFooter :class="{ 'mobile-inner-hidden': activeCat !== 'Lobby' }" />
     </template>
 
     <!-- 手機底部導覽 -->
