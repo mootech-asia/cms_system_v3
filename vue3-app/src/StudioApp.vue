@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, ref } from 'vue';
+import { onBeforeUnmount, ref } from 'vue';
 import DesignStudio from '@/components/design/DesignStudio.vue';
 import { useLocale } from '@/composables/useLocale.js';
 
@@ -51,7 +51,10 @@ const { t } = useLocale();
 const deviceMode = ref('desktop');
 const controlsCollapsed = ref(false);
 const reloadToken = ref(Date.now());
-const previewSrc = computed(() => `../?studioPreview=${reloadToken.value}`);
+// The query param stays constant so live preview (draft broadcast via
+// localStorage) works without a reload; :key="reloadToken" below still forces
+// a full iframe remount as a fallback when needed.
+const previewSrc = '../?studio-preview=1';
 
 let reloadTimer = null;
 
