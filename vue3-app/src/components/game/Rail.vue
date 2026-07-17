@@ -10,7 +10,7 @@
         <button
           class="section-collapse"
           :class="{ active: collapsed }"
-          :aria-label="collapsed ? `Expand ${title}` : `Collapse ${title}`"
+          :aria-label="collapsed ? `${t('common.expand')} ${title}` : `${t('common.collapse')} ${title}`"
           :aria-expanded="!collapsed"
           @click="collapsed = !collapsed"
         >
@@ -23,7 +23,7 @@
           href="#"
           class="see-all"
           @click.prevent="emit('see-all', seeAllTab)"
-        >See all →</a>
+        >{{ t('common.seeAll') }} →</a>
         <button class="arrow" :disabled="!canL" aria-label="Scroll left" @click="scroll(-1)">
           <Icon name="arrL" />
         </button>
@@ -49,6 +49,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import Icon     from '@/components/ui/Icon.vue';
 import GameCard from '@/components/game/GameCard.vue';
+import { useLocale } from '@/composables/useLocale.js';
 
 const props = defineProps({
   title:       { type: String,  required: true },
@@ -59,6 +60,7 @@ const props = defineProps({
   seeAllTab:   { type: String,  default: null },
 });
 const emit = defineEmits(['open', 'see-all']);
+const { t } = useLocale();
 
 const collapsed = ref(false);
 const railEl = ref(null);

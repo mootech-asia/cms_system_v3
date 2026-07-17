@@ -3,12 +3,12 @@
     <div class="section-head">
       <div class="section-title-group">
         <h2 class="section-title">
-          <Icon name="bolt" :size="18" />Top wins · last hour
+          <Icon name="bolt" :size="18" />{{ t('lobby.topWins') }}
         </h2>
         <button
           class="section-collapse"
           :class="{ active: collapsed }"
-          :aria-label="collapsed ? 'Expand leaderboard' : 'Collapse leaderboard'"
+          :aria-label="collapsed ? `${t('common.expand')} ${t('lobby.topWins')}` : `${t('common.collapse')} ${t('lobby.topWins')}`"
           :aria-expanded="!collapsed"
           @click="collapsed = !collapsed"
         >
@@ -16,15 +16,14 @@
         </button>
       </div>
       <div class="section-actions">
-        <a href="#" class="see-all">All winners →</a>
+        <a href="#" class="see-all">{{ t('lobby.allWinners') }} →</a>
       </div>
     </div>
 
     <div v-show="!collapsed" class="leaderboard-wrap">
       <div class="leaderboard">
         <div class="lb-head">
-          <span>#</span><span>Player</span><span>Game</span>
-          <span>Bet</span><span>Mult</span><span style="text-align:right">Payout</span>
+          <span v-for="(head, index) in tableHeads" :key="head" :style="index === tableHeads.length - 1 ? 'text-align:right' : null">{{ head }}</span>
         </div>
         <div
           v-for="(r, i) in rows" :key="r.id"
@@ -48,29 +47,32 @@
       </div>
 
       <div style="background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius-lg);padding:22px;display:flex;flex-direction:column;gap:12px">
-        <div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim)">Your rank</div>
+        <div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim)">{{ t('lobby.yourRank') }}</div>
         <div style="font-family:var(--font-display);font-size:42px;font-weight:700;line-height:1">#1,284</div>
-        <div style="color:var(--text-mid);font-size:13px">Wager $50 more this hour to climb into the top 1,000.</div>
+        <div style="color:var(--text-mid);font-size:13px">{{ t('lobby.rankHint') }}</div>
         <div style="height:6px;background:var(--bg-elev);border-radius:999px;margin-top:6px;overflow:hidden">
           <div style="height:100%;width:64%;background:linear-gradient(90deg,var(--accent),var(--accent-2))" />
         </div>
         <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--text-dim)">
-          <span>Wagered $128.40</span><span>$200 needed</span>
+          <span>{{ t('lobby.wagered') }}</span><span>{{ t('lobby.needed') }}</span>
         </div>
-        <button class="btn primary" style="margin-top:auto;padding:11px">Wager more →</button>
+        <button class="btn primary" style="margin-top:auto;padding:11px">{{ t('lobby.wagerMore') }} →</button>
       </div>
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import Icon from '@/components/ui/Icon.vue';
 import { WINNERS } from '@/data/index.js';
+import { useLocale } from '@/composables/useLocale.js';
 
 const collapsed = ref(false);
 const rows    = ref(WINNERS.slice(0, 10));
 const freshId = ref(null);
+const { t } = useLocale();
+const tableHeads = computed(() => t('lobby.leaderboardHead', ['#', 'Player', 'Game', 'Bet', 'Mult', 'Payout']));
 let timer;
 
 onMounted(() => {

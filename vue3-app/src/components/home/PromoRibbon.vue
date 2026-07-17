@@ -7,7 +7,7 @@
         </span>
       </div>
     </div>
-    <time class="promo-ribbon-time" :datetime="isoTime" aria-label="Local time">
+    <time class="promo-ribbon-time" :datetime="isoTime" :aria-label="t('common.localTime')">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="8.5" />
         <path d="M12 7v5l3 2" />
@@ -19,13 +19,12 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { PROMO_RIBBON_COPY } from '@/data/i18n.js';
+import { useLocale } from '@/composables/useLocale.js';
 
-const items = [
-  'Max Payout Guarantee', 'Massive Blockchain Prizes', 'Huge Rewards',
-  'Largest Community',    'Fastest Transactions',      'Provably Fair',
-  'Instant Crypto Payouts', '24/7 Live Support',
-];
-const doubled = [...items, ...items];
+const { locale, t } = useLocale();
+const items = computed(() => PROMO_RIBBON_COPY[locale.value] || PROMO_RIBBON_COPY.zh);
+const doubled = computed(() => [...items.value, ...items.value]);
 
 const now = ref(new Date());
 const displayTime = computed(() => [

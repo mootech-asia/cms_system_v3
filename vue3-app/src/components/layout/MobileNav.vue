@@ -1,10 +1,10 @@
 <template>
   <nav class="mobile-nav" aria-label="Main">
     <button
-      v-for="item in items" :key="item.name"
+      v-for="item in items" :key="item.id"
       class="mnav-btn"
-      :class="{ active: activeName === item.name }"
-      @click="handleClick(item.name)"
+      :class="{ active: activeName === item.id }"
+      @click="handleClick(item.id)"
     >
       <span class="mnav-icon">
         <svg width="22" height="22" viewBox="0 0 24 24">
@@ -41,13 +41,14 @@
           </template>
         </svg>
       </span>
-      <span class="mnav-label">{{ item.name }}</span>
+      <span class="mnav-label">{{ item.label }}</span>
     </button>
   </nav>
 </template>
 
 <script setup>
 import { computed } from 'vue';
+import { useLocale } from '@/composables/useLocale.js';
 
 const props = defineProps({
   catTab:            { type: String, default: 'Lobby' },
@@ -55,14 +56,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['browse', 'navigate', 'close-sidebar']);
+const { t } = useLocale();
 
-const items = [
-  { name: 'Browse',    icon: 'browse'  },
-  { name: 'Home',      icon: 'home'    },
-  { name: 'Deposit',   icon: 'deposit' },
-  { name: 'Promotion', icon: 'gift'    },
-  { name: 'Member',    icon: 'member'  },
-];
+const items = computed(() => [
+  { id: 'Browse',    label: t(['nav', 'Browse'], 'Browse'),       icon: 'browse'  },
+  { id: 'Home',      label: t(['nav', 'Home'], 'Home'),           icon: 'home'    },
+  { id: 'Deposit',   label: t(['nav', 'Deposit'], 'Deposit'),     icon: 'deposit' },
+  { id: 'Promotion', label: t(['nav', 'Promotion'], 'Promotion'), icon: 'gift'    },
+  { id: 'Member',    label: t(['nav', 'Member'], 'Member'),       icon: 'member'  },
+]);
 
 const activeName = computed(() => {
   if (props.mobileSidebarOpen) return 'Browse';

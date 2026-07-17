@@ -199,6 +199,132 @@
   border-bottom: 1px solid var(--table-row-border);
 }
 
+/* CMS v4 maturity pass: keep v3 structure, upgrade shared text and control affordances. */
+.text-display,
+.ap-h1,
+.section-title,
+.promo-card-title,
+.tourn-title,
+.ap-panel-h {
+  letter-spacing: 0;
+}
+
+.font-tabular,
+.section-title .count,
+.tb-balance-num,
+.tourn-prize,
+.ap-transfer-amt,
+.ap-amt,
+.rec-total-val,
+.rec-pl,
+.dp-provider-code {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+:is(.ui-button, .btn, .ap-btn, .ap-btn-wide, .rec-confirm, .promo-card-cta, .sb-deposit, .sb-withdraw) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    background var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    filter var(--duration-fast) var(--ease-standard);
+}
+
+:is(.ui-button, .btn, .ap-btn, .ap-btn-wide, .rec-confirm, .promo-card-cta, .sb-deposit, .sb-withdraw):disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  pointer-events: none;
+}
+
+:is(.btn:not(.primary), .ap-btn:not(.primary), .ap-btn-wide.outline, .promo-card-cta, .sb-withdraw) {
+  border: 1px solid var(--line-hi);
+  background: color-mix(in oklch, var(--bg-card-hi) 72%, transparent);
+  color: var(--text-mid);
+  box-shadow: none;
+}
+
+:is(.btn:not(.primary), .ap-btn:not(.primary), .ap-btn-wide.outline, .promo-card-cta, .sb-withdraw):hover:not(:disabled) {
+  border-color: var(--control-hover-border);
+  color: var(--control-hover-text);
+  background: var(--control-bg);
+  filter: none;
+}
+
+:is(.ui-button--primary, .btn.primary, .ap-btn.primary, .ap-btn-wide.ap-grad, .rec-confirm, .sb-deposit) {
+  border-color: transparent;
+  background: var(--gradient-primary);
+  color: var(--text-on-accent);
+  text-shadow: none;
+  box-shadow: var(--shadow-primary);
+}
+
+:is(.ui-button--primary, .btn.primary, .ap-btn.primary, .ap-btn-wide.ap-grad, .rec-confirm, .sb-deposit):hover:not(:disabled) {
+  border-color: transparent;
+  color: var(--text-on-accent);
+  filter: brightness(1.06);
+  box-shadow:
+    var(--shadow-primary),
+    0 0 0 4px color-mix(in oklch, var(--accent) 12%, transparent);
+}
+
+.btn.ghost,
+.ap-btn-wide.ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-mid);
+  box-shadow: none;
+}
+
+.section-head {
+  align-items: center;
+}
+
+.section-title {
+  font-weight: var(--weight-semibold);
+}
+
+.section-title .count {
+  display: inline-flex;
+  min-width: 22px;
+  min-height: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  background: var(--bg-card-hi);
+  color: var(--text-mid);
+  line-height: 1;
+}
+
+.see-all,
+.ap-view-more,
+.ap-add-bank {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--accent-2);
+  font-weight: var(--weight-semibold);
+}
+
+:is(.gcard-tag, .promo-card-tag, .tourn-tag, .rec-pill, .ap-tag-new, .ap-pill, .ap-transfer-pill, .pi-privacy-pill) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  border-radius: var(--radius-pill);
+  padding: 3px 9px;
+  font-size: var(--type-caption);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
 @media (max-width: 700px) {
   .ui-section-title,
   .section-title {

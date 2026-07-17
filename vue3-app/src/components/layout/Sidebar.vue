@@ -5,19 +5,19 @@
     <div class="sidebar-search">
       <div class="search">
         <Icon name="search" :size="14" />
-        <input placeholder="Search any game or provider" />
+        <input :placeholder="t('lobby.search')" />
       </div>
     </div>
 
     <!-- 分組導覽 -->
     <nav class="sidebar-list">
-      <section v-for="section in sections" :key="section.label" class="sb-section">
+      <section v-for="section in sections" :key="section.id" class="sb-section">
         <div class="sb-section-head">
           <button
             class="sb-section-toggle"
-            :class="{ collapsed: !sectionOpen[section.label] }"
-            :aria-expanded="sectionOpen[section.label]"
-            @click="sectionOpen[section.label] = !sectionOpen[section.label]"
+            :class="{ collapsed: !sectionOpen[section.id] }"
+            :aria-expanded="sectionOpen[section.id]"
+            @click="sectionOpen[section.id] = !sectionOpen[section.id]"
           >
             <span>{{ section.label }}</span>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -25,13 +25,13 @@
             </svg>
           </button>
         </div>
-        <div v-show="sectionOpen[section.label]" class="sb-section-items">
+        <div v-show="sectionOpen[section.id]" class="sb-section-items">
           <a
             v-for="item in section.items" :key="item.name"
             href="#"
             class="sb-item"
             :class="{ active: isActive(item) }"
-            :title="collapsed ? item.name : undefined"
+            :title="collapsed ? item.label : undefined"
             @click.prevent="handleNav(item)"
           >
             <span class="sb-icon">
@@ -86,7 +86,7 @@
               </g>
             </svg>
           </span>
-            <span class="sb-label">{{ item.name }}</span>
+            <span class="sb-label">{{ item.label }}</span>
           </a>
         </div>
       </section>
@@ -112,13 +112,14 @@
             <circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
           </svg>
           <span class="sb-flag" aria-hidden="true">
-            <svg v-if="lang === 'en'" width="18" height="12" viewBox="0 0 60 40">
+            <span v-if="locale === 'zh'" class="sb-flag-text">中</span>
+            <svg v-else-if="locale === 'en'" width="18" height="12" viewBox="0 0 60 40">
               <rect width="60" height="40" fill="#012169" />
               <path d="M0 0 60 40M60 0 0 40" stroke="#fff" stroke-width="6" />
               <path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="10" />
               <path d="M30 0v40M0 20h60" stroke="#C8102E" stroke-width="6" />
             </svg>
-            <svg v-else-if="lang === 'ko'" width="18" height="12" viewBox="0 0 60 40">
+            <svg v-else-if="locale === 'ko'" width="18" height="12" viewBox="0 0 60 40">
               <rect width="60" height="40" fill="#fff" />
               <circle cx="30" cy="20" r="8" fill="#cd2e3a" />
               <path d="M22 20a8 8 0 0 1 16 0 4 4 0 0 1-8 0 4 4 0 0 0-8 0Z" fill="#0047a0" />
@@ -130,7 +131,7 @@
               </g>
             </svg>
           </span>
-          <span class="sb-lang-label">{{ LANGS[lang].label }}</span>
+          <span class="sb-lang-label">{{ LANGS[locale].label }}</span>
           <svg class="sb-lang-caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m6 9 6 6 6-6" />
           </svg>
@@ -138,11 +139,12 @@
         <div v-if="langOpen" class="sb-lang-menu">
           <button
             v-for="(v, k) in LANGS" :key="k"
-            class="sb-lang-item" :class="{ active: lang === k }"
-            @click="lang = k; langOpen = false"
+            class="sb-lang-item" :class="{ active: locale === k }"
+            @click="setLocale(k); langOpen = false"
           >
             <span class="sb-flag">
-              <svg v-if="k === 'en'" width="18" height="12" viewBox="0 0 60 40">
+              <span v-if="k === 'zh'" class="sb-flag-text">中</span>
+              <svg v-else-if="k === 'en'" width="18" height="12" viewBox="0 0 60 40">
                 <rect width="60" height="40" fill="#012169" />
                 <path d="M0 0 60 40M60 0 0 40" stroke="#fff" stroke-width="6" />
                 <path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="10" />
@@ -161,7 +163,7 @@
               </svg>
             </span>
             <span>{{ v.label }}</span>
-            <svg v-if="lang === k" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <svg v-if="locale === k" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12l5 5 9-10" />
             </svg>
           </button>
@@ -169,8 +171,8 @@
       </div>
 
       <div class="sb-money">
-        <button class="sb-deposit"  @click="handleDeposit">Deposit</button>
-        <button class="sb-withdraw" @click="handleWithdraw">Withdrawal</button>
+        <button class="sb-deposit"  @click="handleDeposit">{{ t(['nav', 'Deposit']) }}</button>
+        <button class="sb-withdraw" @click="handleWithdraw">{{ t(['nav', 'WithdrawalForm']) }}</button>
         <button class="sb-collapse sb-collapse-inline sb-collapse-money" aria-label="Collapse sidebar" @click="collapseSidebar">
           ‹
         </button>
@@ -190,8 +192,9 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, onUnmounted } from 'vue';
+import { computed, reactive, ref, onMounted, onUnmounted } from 'vue';
 import Icon from '@/components/ui/Icon.vue';
+import { useLocale } from '@/composables/useLocale.js';
 
 const props = defineProps({
   collapsed:  { type: Boolean, default: false },
@@ -213,44 +216,41 @@ const sectionOpen = reactive({
   'My Account': true,
 });
 
-const lang     = ref('en');
 const langOpen = ref(false);
 const langRef  = ref(null);
+const { locale, languages: LANGS, setLocale, t } = useLocale();
 
-const LANGS = {
-  en: { label: 'English' },
-  ko: { label: '한국어'   },
-};
-
-const sections = [
+const sections = computed(() => [
   {
-    label: 'Menu',
+    id: 'Menu',
+    label: t(['nav', 'Menu'], 'Menu'),
     items: [
-      { name: 'Lobby',      icon: 'home',    cat: 'Lobby', tab: 'Lobby',      public: true },
-      { name: 'Hot Games',  icon: 'fire',    cat: 'Lobby', tab: 'Hot Games',  public: true },
-      { name: 'Mini Games', icon: 'gamepad', cat: 'Lobby', tab: 'Mini Games', public: true },
-      { name: 'Slots',      icon: 'slots',   cat: 'Lobby', tab: 'Slots',      public: true },
-      { name: 'Sports',     icon: 'sports',  cat: 'Lobby', tab: 'Sports',     public: true },
-      { name: 'Live',       icon: 'live',    cat: 'Lobby', tab: 'Live',       public: true },
-      { name: 'Fish',       icon: 'fish',    cat: 'Lobby', tab: 'Fish',       public: true },
-      { name: 'Promotion',  icon: 'gift',    cat: 'Lobby', tab: 'Promotion',  public: true },
+      { name: 'Lobby',      label: t(['nav', 'Lobby'], 'Lobby'),           icon: 'home',    cat: 'Lobby', tab: 'Lobby',      public: true },
+      { name: 'Hot Games',  label: t(['nav', 'Hot Games'], 'Hot Games'),   icon: 'fire',    cat: 'Lobby', tab: 'Hot Games',  public: true },
+      { name: 'Mini Games', label: t(['nav', 'Mini Games'], 'Mini Games'), icon: 'gamepad', cat: 'Lobby', tab: 'Mini Games', public: true },
+      { name: 'Slots',      label: t(['nav', 'Slots'], 'Slots'),           icon: 'slots',   cat: 'Lobby', tab: 'Slots',      public: true },
+      { name: 'Sports',     label: t(['nav', 'Sports'], 'Sports'),         icon: 'sports',  cat: 'Lobby', tab: 'Sports',     public: true },
+      { name: 'Live',       label: t(['nav', 'Live'], 'Live'),             icon: 'live',    cat: 'Lobby', tab: 'Live',       public: true },
+      { name: 'Fish',       label: t(['nav', 'Fish'], 'Fish'),             icon: 'fish',    cat: 'Lobby', tab: 'Fish',       public: true },
+      { name: 'Promotion',  label: t(['nav', 'Promotion'], 'Promotion'),   icon: 'gift',    cat: 'Lobby', tab: 'Promotion',  public: true },
     ],
   },
   {
-    label: 'My Account',
+    id: 'My Account',
+    label: t(['nav', 'My Account'], 'My Account'),
     items: [
-      { name: 'Account Overview',  icon: 'grid'   },
-      { name: 'Betting Record',    icon: 'ticket' },
-      { name: 'Deposit Record',    icon: 'down'   },
-      { name: 'Profit And Loss',   icon: 'chart'  },
-      { name: 'Withdrawal Record', icon: 'swap'   },
-      { name: 'Account Record',    icon: 'book'   },
-      { name: 'Personal Info',     icon: 'person' },
-      { name: 'Security Center',   icon: 'shield' },
-      { name: 'FAQ',               icon: 'help', cat: 'Lobby', tab: 'FAQ', public: true },
+      { name: 'Account Overview',  label: t(['nav', 'Account Overview'], 'Account Overview'),   icon: 'grid'   },
+      { name: 'Betting Record',    label: t(['nav', 'Betting Record'], 'Betting Record'),       icon: 'ticket' },
+      { name: 'Deposit Record',    label: t(['nav', 'Deposit Record'], 'Deposit Record'),       icon: 'down'   },
+      { name: 'Profit And Loss',   label: t(['nav', 'Profit And Loss'], 'Profit And Loss'),     icon: 'chart'  },
+      { name: 'Withdrawal Record', label: t(['nav', 'Withdrawal Record'], 'Withdrawal Record'), icon: 'swap'   },
+      { name: 'Account Record',    label: t(['nav', 'Account Record'], 'Account Record'),       icon: 'book'   },
+      { name: 'Personal Info',     label: t(['nav', 'Personal Info'], 'Personal Info'),         icon: 'person' },
+      { name: 'Security Center',   label: t(['nav', 'Security Center'], 'Security Center'),     icon: 'shield' },
+      { name: 'FAQ',               label: t(['nav', 'FAQ'], 'FAQ'),                             icon: 'help', cat: 'Lobby', tab: 'FAQ', public: true },
     ],
   },
-];
+]);
 
 function isActive(item) {
   if (item.tab) return props.activeCat === 'Lobby' && props.activeTab === item.tab;

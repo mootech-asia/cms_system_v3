@@ -47,25 +47,29 @@
           </g>
         </svg>
       </span>
-      {{ tab.name }}
+      {{ tab.label }}
     </button>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { useLocale } from '@/composables/useLocale.js';
+
 defineProps({
   active: { type: String, default: 'Lobby' },
 });
 const emit = defineEmits(['update:active']);
+const { t } = useLocale();
 
-const tabs = [
-  { name: 'Lobby',      icon: 'home'   },
-  { name: 'Hot Games',  icon: 'fire'   },
-  { name: 'Mini Games', icon: 'rocket' },
-  { name: 'Slots',      icon: 'slot'   },
-  { name: 'Sports',     icon: 'ball'   },
-  { name: 'Live',       icon: 'tv'     },
-  { name: 'Fish',       icon: 'fish'   },
-  { name: 'Promotion',  icon: 'gift'   },
-];
+const tabs = computed(() => [
+  { name: 'Lobby',      label: t(['nav', 'Lobby'], 'Lobby'),           icon: 'home'   },
+  { name: 'Hot Games',  label: t(['nav', 'Hot Games'], 'Hot Games'),   icon: 'fire'   },
+  { name: 'Mini Games', label: t(['nav', 'Mini Games'], 'Mini Games'), icon: 'rocket' },
+  { name: 'Slots',      label: t(['nav', 'Slots'], 'Slots'),           icon: 'slot'   },
+  { name: 'Sports',     label: t(['nav', 'Sports'], 'Sports'),         icon: 'ball'   },
+  { name: 'Live',       label: t(['nav', 'Live'], 'Live'),             icon: 'tv'     },
+  { name: 'Fish',       label: t(['nav', 'Fish'], 'Fish'),             icon: 'fish'   },
+  { name: 'Promotion',  label: t(['nav', 'Promotion'], 'Promotion'),   icon: 'gift'   },
+]);
 </script>

@@ -6,8 +6,8 @@
       <a
         href="#"
         class="topbar-brand"
-        aria-label="Home and back to top"
-        title="Home and back to top"
+        :aria-label="t('topbar.homeTitle')"
+        :title="t('topbar.homeTitle')"
         @click.prevent="emit('home')"
       >
         <img src="/assets/logo.png" alt="100%" class="topbar-logo" />
@@ -20,8 +20,8 @@
         <div class="tb-skin-wrap" ref="skinRef">
           <button
             class="tb-icon-btn tb-skin-trigger"
-            aria-label="Choose skin"
-            title="Choose skin"
+            :aria-label="t('topbar.chooseSkin')"
+            :title="t('topbar.chooseSkin')"
             aria-haspopup="listbox"
             :aria-expanded="skinMenuOpen"
             @click="skinMenuOpen = !skinMenuOpen; menuOpen = false"
@@ -61,11 +61,11 @@
           <div class="tb-balance">
             <div class="tb-balance-rows">
               <div class="tb-balance-row">
-                <span class="tb-balance-label">Balance:</span>
+                <span class="tb-balance-label">{{ t('topbar.balance') }}</span>
                 <span class="tb-balance-num">{{ balanceFmt }}</span>
               </div>
               <div class="tb-balance-row">
-                <span class="tb-balance-label">Points:</span>
+                <span class="tb-balance-label">{{ t('topbar.points') }}</span>
                 <span class="tb-balance-num">0.00</span>
               </div>
             </div>
@@ -73,7 +73,7 @@
 
           <!-- 用戶頭像 + 下拉選單 -->
           <div class="tb-user-wrap" ref="menuRef">
-            <button class="tb-user-circle" aria-label="Account" @click="menuOpen = !menuOpen; skinMenuOpen = false">
+            <button class="tb-user-circle" :aria-label="t('topbar.account')" @click="menuOpen = !menuOpen; skinMenuOpen = false">
               <span class="tb-avatar circle">{{ initials }}</span>
               <span class="tb-tier-badge" aria-hidden="true">
                 <svg width="10" height="11" viewBox="0 0 12 14" fill="currentColor">
@@ -126,7 +126,7 @@
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
                   </svg>
                 </span>
-                <span class="tb-menu-2l-text"><span class="tb-menu-2l-name">Logout</span></span>
+                <span class="tb-menu-2l-text"><span class="tb-menu-2l-name">{{ t(['nav', 'Logout'], 'Logout') }}</span></span>
               </button>
             </div>
           </div>
@@ -134,8 +134,8 @@
 
         <!-- 未登入 -->
         <template v-else>
-          <button class="btn" @click="emit('sign-in')">Login</button>
-          <button class="btn" @click="emit('sign-in')">Register</button>
+          <button class="btn" @click="emit('sign-in')">{{ t(['nav', 'Login'], 'Login') }}</button>
+          <button class="btn primary" @click="emit('sign-in')">{{ t(['nav', 'Register'], 'Register') }}</button>
         </template>
 
       </div>
@@ -145,6 +145,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useLocale } from '@/composables/useLocale.js';
 
 const props = defineProps({
   user:    { type: Object, default: null },
@@ -160,18 +161,19 @@ const menuOpen     = ref(false);
 const menuRef      = ref(null);
 const skinMenuOpen = ref(false);
 const skinRef      = ref(null);
+const { t } = useLocale();
 
 const initials = computed(() => props.user ? props.user.name.slice(0, 2).toUpperCase() : '');
 const balanceFmt = computed(() =>
   props.balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 );
 
-const menuItems = [
-  { name: 'Personal Info',               icon: 'person', go: 'Personal Info'   },
-  { name: 'Change Login Password',        icon: 'lock',   go: 'Security Center' },
-  { name: 'Change Transaction Password',  icon: 'key',    go: 'Security Center' },
-  { name: 'Banking Details',              icon: 'card',   go: 'WithdrawalForm'  },
-];
+const menuItems = computed(() => [
+  { name: t(['nav', 'Personal Info'], 'Personal Info'),              icon: 'person', go: 'Personal Info'   },
+  { name: t(['nav', 'Change Login Password'], 'Change Login Password'),       icon: 'lock',   go: 'Security Center' },
+  { name: t(['nav', 'Change Transaction Password'], 'Change Transaction Password'), icon: 'key',    go: 'Security Center' },
+  { name: t(['nav', 'Banking Details'], 'Banking Details'),             icon: 'card',   go: 'WithdrawalForm'  },
+]);
 
 function selectSkin(id) {
   emit('change-skin', id);

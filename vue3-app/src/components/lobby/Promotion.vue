@@ -2,11 +2,11 @@
   <section class="lobby-section" :class="{ 'is-collapsed': collapsed }" data-screen-label="Promotion">
     <div class="section-head">
       <div class="section-title-group">
-        <h2 class="section-title">Promotions<span class="count">{{ offers.length }}</span></h2>
+        <h2 class="section-title">{{ t(['lobby', 'sections', 'promotions'], 'Promotions') }}<span class="count">{{ offers.length }}</span></h2>
         <button
           class="section-collapse"
           :class="{ active: collapsed }"
-          :aria-label="collapsed ? 'Expand promotions' : 'Collapse promotions'"
+          :aria-label="collapsed ? `${t('common.expand')} ${t(['lobby', 'sections', 'promotions'], 'Promotions')}` : `${t('common.collapse')} ${t(['lobby', 'sections', 'promotions'], 'Promotions')}`"
           :aria-expanded="!collapsed"
           @click="collapsed = !collapsed"
         >
@@ -21,7 +21,7 @@
         class="promo-card promo-card-link"
         style="--promo-hue: var(--accent)"
         type="button"
-        :aria-label="`View ${o.title} details`"
+        :aria-label="`${o.cta} ${o.title}`"
         @click="emit('open', o)"
       >
         <span class="promo-card-tag">{{ o.tag }}</span>
@@ -37,7 +37,7 @@
     </div>
 
     <div v-if="enableLoadMore && canLoadMore" v-show="!collapsed" class="cv-foot">
-      <button class="cv-view-all" @click="loadMore">Load More</button>
+      <button class="cv-view-all" @click="loadMore">{{ t('common.loadMore') }}</button>
     </div>
   </section>
 </template>
@@ -45,22 +45,28 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { PROMOTION_OFFERS } from '@/data/promotions.js';
+import { PROMOTION_COPY } from '@/data/i18n.js';
+import { useLocale } from '@/composables/useLocale.js';
 
 const props = defineProps({
   enableLoadMore: { type: Boolean, default: false },
   pageSize:       { type: Number,  default: 2 },
 });
 const emit = defineEmits(['open']);
+const { locale, t } = useLocale();
 
 const collapsed = ref(false);
 const visibleCount = ref(props.pageSize);
 
-const offers = PROMOTION_OFFERS;
+const offers = computed(() => {
+  const copy = PROMOTION_COPY[locale.value] || PROMOTION_COPY.zh;
+  return PROMOTION_OFFERS.map((offer) => ({ ...offer, ...(copy[offer.id] || {}) }));
+});
 
 const visibleOffers = computed(() =>
-  props.enableLoadMore ? offers.slice(0, visibleCount.value) : offers
+  props.enableLoadMore ? offers.value.slice(0, visibleCount.value) : offers.value
 );
-const canLoadMore = computed(() => visibleOffers.value.length < offers.length);
+const canLoadMore = computed(() => visibleOffers.value.length < offers.value.length);
 
 function loadMore() {
   visibleCount.value += props.pageSize;

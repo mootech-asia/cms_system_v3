@@ -2,11 +2,11 @@
   <section class="lobby-section" :class="{ 'is-collapsed': collapsed }" data-screen-label="Providers">
     <div class="section-head">
       <div class="section-title-group">
-        <h2 class="section-title">Providers<span class="count">{{ PROVIDERS.length }}</span></h2>
+        <h2 class="section-title">{{ t(['lobby', 'sections', 'providers'], 'Providers') }}<span class="count">{{ PROVIDERS.length }}</span></h2>
         <button
           class="section-collapse"
           :class="{ active: collapsed }"
-          :aria-label="collapsed ? 'Expand providers' : 'Collapse providers'"
+          :aria-label="collapsed ? `${t('common.expand')} ${t(['lobby', 'sections', 'providers'], 'Providers')}` : `${t('common.collapse')} ${t(['lobby', 'sections', 'providers'], 'Providers')}`"
           :aria-expanded="!collapsed"
           @click="collapsed = !collapsed"
         >
@@ -42,6 +42,8 @@
 <script setup>
 import { ref } from 'vue';
 import { PROVIDERS } from '@/data/index.js';
+import { useLocale } from '@/composables/useLocale.js';
 
 const collapsed = ref(false);
+const { t } = useLocale();
 </script>

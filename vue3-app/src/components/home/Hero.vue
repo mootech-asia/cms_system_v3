@@ -2,7 +2,7 @@
   <div class="hero" @touchstart="onTouchStart" @touchend="onTouchEnd">
 
     <div
-      v-for="(s, i) in HERO_SLIDES" :key="i"
+      v-for="(s, i) in localizedSlides" :key="i"
       class="hero-slide"
       :class="{ active: i === idx }"
     >
@@ -50,14 +50,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import Icon          from '@/components/ui/Icon.vue';
 import { HERO_SLIDES } from '@/data/index.js';
+import { HERO_COPY } from '@/data/i18n.js';
+import { useLocale } from '@/composables/useLocale.js';
 
 const idx         = ref(0);
 const touchStartX = ref(null);
 const autoTimer   = ref(null);
 const len         = HERO_SLIDES.length;
+const { locale } = useLocale();
+
+const localizedSlides = computed(() => {
+  const copy = HERO_COPY[locale.value] || HERO_COPY.zh;
+  return HERO_SLIDES.map((slide, index) => ({ ...slide, ...(copy[index] || {}) }));
+});
 
 function resetAuto() {
   clearInterval(autoTimer.value);

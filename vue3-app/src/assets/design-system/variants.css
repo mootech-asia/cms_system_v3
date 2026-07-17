@@ -222,6 +222,185 @@
   padding-inline: var(--ui-modal-space);
 }
 
+:is(:root, [data-design-preview])[data-ui-game-card]:not([data-ui-game-card="v1"]) .gcard { --ui-motif: var(--ui-game-card-motif, ""); --ui-motif-size: var(--ui-game-card-motifSize, 42px); --ui-motif-opacity: var(--ui-game-card-motifOpacity, .12); }
+:is(:root, [data-design-preview])[data-ui-promotion-card]:not([data-ui-promotion-card="v1"]) .promo-card { --ui-motif: var(--ui-promotion-card-motif, ""); --ui-motif-size: var(--ui-promotion-card-motifSize, 42px); --ui-motif-opacity: var(--ui-promotion-card-motifOpacity, .12); }
+:is(:root, [data-design-preview])[data-ui-banner]:not([data-ui-banner="v1"]) :is(.hero, .studio-sample-banner) { --ui-motif: var(--ui-banner-motif, ""); --ui-motif-size: var(--ui-banner-motifSize, 56px); --ui-motif-opacity: var(--ui-banner-motifOpacity, .10); }
+:is(:root, [data-design-preview])[data-ui-ticker]:not([data-ui-ticker="v1"]) :is(.promo-ribbon, .providers-marquee) { --ui-motif: var(--ui-ticker-motif, ""); --ui-motif-size: var(--ui-ticker-motifSize, 32px); --ui-motif-opacity: var(--ui-ticker-motifOpacity, .10); }
+:is(:root, [data-design-preview])[data-ui-button]:not([data-ui-button="v1"]) :is(.ui-button, .btn, .ap-btn, .ap-btn-wide, .rec-confirm, .cv-view-all, .promo-card-cta, .sb-deposit, .sb-withdraw) { --ui-motif: var(--ui-button-motif, ""); --ui-motif-size: var(--ui-button-motifSize, 28px); --ui-motif-opacity: var(--ui-button-motifOpacity, .10); }
+:is(:root, [data-design-preview])[data-ui-tabs]:not([data-ui-tabs="v1"]) :is(.cat-tab, .ui-tab, .ui-tab--underline, .filter, .tab, .dp-method-tabs button, .wd-method-tabs button, .ap-amount-btn) { --ui-motif: var(--ui-tabs-motif, ""); --ui-motif-size: var(--ui-tabs-motifSize, 28px); --ui-motif-opacity: var(--ui-tabs-motifOpacity, .10); }
+:is(:root, [data-design-preview])[data-ui-tag]:not([data-ui-tag="v1"]) :is(.gcard-tag, .promo-card-tag, .rec-pill, .ap-pill, .ap-status, .count, .tb-tier-badge, .dp-provider-code, .ap-tag-new) { --ui-motif: var(--ui-tag-motif, ""); --ui-motif-size: var(--ui-tag-motifSize, 18px); --ui-motif-opacity: var(--ui-tag-motifOpacity, .14); }
+:is(:root, [data-design-preview])[data-ui-table]:not([data-ui-table="v1"]) :is(.rec-table-scroll, .leaderboard, .studio-sample-table) { --ui-motif: var(--ui-table-motif, ""); --ui-motif-size: var(--ui-table-motifSize, 48px); --ui-motif-opacity: var(--ui-table-motifOpacity, .09); }
+:is(:root, [data-design-preview])[data-ui-profile]:not([data-ui-profile="v1"]) :is(.ap-hero, .rewards-banner, .studio-sample-profile) { --ui-motif: var(--ui-profile-motif, ""); --ui-motif-size: var(--ui-profile-motifSize, 48px); --ui-motif-opacity: var(--ui-profile-motifOpacity, .10); }
+:is(:root, [data-design-preview])[data-ui-panel]:not([data-ui-panel="v1"]) :is(.ap-panel, .ap-form-card, .ap-tx-panel, .leaderboard, .studio-sample-panel) { --ui-motif: var(--ui-panel-motif, ""); --ui-motif-size: var(--ui-panel-motifSize, 52px); --ui-motif-opacity: var(--ui-panel-motifOpacity, .10); }
+:is(:root, [data-design-preview])[data-ui-navigation]:not([data-ui-navigation="v1"]) .sb-item { --ui-motif: var(--ui-navigation-motif, ""); --ui-motif-size: var(--ui-navigation-motifSize, 26px); --ui-motif-opacity: var(--ui-navigation-motifOpacity, .10); }
+:is(:root, [data-design-preview])[data-ui-section-title]:not([data-ui-section-title="v1"]) :is(.ap-h1, .section-title, .ap-section-h, .studio-title-sample h1) { --ui-motif: var(--ui-section-title-motif, ""); --ui-motif-size: var(--ui-section-title-motifSize, 40px); --ui-motif-opacity: var(--ui-section-title-motifOpacity, .09); }
+:is(:root, [data-design-preview])[data-ui-modal]:not([data-ui-modal="v1"]) .modal { --ui-motif: var(--ui-modal-motif, ""); --ui-motif-size: var(--ui-modal-motifSize, 56px); --ui-motif-opacity: var(--ui-modal-motifOpacity, .09); }
+
+:is(:root, [data-design-preview]) :is(
+  .gcard,
+  .promo-card,
+  .hero,
+  .studio-sample-banner,
+  .promo-ribbon,
+  .providers-marquee,
+  .ui-button,
+  .btn,
+  .ap-btn,
+  .ap-btn-wide,
+  .rec-confirm,
+  .cv-view-all,
+  .promo-card-cta,
+  .sb-deposit,
+  .sb-withdraw,
+  .cat-tab,
+  .ui-tab,
+  .ui-tab--underline,
+  .filter,
+  .tab,
+  .gcard-tag,
+  .promo-card-tag,
+  .rec-pill,
+  .ap-pill,
+  .ap-status,
+  .count,
+  .rec-table-scroll,
+  .leaderboard,
+  .studio-sample-table,
+  .ap-hero,
+  .rewards-banner,
+  .ap-panel,
+  .ap-form-card,
+  .ap-tx-panel,
+  .sb-item,
+  .ap-h1,
+  .section-title,
+  .ap-section-h,
+  .modal
+) {
+  position: relative;
+  isolation: isolate;
+}
+
+:is(:root, [data-design-preview]) :is(
+  .gcard,
+  .promo-card,
+  .hero,
+  .studio-sample-banner,
+  .promo-ribbon,
+  .providers-marquee,
+  .ui-button,
+  .btn,
+  .ap-btn,
+  .ap-btn-wide,
+  .rec-confirm,
+  .cv-view-all,
+  .promo-card-cta,
+  .sb-deposit,
+  .sb-withdraw,
+  .cat-tab,
+  .ui-tab,
+  .ui-tab--underline,
+  .filter,
+  .tab,
+  .gcard-tag,
+  .promo-card-tag,
+  .rec-pill,
+  .ap-pill,
+  .ap-status,
+  .count,
+  .rec-table-scroll,
+  .leaderboard,
+  .studio-sample-table,
+  .ap-hero,
+  .rewards-banner,
+  .ap-panel,
+  .ap-form-card,
+  .ap-tx-panel,
+  .sb-item,
+  .ap-h1,
+  .section-title,
+  .ap-section-h,
+  .modal
+)::after {
+  content: var(--ui-motif, "");
+  position: absolute;
+  right: 10px;
+  bottom: 6px;
+  z-index: 0;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--ui-motif-size, 42px);
+  font-weight: 800;
+  line-height: 1;
+  opacity: var(--ui-motif-opacity, 0);
+  pointer-events: none;
+  text-transform: uppercase;
+  transform: rotate(-8deg);
+  white-space: nowrap;
+}
+
+:is(:root, [data-design-preview])[data-ui-promotion-card="v2"] .promo-card::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: -7px;
+  width: 14px;
+  background: radial-gradient(circle at 50% 10px, var(--bg) 0 4px, transparent 5px) 0 0 / 14px 22px;
+}
+
+:is(:root, [data-design-preview])[data-ui-game-card="v3"] .gcard::before,
+:is(:root, [data-design-preview])[data-ui-panel="v3"] :is(.ap-panel, .studio-sample-panel)::before {
+  content: '';
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  width: 58px;
+  height: 10px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, var(--accent) 0 3px, transparent 4px) 0 50% / 18px 10px repeat-x;
+  opacity: .5;
+  pointer-events: none;
+}
+
+:is(:root, [data-design-preview])[data-ui-button="v5"] :is(.ui-button, .btn, .ap-btn, .cv-view-all, .promo-card-cta)::before,
+:is(:root, [data-design-preview])[data-ui-tabs="v5"] :is(.cat-tab, .ui-tab)::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 28%;
+  background: linear-gradient(115deg, color-mix(in oklch, var(--accent) 32%, transparent), transparent 72%);
+  pointer-events: none;
+}
+
+:is(:root, [data-design-preview])[data-ui-banner="v6"] :is(.hero, .studio-sample-banner)::before,
+:is(:root, [data-design-preview])[data-ui-profile="v6"] :is(.ap-hero, .rewards-banner, .studio-sample-profile)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 24% 0%, color-mix(in oklch, var(--accent) 26%, transparent), transparent 28%),
+    radial-gradient(circle at 76% 0%, color-mix(in oklch, var(--accent-2) 18%, transparent), transparent 24%);
+  opacity: .7;
+  pointer-events: none;
+}
+
+:is(:root, [data-design-preview])[data-ui-table="v9"] :is(.rec-table-scroll, .leaderboard, .studio-sample-table)::before,
+:is(:root, [data-design-preview])[data-ui-panel="v9"] :is(.ap-panel, .studio-sample-panel)::before {
+  content: 'NO. CMS-100';
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .14em;
+  opacity: .45;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   :is(:root, [data-design-preview]) :is(.gcard, .promo-card, .ui-button, .btn, .sb-item) {
     transition: none !important;

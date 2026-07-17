@@ -21,7 +21,7 @@
       <TopBar
         :user="user"
         :balance="balance"
-        :skin="t.skin"
+        :skin="tweaks.skin"
         :skins="skins"
         @sign-in="showSignIn = true"
         @logout="user = null"
@@ -96,13 +96,13 @@
               'is-dragging': draggedSectionId === sectionId,
               'is-drag-over': dragOverSectionId === sectionId && draggedSectionId !== sectionId,
             }"
-            :data-sort-id="sectionId"
-          >
+              :data-sort-id="sectionId"
+            >
             <button
               class="lobby-drag-handle"
               type="button"
-              :aria-label="`Reorder ${lobbySectionLabels[sectionId]}`"
-              :title="`Drag to reorder ${lobbySectionLabels[sectionId]}`"
+              :aria-label="`${lobbySectionLabel(sectionId)} ${t('studio.dragToReorder')}`"
+              :title="`${t('studio.dragToReorder')} ${lobbySectionLabel(sectionId)}`"
               @pointerdown="startSectionPointerDrag(sectionId, $event)"
               @pointermove="moveSectionPointerDrag"
               @pointerup="finishSectionPointerDrag"
@@ -121,7 +121,7 @@
 
             <Rail
               v-if="sectionId === 'recently-played'"
-              title="Recently played"
+              :title="lobbySectionLabel(sectionId)"
               :games="RECENTLY_PLAYED"
               :count="RECENTLY_PLAYED.length"
               :show-actions="false"
@@ -129,7 +129,7 @@
             />
             <Rail
               v-else-if="sectionId === 'slots'"
-              title="Slots"
+              :title="lobbySectionLabel(sectionId)"
               icon="fire"
               :games="GAMES.slots"
               see-all-tab="Slots"
@@ -138,7 +138,7 @@
             />
             <Rail
               v-else-if="sectionId === 'live-casino'"
-              title="Live Casino"
+              :title="lobbySectionLabel(sectionId)"
               icon="bolt"
               :games="GAMES.live"
               see-all-tab="Live"
@@ -155,7 +155,7 @@
 
       <!-- Hot Games tab -->
       <CategoryView v-else-if="catTab === 'Hot Games'"
-        title="Hot Games" icon="fire"
+        :title="navLabel('Hot Games')" icon="fire"
         :games="[...GAMES.slots, ...GAMES.live, ...GAMES.originals]"
         :show-filter-tabs="false"
         :show-provider-tabs="false"
@@ -165,7 +165,7 @@
 
       <!-- Mini Games tab -->
       <CategoryView v-else-if="catTab === 'Mini Games'"
-        title="Mini Games" icon="star"
+        :title="navLabel('Mini Games')" icon="star"
         :games="GAMES.originals"
         enable-load-more
         @open="openGame = $event"
@@ -173,7 +173,7 @@
 
       <!-- Slots tab -->
       <CategoryView v-else-if="catTab === 'Slots'"
-        title="Slots" icon="fire"
+        :title="navLabel('Slots')" icon="fire"
         :games="GAMES.slots"
         enable-load-more
         @open="openGame = $event"
@@ -181,7 +181,7 @@
 
       <!-- Live tab -->
       <CategoryView v-else-if="catTab === 'Live'"
-        title="Live" icon="bolt"
+        :title="navLabel('Live')" icon="bolt"
         :games="GAMES.live"
         enable-load-more
         @open="openGame = $event"
@@ -189,7 +189,7 @@
 
       <!-- Fish tab -->
       <CategoryView v-else-if="catTab === 'Fish'"
-        title="Fish"
+        :title="navLabel('Fish')"
         :games="GAMES.slots"
         enable-load-more
         @open="openGame = $event"
@@ -210,13 +210,13 @@
 
       <!-- Fallback -->
       <div v-else style="color:var(--text-dim);padding:40px 0;text-align:center;font-family:var(--font-mono);font-size:13px">
-        {{ catTab }} — coming soon
+        {{ navLabel(catTab) }} - {{ t('common.comingSoon') }}
       </div>
     </template>
 
     <!-- 其他主頁 -->
     <div v-else style="color:var(--text);padding:40px 0;font-family:var(--font-display)">
-      <h2>{{ activeCat }}</h2>
+      <h2>{{ navLabel(activeCat) }}</h2>
     </div>
 
     <!-- 頁尾 -->
@@ -286,6 +286,7 @@ import RecordTable            from '@/components/account/RecordTable.vue';
 import SupportPage            from '@/components/account/SupportPage.vue';
 import { useTweaks }          from '@/composables/useTweaks.js';
 import { useDesignStudio }    from '@/composables/useDesignStudio.js';
+import { useLocale }          from '@/composables/useLocale.js';
 import { GAMES, RECENTLY_PLAYED } from '@/data/index.js';
 import {
   DEFAULT_LOBBY_SECTION_ORDER,
@@ -296,7 +297,8 @@ import {
   writeLobbyLayout,
 } from '@/design/siteFactory.js';
 
-const { t, setTweak, skins } = useTweaks();
+const { t } = useLocale();
+const { t: tweaks, setTweak, skins } = useTweaks();
 useDesignStudio();
 
 const openGame          = ref(null);
@@ -312,7 +314,6 @@ const selectedPromotion = ref(null);
 const promotionReturnTab = ref('Lobby');
 const promotionReturnScroll = ref(0);
 
-const lobbySectionLabels = LOBBY_SECTION_LABELS;
 const lobbySectionOrder = ref([...DEFAULT_LOBBY_SECTION_ORDER]);
 const hiddenLobbySections = ref([]);
 const draggedSectionId = ref(null);
@@ -320,11 +321,19 @@ const dragOverSectionId = ref(null);
 const touchDragPointerId = ref(null);
 
 // showPromos 從 tweaks 驅動
-const showPromos = computed(() => t.showPromos);
+const showPromos = computed(() => tweaks.showPromos);
 const isSupportView = computed(() => ['About Us', 'FAQ'].includes(catTab.value));
 const visibleLobbySectionOrder = computed(() =>
   lobbySectionOrder.value.filter((id) => !hiddenLobbySections.value.includes(id))
 );
+
+function navLabel(id) {
+  return t(['nav', id], id);
+}
+
+function lobbySectionLabel(id) {
+  return t(['lobby', 'sections', id], LOBBY_SECTION_LABELS[id] || id);
+}
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
