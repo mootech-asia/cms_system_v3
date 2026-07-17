@@ -28,6 +28,64 @@
     </div>
   </section>
 
+  <!-- Step 3: QR relay (all methods except Bank Card) -->
+  <section v-else-if="step === 3" class="lobby-section ap-page" data-screen-label="Deposit">
+    <button class="ap-back" @click="step = 1">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6" /></svg>
+      Back
+    </button>
+    <h1 class="ap-h1">Deposit</h1>
+
+    <div class="dp-steps" role="list" :aria-label="t('deposit.qr.heading')">
+      <div
+        v-for="(label, i) in stepLabels" :key="i"
+        class="dp-step"
+        :class="{ active: i === currentStepIndex, done: i < currentStepIndex }"
+        role="listitem"
+      >
+        <span class="dp-step-num">{{ i + 1 }}</span>
+        <span class="dp-step-label">{{ label }}</span>
+      </div>
+    </div>
+
+    <div class="ap-transfer">
+      <div class="ap-transfer-pill">{{ t('deposit.qr.heading') }}</div>
+      <div class="ap-form-card">
+        <div class="ap-transfer-amt-row">
+          <span class="ap-transfer-label">{{ t('deposit.qr.amountLabel') }}</span>
+          <span class="ap-transfer-amt">{{ qrAmountDisplay }}</span>
+        </div>
+
+        <div class="dp-qr-wrap">
+          <svg class="dp-qr-svg" viewBox="0 0 21 21" role="img" :aria-label="t('deposit.qr.heading')">
+            <rect x="0" y="0" width="21" height="21" fill="#fff" />
+            <rect v-for="(m, idx) in QR_MODULES" :key="idx" :x="m.col" :y="m.row" width="1" height="1" fill="#0b0b10" />
+            <g v-for="(pos, i) in QR_FINDER_POSITIONS" :key="'finder-' + i">
+              <rect :x="pos.x" :y="pos.y" width="7" height="7" fill="#0b0b10" />
+              <rect :x="pos.x + 1" :y="pos.y + 1" width="5" height="5" fill="#fff" />
+              <rect :x="pos.x + 2" :y="pos.y + 2" width="3" height="3" fill="#0b0b10" />
+            </g>
+          </svg>
+        </div>
+
+        <p class="ap-transfer-note">{{ paymentTarget.type === 'url' ? t('deposit.qr.urlHint') : t('deposit.qr.walletHint') }}</p>
+
+        <div class="dp-qr-target">
+          <span class="dp-qr-target-label">{{ paymentTarget.type === 'url' ? t('deposit.qr.urlLabel') : t('deposit.qr.walletLabel') }}</span>
+          <div class="dp-qr-target-row">
+            <code class="dp-qr-target-value">{{ paymentTarget.value }}</code>
+            <button type="button" class="dp-qr-copy" :class="{ copied }" @click="copyPaymentTarget">
+              {{ copied ? t('deposit.qr.copied') : t('deposit.qr.copy') }}
+            </button>
+          </div>
+        </div>
+
+        <button class="ap-btn-wide ap-grad" @click="step = 1; emit('navigate', 'Account Overview')">{{ t('deposit.qr.complete') }}</button>
+        <button class="ap-btn-wide outline" @click="step = 1">{{ t('deposit.qr.back') }}</button>
+      </div>
+    </div>
+  </section>
+
   <!-- Step 1: Method tabs + form -->
   <section v-else class="lobby-section ap-page" data-screen-label="Deposit">
     <button class="ap-back" @click="emit('navigate', 'Account Overview')">
@@ -35,6 +93,18 @@
       Back
     </button>
     <h1 class="ap-h1">Deposit</h1>
+
+    <div v-if="method !== 'bank'" class="dp-steps" role="list" :aria-label="t('deposit.qr.heading')">
+      <div
+        v-for="(label, i) in stepLabels" :key="i"
+        class="dp-step"
+        :class="{ active: i === currentStepIndex, done: i < currentStepIndex }"
+        role="listitem"
+      >
+        <span class="dp-step-num">{{ i + 1 }}</span>
+        <span class="dp-step-label">{{ label }}</span>
+      </div>
+    </div>
 
     <div class="ui-tablist--underline" role="tablist" aria-label="Payment gateway provider">
       <button
@@ -159,7 +229,7 @@
         <div class="pi-success-title">{{ applicationResult.title }}</div>
         <div v-if="applicationResult.message" class="pi-success-sub">{{ applicationResult.message }}</div>
         <button class="ap-btn-wide ap-grad" @click="closeApplicationResult">
-          {{ applicationResult.type === 'success' && method === 'bank' ? 'Continue' : 'Got It' }}
+          {{ applicationResult.type === 'success' ? 'Continue' : 'Got It' }}
         </button>
         <button
           v-if="applicationResult.type !== 'success'"
@@ -173,8 +243,32 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
+import { useLocale } from '@/composables/useLocale.js';
 
+const { t } = useLocale();
 const emit = defineEmits(['navigate']);
+
+// Deterministic decorative QR pattern (not a real encoding) — fixed 21x21 grid
+// with three finder-pattern corners, shared by every non-bank method.
+const QR_SIZE = 21;
+const QR_FINDER_SIZE = 7;
+const QR_FINDER_POSITIONS = [
+  { x: 0, y: 0 },
+  { x: QR_SIZE - QR_FINDER_SIZE, y: 0 },
+  { x: 0, y: QR_SIZE - QR_FINDER_SIZE },
+];
+function isQrFinderZone(row, col) {
+  return QR_FINDER_POSITIONS.some(
+    (pos) => row >= pos.y && row < pos.y + QR_FINDER_SIZE && col >= pos.x && col < pos.x + QR_FINDER_SIZE
+  );
+}
+const QR_MODULES = [];
+for (let row = 0; row < QR_SIZE; row++) {
+  for (let col = 0; col < QR_SIZE; col++) {
+    if (isQrFinderZone(row, col)) continue;
+    if ((row * 31 + col * 17 + row * col * 7) % 11 < 5) QR_MODULES.push({ row, col });
+  }
+}
 
 const presets = [10000, 50000, 100000, 500000, 1000000];
 const amount  = ref(10000);
@@ -228,6 +322,44 @@ watch(availableMethods, (methods) => {
   if (!methods.some((option) => option.id === method.value)) method.value = methods[0].id;
 });
 
+// QR relay step — every method except Bank Card routes through a QR + payment
+// link screen before returning to the account (Bank Card keeps its own step 2).
+const stepLabels = computed(() => [t('deposit.steps.method'), t('deposit.steps.qr')]);
+const currentStepIndex = computed(() => (step.value === 3 ? 1 : 0));
+
+const paymentTargets = {
+  linepay: { type: 'url', value: 'https://line.example/pay/dep-8f42a1c9' },
+  'usdt-trc20': { type: 'address', value: 'TQn9Y2khEsLMj6f8Jm3vBd7hNq4xRzP1sK' },
+  'usdt-erc20': { type: 'address', value: 'TXk7Bp2wRq9LmZ4vGd6sYcN3hEaJ8fVoQ1' },
+};
+const paymentTarget = computed(() => paymentTargets[method.value] || paymentTargets.linepay);
+const qrAmountDisplay = computed(() => (isCrypto.value ? `${converted.value} USDT` : `₩ ${custom.value || '0'}`));
+
+const copied = ref(false);
+let copyTimer = null;
+async function copyPaymentTarget() {
+  const value = paymentTarget.value.value;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+    } else {
+      const el = document.createElement('textarea');
+      el.value = value;
+      el.style.position = 'fixed';
+      el.style.opacity = '0';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    }
+  } catch {
+    // Clipboard access unavailable — UI still confirms the intent below.
+  }
+  copied.value = true;
+  clearTimeout(copyTimer);
+  copyTimer = setTimeout(() => { copied.value = false; }, 1600);
+}
+
 function pick(n) {
   amount.value = n;
   custom.value = n.toLocaleString();
@@ -238,8 +370,10 @@ function submitApplication() {
 }
 
 function closeApplicationResult() {
-  const continueToTransfer = applicationResult.value?.type === 'success' && method.value === 'bank';
+  const success = applicationResult.value?.type === 'success';
+  const selectedMethod = method.value;
   applicationResult.value = null;
-  if (continueToTransfer) step.value = 2;
+  if (!success) return;
+  step.value = selectedMethod === 'bank' ? 2 : 3;
 }
 </script>
