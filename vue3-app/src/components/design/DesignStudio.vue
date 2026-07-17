@@ -18,6 +18,7 @@
           </select>
         </label>
         <button class="studio-button quiet" type="button" @click="emit('navigate', 'Lobby')">{{ t('studio.viewSite') }}</button>
+        <button class="studio-button quiet" type="button" :disabled="!dirty" @click="resetDraft">{{ t('studio.resetDraft') }}</button>
         <button class="studio-button quiet" type="button" @click="importInput?.click()">{{ t('studio.import') }}</button>
         <button class="studio-button quiet" type="button" @click="exportConfig">{{ t('studio.export') }}</button>
         <button class="studio-button primary" type="button" :disabled="!dirty" @click="applyDraft">
@@ -284,10 +285,6 @@
             <h2>{{ moduleLabel(selectedModule) }}</h2>
             <p>{{ moduleDescription(selectedModule) }}</p>
           </div>
-          <div class="studio-device-control" :aria-label="t('studio.livePreview')">
-            <button type="button" :class="{ active: previewMode === 'desktop' }" @click="previewMode = 'desktop'">{{ t('studio.desktop') }}</button>
-            <button type="button" :class="{ active: previewMode === 'mobile' }" @click="previewMode = 'mobile'">{{ t('studio.mobile') }}</button>
-          </div>
         </div>
 
         <MediaUploadField
@@ -342,178 +339,6 @@
           </button>
         </div>
 
-        <section class="studio-preview-section">
-          <div class="studio-preview-toolbar">
-            <div>
-              <span>{{ t('studio.livePreview') }}</span>
-              <small>{{ variantText(selectedVariant, 'description') }}</small>
-            </div>
-            <button class="studio-text-button" type="button" :disabled="!dirty" @click="resetDraft">{{ t('studio.resetDraft') }}</button>
-          </div>
-
-          <div class="studio-preview-stage">
-            <div
-              class="studio-preview-frame"
-              :class="{ mobile: previewMode === 'mobile' }"
-            >
-              <div
-                class="studio-preview-canvas"
-                data-design-preview
-                v-bind="previewAttributes"
-                :style="previewStyle"
-              >
-                <div class="studio-preview-context">
-                  <span>{{ categoryLabel(selectedModule.category) }}</span>
-                  <span>{{ t('studio.skinAware') }}</span>
-                </div>
-
-                <article v-if="selectedModuleId === 'game-card'" class="gcard studio-sample-game">
-                  <div class="gcard-art">
-                    <img :src="assets.game" :alt="t('studio.sample.gameTitle')" />
-                    <span class="gcard-tag hot">{{ t('studio.sample.hot') }}</span>
-                  </div>
-                  <div class="gcard-meta">
-                    <strong class="gcard-title">{{ t('studio.sample.gameTitle') }}</strong>
-                    <span class="gcard-provider">{{ t('studio.sample.provider') }}</span>
-                  </div>
-                </article>
-
-                <article v-else-if="selectedModuleId === 'promotion-card'" class="promo-card studio-sample-promo">
-                  <span class="promo-card-tag">{{ t('studio.sample.vip') }}</span>
-                  <div class="promo-card-art" :style="{ backgroundImage: `url(${assets.promo})` }" />
-                  <h3 class="promo-card-title">{{ t('studio.sample.promoTitle') }}</h3>
-                  <p class="promo-card-sub">{{ t('studio.sample.promoSub') }}</p>
-                  <button class="promo-card-cta" type="button">{{ t('studio.sample.viewOffer') }}</button>
-                </article>
-
-                <article v-else-if="selectedModuleId === 'banner'" class="hero studio-sample-banner">
-                  <img :src="assets.hero" :alt="t('studio.sample.bannerTitle')" :style="{ objectPosition: assets.heroPosition }" />
-                  <div>
-                    <span>{{ t('studio.sample.bannerEyebrow') }}</span>
-                    <h3>{{ t('studio.sample.bannerTitle') }}</h3>
-                    <p>{{ t('studio.sample.bannerSub') }}</p>
-                  </div>
-                </article>
-
-                <div v-else-if="selectedModuleId === 'ticker'" class="promo-ribbon studio-sample-ticker">
-                  <div class="promo-ribbon-viewport">
-                    <div class="studio-ticker-track">
-                      <span v-for="item in t('studio.sample.ticker')" :key="item"><b>✦</b> {{ item }}</span>
-                    </div>
-                  </div>
-                  <time class="promo-ribbon-time">18:42:09</time>
-                </div>
-
-                <div v-else-if="selectedModuleId === 'button'" class="studio-sample-stack">
-                  <button class="ui-button ui-button--primary" type="button">{{ t('studio.sample.confirmTransaction') }}</button>
-                  <button class="ui-button" type="button">{{ t('studio.sample.reviewDetails') }}</button>
-                  <button class="ui-button ui-button--quiet" type="button">{{ t('studio.sample.back') }}</button>
-                </div>
-
-                <div v-else-if="selectedModuleId === 'tabs'" class="studio-sample-tabs">
-                  <div class="cat-tabs">
-                    <button class="cat-tab active" type="button">{{ t('studio.sample.lobby') }}</button>
-                    <button class="cat-tab" type="button">{{ t('studio.sample.hotGames') }}</button>
-                    <button class="cat-tab" type="button">{{ t('studio.sample.live') }}</button>
-                  </div>
-                  <div class="studio-filter-row">
-                    <button class="ui-tab active" type="button">{{ t('common.all') }}</button>
-                    <button class="ui-tab" type="button">{{ t('common.favorites') }}</button>
-                    <button class="ui-tab" type="button">Saba</button>
-                  </div>
-                </div>
-
-                <form v-else-if="selectedModuleId === 'form'" class="studio-sample-form" @submit.prevent>
-                  <label>
-                    <span>{{ t('studio.sample.walletAddress') }}</span>
-                    <input class="ap-input" value="0x2F5A...8C41" />
-                  </label>
-                  <label>
-                    <span>{{ t('studio.sample.network') }}</span>
-                    <select class="ap-input"><option>USDT-TRC20</option></select>
-                  </label>
-                  <label>
-                    <span>{{ t('studio.sample.amount') }}</span>
-                    <input class="ap-input" value="10,000" />
-                  </label>
-                </form>
-
-                <div v-else-if="selectedModuleId === 'tag'" class="studio-sample-tags">
-                  <span class="gcard-tag hot">{{ t('studio.sample.hot') }}</span>
-                  <span class="gcard-tag">{{ t('studio.sample.vip') }}</span>
-                  <span class="rec-pill ok">{{ t('studio.sample.approved') }}</span>
-                  <span class="rec-pill pend">{{ t('studio.sample.pending') }}</span>
-                  <span class="count">24</span>
-                </div>
-
-                <div v-else-if="selectedModuleId === 'table'" class="rec-table-scroll studio-sample-table">
-                  <table class="rec-table">
-                    <thead><tr><th>{{ t('studio.sample.asset') }}</th><th>{{ t('studio.sample.network') }}</th><th>{{ t('studio.sample.amount') }}</th><th>{{ t('studio.sample.status') }}</th></tr></thead>
-                    <tbody>
-                      <tr><td>USDT</td><td>TRC20</td><td>25,000</td><td><span class="rec-pill ok">{{ t('studio.sample.approved') }}</span></td></tr>
-                      <tr><td>USDC</td><td>ERC20</td><td>12,400</td><td><span class="rec-pill pend">{{ t('studio.sample.pending') }}</span></td></tr>
-                      <tr><td>BTC</td><td>Bitcoin</td><td>0.1842</td><td><span class="rec-pill ok">{{ t('studio.sample.approved') }}</span></td></tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <article v-else-if="selectedModuleId === 'profile'" class="ap-hero studio-sample-profile">
-                  <div class="studio-profile-avatar" :class="{ 'has-image': assets.avatar }">
-                    <img v-if="assets.avatar" :src="assets.avatar" :alt="t('studio.sample.memberIdentity')" />
-                    <span v-else>PL</span>
-                  </div>
-                  <div class="studio-profile-copy">
-                    <span>{{ t('studio.sample.memberIdentity') }}</span>
-                    <h3>{{ t('studio.sample.player') }}</h3>
-                    <p>{{ t('studio.sample.rewards') }}</p>
-                  </div>
-                  <div class="studio-profile-balance">
-                    <span>{{ t('studio.sample.balance') }}</span>
-                    <strong>1,286.96</strong>
-                  </div>
-                  <div class="studio-profile-progress"><span /></div>
-                </article>
-
-                <article v-else-if="selectedModuleId === 'panel'" class="ap-panel studio-sample-panel">
-                  <div class="studio-panel-title"><span>{{ t('studio.sample.settlementOverview') }}</span><small>{{ t('studio.sample.updatedNow') }}</small></div>
-                  <div class="studio-metric-grid">
-                    <div><span>{{ t('studio.sample.volume') }}</span><strong>842K</strong></div>
-                    <div><span>{{ t('studio.sample.players') }}</span><strong>18,420</strong></div>
-                    <div><span>{{ t('studio.sample.success') }}</span><strong>99.8%</strong></div>
-                  </div>
-                </article>
-
-                <nav v-else-if="selectedModuleId === 'navigation'" class="studio-sample-nav">
-                  <div class="studio-sample-brand"><img :src="assets.logo" alt="Brand logo preview" /></div>
-                  <a class="sb-item active" href="#" @click.prevent><span class="studio-nav-icon">⌂</span><span class="sb-label">{{ t('studio.sample.lobby') }}</span></a>
-                  <a class="sb-item" href="#" @click.prevent><span class="studio-nav-icon">◇</span><span class="sb-label">{{ t('studio.sample.markets') }}</span></a>
-                  <a class="sb-item" href="#" @click.prevent><span class="studio-nav-icon">□</span><span class="sb-label">{{ t('studio.sample.portfolio') }}</span></a>
-                </nav>
-
-                <div v-else-if="selectedModuleId === 'section-title'" class="studio-sample-headings">
-                  <div class="studio-title-sample">
-                    <span>{{ t('studio.sample.account') }}</span>
-                    <h1 class="ap-h1">{{ t('studio.sample.portfolioOverview') }}</h1>
-                    <p>{{ t('studio.sample.portfolioSub') }}</p>
-                  </div>
-                  <div class="section-head">
-                    <h2 class="section-title">{{ t('studio.sample.recentlyPlayed') }} <span class="count">8</span></h2>
-                  </div>
-                  <div class="ap-section-h">{{ t('studio.sample.transactionSettings') }}</div>
-                </div>
-
-                <article v-else-if="selectedModuleId === 'modal'" class="modal studio-sample-modal">
-                  <div class="modal-head"><strong>{{ t('studio.sample.confirmWithdrawal') }}</strong><button type="button" :aria-label="t('studio.sample.close')">×</button></div>
-                  <div class="modal-body">
-                    <p>{{ t('studio.sample.modalBody') }}</p>
-                    <div class="studio-modal-detail"><span>USDT-TRC20</span><strong>10,000</strong></div>
-                  </div>
-                  <div class="modal-foot"><button class="ui-button" type="button">{{ t('studio.sample.cancel') }}</button><button class="ui-button ui-button--primary" type="button">{{ t('studio.sample.confirm') }}</button></div>
-                </article>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
     </div>
   </section>
@@ -568,7 +393,6 @@ const hiddenSections = ref([...initialLayout.hidden]);
 const layoutDragId = ref(null);
 const layoutOverId = ref(null);
 const selectedModuleId = ref(modules[0].id);
-const previewMode = ref('desktop');
 const notice = ref('');
 const importInput = ref(null);
 const localeIds = Object.keys(languages);
@@ -610,8 +434,6 @@ const moduleGroups = computed(() => {
 const selectedModule = computed(() => modules.find((module) => module.id === selectedModuleId.value));
 const selectedVariant = computed(() => variantById(draft[selectedModuleId.value]));
 const selectedMediaSpec = computed(() => MEDIA_UPLOAD_SPECS[selectedModuleId.value] || null);
-const previewAttributes = computed(() => makeDesignAttributes(draft));
-const previewStyle = computed(() => makeDesignStyle(draft));
 const visibleLayoutCount = computed(() => layoutOrder.value.length - hiddenSections.value.length);
 const previewSkinLabel = computed(() => skins.find((skin) => skin.id === draftSkin.value)?.label || draftSkin.value);
 const dirty = computed(() =>
