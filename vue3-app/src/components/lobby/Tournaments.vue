@@ -24,8 +24,15 @@
       <div
         v-for="(item, i) in localizedTournaments" :key="i"
         class="tourn"
+        :class="{ 'tourn-hero': i === 0 }"
         style="--tourn-hue: var(--accent)"
       >
+        <div
+          v-if="i === 0"
+          class="tourn-hero-bg"
+          :style="{ backgroundImage: `url(${TOURNAMENT_HERO_IMAGE})` }"
+          aria-hidden="true"
+        ></div>
         <span v-if="item.tag" class="tourn-tag" :class="{ hot: i === 1 }">{{ item.tag }}</span>
         <div class="tourn-prize-label">{{ t('lobby.prizePool') }}</div>
         <div class="tourn-prize">{{ item.prize }}</div>
@@ -48,7 +55,7 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import { TOURNAMENTS } from '@/data/index.js';
+import { TOURNAMENTS, TOURNAMENT_HERO_IMAGE } from '@/data/index.js';
 import { TOURNAMENT_COPY } from '@/data/i18n.js';
 import { useLocale } from '@/composables/useLocale.js';
 

@@ -129,10 +129,14 @@ const TOURNAMENTS = [
   { title: 'Live Casino Cup',    prize: '$15,000', endsIn: '4d 0h',  players:  870, hue: 340, tag: null }
 ];
 
+// Featured tournament hero card banner — reuses the same sports/matchday
+// artwork as the "GLOBAL FOOTBALL" hero slide.
+const TOURNAMENT_HERO_IMAGE = assetPath('assets/mock/hero-5-v2.jpg');
+
 const RECENTLY_PLAYED = [
   GAMES.slots[2], GAMES.originals[0], GAMES.slots[5],
   GAMES.live[0],  GAMES.slots[1],     GAMES.originals[2],
   GAMES.slots[7], GAMES.table[0]
 ];
 
-export { PROVIDERS, GAMES, HERO_SLIDES, PROMOS, WINNERS, TOURNAMENTS, RECENTLY_PLAYED };
+export { PROVIDERS, GAMES, HERO_SLIDES, PROMOS, WINNERS, TOURNAMENTS, TOURNAMENT_HERO_IMAGE, RECENTLY_PLAYED };

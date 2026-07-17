@@ -13,7 +13,7 @@
       <div class="studio-header-actions">
         <label class="studio-lang-control">
           <span>{{ t('studio.language') }}</span>
-          <select class="studio-select" :value="locale" @change="setLocale($event.target.value)">
+          <select class="studio-select" :value="locale" @change="changeStudioLocale($event.target.value)">
             <option v-for="(option, key) in languages" :key="key" :value="key">{{ option.label }}</option>
           </select>
         </label>
@@ -542,7 +542,7 @@ import {
   writeVisibleLocaleIds,
 } from '@/design/siteFactory.js';
 
-const emit = defineEmits(['navigate']);
+const emit = defineEmits(['navigate', 'studio-change']);
 const {
   design,
   modules,
@@ -627,6 +627,11 @@ watch(draftSkin, (skinId) => {
   document.documentElement.setAttribute('data-skin', skin.id);
   document.documentElement.setAttribute('data-theme', skin.theme);
 }, { immediate: true });
+
+function changeStudioLocale(value) {
+  setLocale(value);
+  emit('studio-change');
+}
 
 function variantById(id) {
   return variants.find((variant) => variant.id === id) || variants[0];
@@ -787,6 +792,7 @@ function applyDraft() {
   appliedVisibleSkinIds.value = [...savedVisibleSkinIds];
   appliedLayout.value = savedLayout;
   showNotice(t('studio.noticeApplied'));
+  emit('studio-change');
 }
 
 function resetDraft() {
