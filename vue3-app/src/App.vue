@@ -21,10 +21,13 @@
       <TopBar
         :user="user"
         :balance="balance"
+        :skin="tweaks.skin"
+        :skins="visibleSkins"
         @sign-in="showSignIn = true"
         @logout="user = null"
         @home="goHome"
         @navigate="(cat) => activeCat = cat"
+        @change-skin="setTweak('skin', $event)"
       />
     </template>
 
@@ -297,7 +300,9 @@ import {
 } from '@/design/siteFactory.js';
 
 const { t } = useLocale();
-const { t: tweaks, setTweak } = useTweaks();
+const { t: tweaks, setTweak, skins } = useTweaks();
+const visibleSkinIds = ref(readVisibleSkinIds());
+const visibleSkins = computed(() => skins.filter((s) => visibleSkinIds.value.includes(s.id)));
 useDesignStudio();
 
 const openGame          = ref(null);
@@ -376,8 +381,8 @@ function restoreLobbySectionOrder() {
 }
 
 function enforceVisibleSkinPolicy() {
-  const visibleSkinIds = readVisibleSkinIds();
-  if (!visibleSkinIds.includes(tweaks.skin)) setTweak('skin', visibleSkinIds[0]);
+  visibleSkinIds.value = readVisibleSkinIds();
+  if (!visibleSkinIds.value.includes(tweaks.skin)) setTweak('skin', visibleSkinIds.value[0]);
 }
 
 function syncSiteFactory(event) {
