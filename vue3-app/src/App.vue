@@ -271,9 +271,11 @@ import {
   readLobbyLayout,
   readVisibleSkinIds,
   SKIN_VISIBILITY_STORAGE_KEY,
+  LOCALE_VISIBILITY_STORAGE_KEY,
+  readVisibleLocaleIds,
 } from '@/design/siteFactory.js';
 
-const { t } = useLocale();
+const { t, locale, setLocale } = useLocale();
 const { t: tweaks, setTweak, skins } = useTweaks();
 const visibleSkinIds = ref(readVisibleSkinIds());
 const visibleSkins = computed(() => skins.filter((s) => visibleSkinIds.value.includes(s.id)));
@@ -348,12 +350,20 @@ function enforceVisibleSkinPolicy() {
   if (!visibleSkinIds.value.includes(tweaks.skin)) setTweak('skin', visibleSkinIds.value[0]);
 }
 
+function enforceVisibleLocalePolicy() {
+  const visibleLocaleIds = readVisibleLocaleIds();
+  if (!visibleLocaleIds.includes(locale.value)) setLocale(visibleLocaleIds[0]);
+}
+
 function syncSiteFactory(event) {
   if (event.key === null || [LOBBY_LAYOUT_STORAGE_KEY, LEGACY_LOBBY_ORDER_STORAGE_KEY].includes(event.key)) {
     restoreLobbySectionOrder();
   }
   if (event.key === null || event.key === SKIN_VISIBILITY_STORAGE_KEY) {
     enforceVisibleSkinPolicy();
+  }
+  if (event.key === null || event.key === LOCALE_VISIBILITY_STORAGE_KEY) {
+    enforceVisibleLocalePolicy();
   }
 }
 
