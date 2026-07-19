@@ -27,22 +27,15 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: vue3-app/package-lock.json
-
-      - name: Build Vue app
-        working-directory: vue3-app
-        run: |
-          npm ci
-          npx vite build --base=/cms_system_v3/
+      - name: Verify static site
+        run: node scripts/verify-static-site.js
 
       - name: Assemble site
         run: |
+          set -euo pipefail
           mkdir -p _site
-          cp -r vue3-app/dist/. _site/
+          cp -- *.html _site/
+          cp -r assets _site/assets
           touch _site/.nojekyll
 
       - name: Upload GitHub Pages artifact
