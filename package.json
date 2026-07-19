@@ -1,0 +1,13 @@
+{
+  "name": "cms-system-v3-factory",
+  "private": true,
+  "description": "CMS_前台_v3 static-site tooling (serve/verify scripts). The Vue 3 engineer-form app lives on branch 工程師框架版本, not here.",
+  "scripts": {
+    "serve": "node scripts/serve.js",
+    "verify": "node scripts/verify-static-site.js",
+    "verify:behavior": "node scripts/verify-static-site-behavior.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}
