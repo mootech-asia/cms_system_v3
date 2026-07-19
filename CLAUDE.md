@@ -35,15 +35,17 @@
 
 Gaming Lobby CMS 前台，原始 prototype 為 CDN React + 純 HTML/CSS。
 
-**2026-07-19 起 main 的現行形態是純 HTML+CSS+JS 靜態站**（repo 根目錄的 20 個
+**2026-07-19 起 main 的前台現行形態是純 HTML+CSS+JS 靜態站**（repo 根目錄的 20 個
 `.html` + `assets/`，免建置、可直接開 `index.html`，行為層是 `assets/js/site.js`
-vanilla JS）。中間曾重構為 Vue 3（`vue3-app/`，已完成全部 9 個 Phase）；該版本
-**已完整移出 main**，保存於分支 `工程師框架版本`（含 `vue3-app/studio` 設計後台）。
-以下「技術棧／目錄結構」兩節描述的是 `工程師框架版本` 分支的 Vue 3 版，留作該分支
-的參考文件；main 上實際運作的是純靜態版，其結構見 repo 根目錄 + `scripts/` 內
-`verify-static-site.js` 的頁面清單。
+vanilla JS）。中間曾重構為 Vue 3（`vue3-app/`，已完成全部 9 個 Phase）；**前台部分
+已被純 HTML 站取代**，但 `vue3-app/` 目錄本身**仍留在 main**，因為裡面的
+`studio/` 設計後台要繼續跟主站一起部署（見下方「設計後台」節，業主鐵則：設計工具要
+綁在工廠身上，不能封存）。完整的舊版 Vue 3 前台（含 studio）另外備份在分支
+`工程師框架版本`。以下「技術棧／目錄結構」兩節描述的是 Vue 3 版（`vue3-app/`）的
+程式碼組織，對 studio 部分仍然準確；純 HTML 前台的結構見 repo 根目錄 + `scripts/`
+內 `verify-static-site.js` 的頁面清單。
 
-### 技術棧（`工程師框架版本` 分支 / `vue3-app/`，非 main 現行形態）
+### 技術棧（`vue3-app/`，現況只用來 build studio；完整前台版本在 `工程師框架版本` 分支）
 - Vue 3 + Vite 5
 - Composition API / `<script setup>`
 - 無 vue-router：頁面切換用 `activeCat` ref（字串）做路由
@@ -157,17 +159,27 @@ vue3-app/src/
 file://）、`npm run verify`（結構檢查）、`npm run verify:behavior`（Playwright 行為
 檢查，需先 `npm run serve`）。
 
-**若要改回 Vue 3 開發**：checkout 分支 `工程師框架版本`，`vue3-app/` 是完整原始碼
-（含 `studio/` 設計後台）。該分支與 main 已分岔，彼此不會自動同步。
+### 設計後台（`/studio`）：跟前台一起部署，不是封存資產
 
-**⚠️ main 尚未真的切換**：上述變更目前只在分支 `claude/factory-web-refactor-ewrpuv`
-（已 push），還沒併進 `main`。**併入前務必注意：`.github/workflows/deploy-pages.yml`
-是 push 到 main 就直接 build + deploy，沒有像 v2 那樣的 candidate/promote 手動關卡**
-——一旦這個分支併入 main，正式站會立刻自動變成純靜態版（且不再有 `/studio` 設計後台，
-因為 `vue3-app/` 已移出）。併入前請先確認業主是否已經想好設計後台要怎麼處理。
+**業主鐵則（2026-07-19）**：設計後台是工廠/生成系統的工具，要跟現行系統綁在一起持續
+可用；只有「客戶後台」（面向網站經營者的內容管理介面）才是封存進分支的東西。v3 從頭到
+尾只有設計後台、沒有獨立客戶後台，所以 `vue3-app/` **仍留在 main**（分支
+`工程師框架版本` 只是額外備份，不是唯一存放處）——但只用來建置 `/studio`：
+
+- `vue3-app/vite.config.js` 的 build entry 只剩 `studio`（`site` 前台入口已移除，
+  前台改由 repo 根目錄的純 HTML 頁面提供，避免重複打包）。
+- `.github/workflows/deploy-pages.yml` 會先驗證+組裝根目錄的純 HTML 站，再
+  `cd vue3-app && npx vite build --base=/cms_system_v3/` 把 studio 一起 build 進
+  `_site/studio/`（`dist/assets/*` 併入 `_site/assets/`，兩邊有重疊路徑的檔案已驗證
+  byte-identical，不會互相覆蓋壞掉）。
+- 本地要單獨測 studio：`cd vue3-app && npm install && npx vite build --base=/cms_system_v3/`，
+  再看 `dist/studio/`。
+- **若要改回完整 Vue 3 前台開發**（studio 以外的部分）：checkout 分支
+  `工程師框架版本`，裡面是切換前的完整 `vue3-app/`（含 `site` 入口）。該分支與 main
+  已分岔，彼此不會自動同步。
 
 ## 目前版本狀態
 
-Vue 3 重構 Phase 1–9 全部完成（保存於分支 `工程師框架版本`）。
-2026-07-19：main 已切換為純 HTML+CSS+JS 靜態站（見上節），20 頁結構+行為皆已驗證。
-下一步依需求決定：新功能、視覺調整、或另起新專案。
+Vue 3 重構 Phase 1–9 全部完成（完整版保存於分支 `工程師框架版本`）。
+2026-07-19：main 前台已切換為純 HTML+CSS+JS 靜態站，設計後台（`vue3-app/` → `/studio`）
+維持跟主站一起部署，兩者皆已驗證。下一步依需求決定：新功能、視覺調整、或另起新專案。

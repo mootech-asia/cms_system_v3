@@ -30,12 +30,32 @@ jobs:
       - name: Verify static site
         run: node scripts/verify-static-site.js
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: vue3-app/package-lock.json
+
+      - name: Build design studio
+        working-directory: vue3-app
+        run: |
+          npm ci
+          npx vite build --base=/cms_system_v3/
+
       - name: Assemble site
         run: |
           set -euo pipefail
           mkdir -p _site
           cp -- *.html _site/
           cp -r assets _site/assets
+          # vue3-app/dist/studio + vue3-app/dist/assets (studio's own built JS/CSS,
+          # plus its copied public/ files — verified byte-identical to the static
+          # site's own assets/ where paths overlap, so this merge never overwrites
+          # with different content). dist/index.html does not exist (vite.config.js
+          # only builds the studio entry) so there's nothing here that could clobber
+          # the static site's own index.html.
+          cp -r vue3-app/dist/studio _site/studio
+          cp -r vue3-app/dist/assets/. _site/assets/
           touch _site/.nojekyll
 
       - name: Upload GitHub Pages artifact

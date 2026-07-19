@@ -1,11 +1,14 @@
 # CODING AGENTS: READ THIS FIRST
 
 > **⚠️ Outdated as of 2026-07-19.** This file describes the *original* design-handoff
-> bundle from before the Vue 3 rewrite. Both the `project/` directory it references and
-> the later `vue3-app/` Vue 3 rewrite have since been superseded: `main` is now a pure
-> HTML+CSS+JS static site at the repo root (see `CLAUDE.md`). `vue3-app/` (including
-> `studio/`) is preserved in full on branch `工程師框架版本`. Read `CLAUDE.md` first —
-> the rest of this file is kept only as historical context for how the project started.
+> bundle from before the Vue 3 rewrite. The `project/` directory it references is gone,
+> and the front-end part of the later `vue3-app/` Vue 3 rewrite has been superseded:
+> `main`'s front-end is now a pure HTML+CSS+JS static site at the repo root (see
+> `CLAUDE.md`). `vue3-app/` itself still lives in `main`, but only to build
+> `studio/` (the design admin), which is deployed alongside the static site. A full
+> pre-switch copy of `vue3-app/` (including its own front-end build) is preserved on
+> branch `工程師框架版本`. Read `CLAUDE.md` first — the rest of this file is kept only
+> as historical context for how the project started.
 
 This is a **handoff bundle** from Claude Design (claude.ai/design).
 
