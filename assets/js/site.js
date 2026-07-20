@@ -577,6 +577,10 @@
     } catch (e) {}
     if (saved && findSkin(saved)) applySkin(saved, true);
     else currentSkinId = document.documentElement.getAttribute('data-skin') || 'blue';
+    /* useTweaks.js applies TWEAK_DEFAULTS.aspect (1.1) as --card-aspect on every
+       boot; without it the cards fall back to main.css's 0.74 and render ~75px
+       taller than the Vue reference. */
+    document.documentElement.style.setProperty('--card-aspect', '1.1');
   }
   function renderSkinMenu(menu) {
     menu.className = 'tb-skin-menu';
