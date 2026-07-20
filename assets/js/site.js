@@ -707,8 +707,12 @@
     var t = e.target;
 
     var closeBtn = t.closest('.modal-close');
-    if (closeBtn) { var bg = closeBtn.closest('.modal-bg'); if (bg) hideModalEl(bg); return; }
-    if (t.classList && t.classList.contains('modal-bg')) { hideModalEl(t); return; }
+    if (closeBtn) { var bg = closeBtn.closest('.modal-bg'); if (bg) { if (bg.hasAttribute('data-transient')) bg.remove(); else hideModalEl(bg); } return; }
+    if (t.classList && t.classList.contains('modal-bg')) { if (t.hasAttribute('data-transient')) t.remove(); else hideModalEl(t); return; }
+    var dialogCloseBtn = t.closest('[data-dialog-close]');
+    if (dialogCloseBtn) { var dcbg = dialogCloseBtn.closest('.modal-bg'); if (dcbg) dcbg.remove(); return; }
+    var gmFootBtn = t.closest('#cms-modal-game .modal-foot .btn');
+    if (gmFootBtn) { hideModalEl(document.getElementById('cms-modal-game')); return; }
 
     var openSignin = t.closest('[data-action="open-signin"]');
     if (openSignin) { openSignInModal('signin'); return; }
@@ -723,11 +727,32 @@
     if (skinTrigger) { toggleSkinMenu(skinTrigger); return; }
     var skinOption = t.closest('.tb-skin-option');
     if (skinOption) { applySkin(skinOption.getAttribute('data-skin')); closeSkinMenu(); return; }
+    var langTrigger = t.closest('.sb-lang');
+    if (langTrigger) { toggleLangMenu(langTrigger); return; }
+    var langItem = t.closest('.sb-lang-item');
+    if (langItem) { closeLangMenu(); return; }
 
     var collapseSidebarBtn = t.closest('.sb-collapse-account, .sb-collapse-money');
     if (collapseSidebarBtn) { var shell1 = document.querySelector('.shell'); if (shell1) shell1.classList.add('collapsed'); return; }
     var expandSidebarBtn = t.closest('.sb-collapse-compact');
     if (expandSidebarBtn) { var shell2 = document.querySelector('.shell'); if (shell2) shell2.classList.remove('collapsed'); return; }
+
+    var sectionToggleBtn = t.closest('.sb-section-toggle');
+    if (sectionToggleBtn) {
+      var sec = sectionToggleBtn.closest('.sb-section');
+      var itemsWrap = sec ? sec.querySelector('.sb-section-items') : null;
+      var nowCollapsed = sectionToggleBtn.classList.toggle('collapsed');
+      sectionToggleBtn.setAttribute('aria-expanded', String(!nowCollapsed));
+      if (itemsWrap) itemsWrap.style.display = nowCollapsed ? 'none' : '';
+      return;
+    }
+
+    var backToTopBtn = t.closest('.footer-min-logo');
+    if (backToTopBtn) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    var apBackBtn = t.closest('.ap-back');
+    if (apBackBtn) { location.href = 'account-overview.html'; return; }
+    var outlineBackBtn = t.closest('.ap-btn-wide.outline');
+    if (outlineBackBtn && outlineBackBtn.textContent.trim() === 'Back') { location.href = 'account-overview.html'; return; }
 
     var sectionCollapseBtn = t.closest('.section-collapse');
     if (sectionCollapseBtn) { toggleSectionCollapse(sectionCollapseBtn); return; }
@@ -804,6 +829,8 @@
     if (openMenu && !t.closest('.tb-user-wrap')) closeUserMenu();
     var openSkin = document.querySelector('.tb-skin-menu');
     if (openSkin && !t.closest('.tb-skin-wrap')) closeSkinMenu();
+    var openLang = document.querySelector('.sb-lang-menu');
+    if (openLang && !t.closest('.sb-lang-wrap')) closeLangMenu();
 
     // 其餘裝飾用 href="#"（尚未特化處理者）避免跳頁
     var hashLink = t.closest('a[href="#"]');
@@ -827,8 +854,795 @@
     hideModalEl(document.getElementById('cms-modal-game'));
     hideModalEl(document.getElementById('cms-modal-signin'));
     hideModalEl(document.getElementById('cms-modal-customerservice'));
+    var transientDialog = document.querySelector('.modal-bg[data-transient]');
+    if (transientDialog) transientDialog.remove();
     closeUserMenu();
     closeSkinMenu();
+    closeLangMenu();
+  }
+
+  /* ============================================================
+   * 共用小工具：頁面內一次性對話框（confirm / success / warning），
+   * 與既有三個常駐 modal 不同——用完即從 DOM 移除，不重複佔位。
+   * ========================================================== */
+  function showDialog(bodyHtml, extraClass) {
+    var bg = document.createElement('div');
+    bg.className = 'modal-bg' + (extraClass ? ' ' + extraClass : '');
+    bg.setAttribute('data-transient', '1');
+    bg.innerHTML = bodyHtml;
+    document.body.appendChild(bg);
+    return bg;
+  }
+  function resultDialogHTML(type, title, message, extraBtnHtml) {
+    var warn = type !== 'success';
+    var icon = warn
+      ? '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v6M12 17h.01"/></svg>'
+      : '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
+    return '<div class="pi-success" data-dialog-panel>' +
+        '<div class="pi-success-check' + (warn ? ' warn' : '') + '">' + icon + '</div>' +
+        '<div class="pi-success-title">' + escapeHtml(title) + '</div>' +
+        (message ? '<div class="pi-success-sub">' + escapeHtml(message) + '</div>' : '') +
+        '<button type="button" class="ap-btn-wide ap-grad" data-dialog-close>' + (warn ? 'Got It' : 'Continue') + '</button>' +
+        (extraBtnHtml || '') +
+      '</div>';
+  }
+
+  /* ============================================================
+   * Sidebar：選單分組收合(sb-section-toggle) / 語言選單(sb-lang，
+   * 目前僅中文一種語系，誠實呈現單一已選項，不捏造多語系資料)
+   * ========================================================== */
+  function renderLangMenu(menu) {
+    menu.className = 'sb-lang-menu';
+    menu.setAttribute('role', 'listbox');
+    menu.innerHTML = '<button type="button" class="sb-lang-item active" role="option" aria-selected="true">' +
+      '<span class="sb-flag" aria-hidden="true"></span><span>中文</span>' + CHECK_ICON + '</button>';
+  }
+  function closeLangMenu() { var m = document.querySelector('.sb-lang-menu'); if (m) m.remove(); }
+  function toggleLangMenu(trigger) {
+    var wrap = trigger.closest('.sb-lang-wrap');
+    if (!wrap) return;
+    var existing = wrap.querySelector('.sb-lang-menu');
+    if (existing) { closeLangMenu(); return; }
+    closeUserMenu(); closeSkinMenu();
+    var menu = document.createElement('div');
+    wrap.appendChild(menu);
+    renderLangMenu(menu);
+  }
+
+  /* ============================================================
+   * Account Overview：暱稱編輯 / 餘額 refresh 動畫 / 銀行卡輪播＋刪除確認 /
+   * 快速動作導覽 — 1:1 對照 vue3-app AccountOverview.vue（3 張銀行卡資料是
+   * 原元件內寫死的展示資料並非本次新增，delete 確認框樣板同樣照搬原始碼）
+   * ========================================================== */
+  var ACCOUNT_BANKS = [
+    { bank: 'KB Bank', num: '**** **** **** 1234' },
+    { bank: 'Shinhan Bank', num: '**** **** **** 5678' },
+    { bank: 'Woori Bank', num: '**** **** **** 9012' }
+  ];
+  function initAccountOverviewPage() {
+    var bankHead = document.querySelector('.ap-bank-head');
+    var panel = bankHead ? bankHead.closest('.ap-panel') : null;
+    if (!panel) return;
+    var bankIdx = 0;
+    var banks = ACCOUNT_BANKS.slice();
+
+    function renderBanks() {
+      var countEl = panel.querySelector('.ap-bank-count');
+      var rows = panel.querySelectorAll('.ap-bank-row');
+      if (!banks.length) {
+        if (rows[0]) rows[0].outerHTML = '<div class="ap-bank-empty">No bank accounts yet.</div>';
+        var navEl = panel.querySelector('.ap-bank-nav'); if (navEl) navEl.style.display = 'none';
+        return;
+      }
+      var b = banks[bankIdx];
+      if (countEl) countEl.textContent = (bankIdx + 1) + '/' + banks.length;
+      if (rows[0]) { var numEl = rows[0].querySelector('.ap-bank-num'); if (numEl) numEl.textContent = b.num; }
+      if (rows[1]) { var nameEl = rows[1].querySelector('span'); if (nameEl) nameEl.textContent = b.bank; }
+    }
+    function openDeleteConfirm() {
+      var b = banks[bankIdx];
+      if (!b) return;
+      var dlg = showDialog(
+        '<div class="confirm-dialog" data-dialog-panel>' +
+          '<div class="confirm-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></svg></div>' +
+          '<div class="confirm-title">Delete Account?</div>' +
+          '<div class="confirm-sub">Are you sure you want to remove <strong>' + escapeHtml(b.bank) + '</strong>? This action cannot be undone.</div>' +
+          '<div class="confirm-actions">' +
+            '<button type="button" class="ap-btn-wide outline" data-dialog-close>Cancel</button>' +
+            '<button type="button" class="ap-btn-wide confirm-del-btn" data-action="confirm-delete-bank">Delete</button>' +
+          '</div>' +
+        '</div>'
+      );
+      var delConfirmBtn = dlg.querySelector('[data-action="confirm-delete-bank"]');
+      if (delConfirmBtn) delConfirmBtn.addEventListener('click', function () {
+        banks.splice(bankIdx, 1);
+        bankIdx = Math.max(0, bankIdx - 1);
+        renderBanks();
+        dlg.remove();
+      });
+    }
+
+    var arrows = panel.querySelectorAll('.ap-bank-arrow');
+    if (arrows[0]) arrows[0].addEventListener('click', function () { bankIdx = (bankIdx - 1 + banks.length) % banks.length; renderBanks(); });
+    if (arrows[1]) arrows[1].addEventListener('click', function () { bankIdx = (bankIdx + 1) % banks.length; renderBanks(); });
+    var delBtn = panel.querySelector('.ap-bank-del');
+    if (delBtn) delBtn.addEventListener('click', openDeleteConfirm);
+
+    Array.prototype.forEach.call(document.querySelectorAll('.ap-panel .ap-btn'), function (btn) {
+      var label = btn.textContent.trim();
+      if (label === 'Deposit') btn.addEventListener('click', function () { location.href = 'deposit.html'; });
+      if (label === 'Withdraw') btn.addEventListener('click', function () { location.href = 'withdrawal.html'; });
+    });
+
+    var pencilBtn = document.querySelector('.ap-pencil');
+    if (pencilBtn) pencilBtn.addEventListener('click', function () {
+      var nickWrap = pencilBtn.closest('.ap-hero-nick');
+      var nickEl = nickWrap ? nickWrap.querySelector('span:not(.muted)') : null;
+      var cur = nickEl ? nickEl.textContent.trim() : '';
+      var next = window.prompt('Nickname', cur);
+      if (next && next.trim() && nickEl) nickEl.textContent = next.trim();
+    });
+    var refreshBtn = document.querySelector('.ap-refresh');
+    if (refreshBtn) refreshBtn.addEventListener('click', function () {
+      refreshBtn.classList.add('spinning');
+      setTimeout(function () { refreshBtn.classList.remove('spinning'); }, 700);
+    });
+
+    var addBankLink = document.querySelector('.ap-add-bank');
+    if (addBankLink) addBankLink.addEventListener('click', function (e) { e.preventDefault(); location.href = 'withdrawal.html'; });
+    var viewMoreLink = document.querySelector('.ap-view-more');
+    if (viewMoreLink) viewMoreLink.addEventListener('click', function (e) { e.preventDefault(); location.href = 'account-record.html'; });
+  }
+
+  /* ============================================================
+   * Security Center：sc-item 導覽（對照 SecurityCenter.vue items[].go /
+   * .logout；'Change Login Password'/'Change Transaction Password' 兩項
+   * 原始碼本身也未定義去向，維持無動作)
+   * ========================================================== */
+  function initSecurityCenterPage() {
+    var items = document.querySelectorAll('.sc-item');
+    if (!items.length) return;
+    var GO_MAP = { 'Personal Info': 'personal-info.html', 'Banking Details': 'withdrawal.html' };
+    Array.prototype.forEach.call(items, function (btn) {
+      var nameEl = btn.querySelector('.sc-item-name');
+      var name = nameEl ? nameEl.textContent.trim() : '';
+      if (name === 'Logout') { btn.addEventListener('click', doLogout); return; }
+      var target = GO_MAP[name];
+      if (target) btn.addEventListener('click', function () { location.href = target; });
+    });
+  }
+
+  /* ============================================================
+   * Personal Info：Submit -> success 對話框（樣板取自 PersonalInfo.vue
+   * 的 v-if="done" 區塊，原始碼本身無實際存檔動作，僅顯示成功訊息）
+   * ========================================================== */
+  function initPersonalInfoPage() {
+    var card = document.querySelector('.pi-card');
+    if (!card) return;
+    var submitBtn = card.querySelector('.ap-btn-wide.ap-grad');
+    if (!submitBtn) return;
+    submitBtn.addEventListener('click', function () {
+      showDialog(resultDialogHTML('success', 'Success!', 'Profile updated successfully.'));
+    });
+  }
+
+  /* ============================================================
+   * Record 系列頁面（5 頁共用元件 RecordTable.vue）：
+   *  - 狀態篩選：純 DOM 顯示/隱藏（所有列本來就已完整渲染在畫面上，
+   *    對照原始碼 rows computed 也只是篩選同一份固定資料，無需另外複製資料）
+   *  - 日期欄位點擊喚出原生日期選擇器（tryPicker 對照）
+   *  - 自動刷新倒數（Deposit/Withdrawal/Profit and Loss 三種類型才有）
+   *  - rec-confirm 按鈕原始碼本身也未接任何動作（日期範圍從未真的套用到
+   *    rows 篩選），維持現狀，不捏造篩選邏輯
+   * ========================================================== */
+  function initRecordPage() {
+    var table = document.querySelector('.rec-table');
+    if (!table) return;
+
+    var statusBtn = document.querySelector('.rec-status-btn');
+    if (statusBtn) {
+      var wrap = statusBtn.closest('.rec-status-wrap');
+      var closeStatusMenu = function () { var m = wrap.querySelector('.rec-status-menu'); if (m) m.remove(); };
+      var applyStatusFilter = function (val) {
+        Array.prototype.forEach.call(table.querySelectorAll('tbody tr'), function (tr) {
+          if (val === 'All') { tr.style.display = ''; return; }
+          var pill = tr.querySelector('.rec-pill');
+          tr.style.display = (pill && pill.textContent.trim() === val) ? '' : 'none';
+        });
+        statusBtn.textContent = 'Status : ' + val;
+      };
+      statusBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var existing = wrap.querySelector('.rec-status-menu');
+        if (existing) { closeStatusMenu(); return; }
+        var menu = document.createElement('div');
+        menu.className = 'rec-status-menu';
+        menu.innerHTML = ['All', 'Pending', 'Approved', 'Rejected'].map(function (s) {
+          return '<button type="button" class="rec-status-opt" data-status="' + s + '">' + s + '</button>';
+        }).join('');
+        wrap.appendChild(menu);
+        menu.addEventListener('click', function (e2) {
+          var opt = e2.target.closest('.rec-status-opt');
+          if (!opt) return;
+          applyStatusFilter(opt.getAttribute('data-status'));
+          closeStatusMenu();
+        });
+      });
+      document.addEventListener('click', function (e) { if (!e.target.closest('.rec-status-wrap')) closeStatusMenu(); });
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('.rec-date-cell'), function (cell) {
+      cell.addEventListener('click', function () {
+        var inp = cell.querySelector('input');
+        if (!inp) return;
+        try { inp.showPicker(); } catch (e) { inp.focus(); }
+      });
+    });
+
+    var refreshBtn = document.querySelector('.rec-refresh-btn');
+    if (refreshBtn) {
+      var secEl = refreshBtn.parentElement ? refreshBtn.parentElement.querySelector('strong') : null;
+      var secs = secEl ? (parseInt(secEl.textContent, 10) || 20) : 20;
+      setInterval(function () {
+        secs = secs <= 1 ? 20 : secs - 1;
+        if (secEl) secEl.textContent = String(secs);
+      }, 1000);
+      refreshBtn.addEventListener('click', function () { secs = 20; if (secEl) secEl.textContent = String(secs); });
+    }
+  }
+
+  /* ============================================================
+   * Support 頁：9 個分頁 + FAQ 手風琴 + Exclusion turnover list 篩選。
+   * 內容逐字取自 vue3-app SupportPage.vue 的 SUP_CONTENT / EXCLUSION /
+   * FAQ_GROUPS（純文字資料搬移，非新增資料模型）。
+   * ========================================================== */
+  var SUP_CONTENT = {
+    Support: [{ panel: 'Please contact our Customer Center.', body: [] }],
+    Notice: [
+      { panel: 'Urgent Notice — 100% Official Telegram Change.', body: [
+        { p: 'Impersonators pretending to be 100% are increasing.\n100% provides guidance through only one official Telegram. If there is any problem with the existing Telegram, we will only provide guidance through this channel or live chat.' },
+        { p: '100% Official Telegram notice room: https://t.me/100kor' },
+        { p: 'If you cannot reach us through the existing Telegram, please verify through live chat that it is not an impersonator before proceeding with your inquiry.' }
+      ]},
+      { panel: 'How to inquire about deposit accounts', body: [
+        { p: 'For deposit account inquiries, please contact us via live chat or the Customer Center Telegram after signing up.' }
+      ]}
+    ],
+    About: [{ panel: 'About 100%', body: [
+      { p: '100% is legally registered as a sportsbook, online betting, and casino operator, and holds a license issued by the relevant authorities.' },
+      { p: '100% provides the best products and services to users around the world and has established itself as one of the most popular sites.' }
+    ]}],
+    Privacy: [
+      { panel: 'Privacy Policy', body: [
+        { p: 'This policy describes how the information and data you provide to 100% are used between 100% and the customer.' },
+        { p: 'By submitting your information and using the site, you consent to the use of your information in accordance with this Privacy Policy.' }
+      ]},
+      { panel: 'Information Collection & Use', body: [
+        { p: 'We collect, use, and dispose of information and data about you, including the following:' },
+        { ol: ['All information you create and submit by email or on the website;', 'Transaction history related to the website;', 'Details of your site visits, such as traffic data and location data.'] }
+      ]}
+    ],
+    Info: [{ panel: 'Additional Notes', body: [
+      { p: '100% is not responsible for the content or accuracy of internal or external websites.\nAll information provided by the company is based on fact. The company reserves the right to correct obvious errors.' }
+    ]}],
+    Addiction: [
+      { panel: 'Preventing Gaming Addiction', body: [
+        { p: '100% encourages members to enjoy gaming while also preventing gaming addiction.' },
+        { ul: ['Self-assessment', 'Betting management', 'Deposit limit management', 'Child protection', 'Help & suggestions'] }
+      ]},
+      { panel: 'Deposit Limit Management', body: [
+        { p: 'If you wish to change or lower your deposit limit, please contact a customer agent via live chat.' }
+      ]},
+      { panel: 'Help & Suggestions', body: [
+        { p: 'GamCare — 0808 8020 133 (free call in the UK) or www.gamcare.org.uk' },
+        { p: 'GambleAware — www.gambleaware.org' },
+        { p: 'Gamblers Anonymous — www.gamblersanonymous.org' }
+      ]}
+    ],
+    Rules: [
+      { panel: 'Rules & Regulations', body: [
+        { p: 'We at 100% strictly penalize members who sign up with the intent to use the site through abnormal methods. If a member is deemed to be in violation of the stated rules, 100% has the right to confiscate the member’s account without prior warning.' }
+      ]},
+      { panel: 'Deposit & Withdrawal', body: [
+        { ul: [
+          'If you deposit to the wrong account without confirming beforehand, 100% accepts no responsibility for that amount.',
+          'Deposit and withdrawal requests can only be made with account information registered under your own name.',
+          'To prevent illegal money laundering and financial fraud, the full deposit amount must be wagered before withdrawal is possible.'
+        ]}
+      ]}
+    ]
+  };
+  var SUP_EXCLUSION = [
+    { name: 'Sicbo', type: 'Slot', vendor: 'AG', pct: '100%' },
+    { name: 'Ema Black Jack D21', type: 'Live', vendor: 'AG', pct: '100%' },
+    { name: '1000 Diamond Bet Roulette', type: 'Slot', vendor: 'PT', pct: '100%' },
+    { name: 'Lightning Roulette', type: 'Live', vendor: 'EVO', pct: '100%' },
+    { name: 'Crazy Time', type: 'Live', vendor: 'EVO', pct: '100%' },
+    { name: 'Sweet Bonanza', type: 'Slot', vendor: 'PP', pct: '50%' }
+  ];
+  var SUP_FAQ_GROUPS = [
+    { title: 'General Information', faqs: [
+      { q: 'About 100%', a: '100% is an overseas betting site that provides trusted and verified games. From sports, slot games, live casinos to mini games.' },
+      { q: 'Are the games provided on the site fair?', a: '100% is a legally registered company, and game results are absolutely fair, just, and based on facts.' },
+      { q: 'Is my personal information safe?', a: 'All personal data is encrypted in transit and at rest. We never share your information with third parties without consent.' }
+    ]},
+    { title: 'Account Management', faqs: [
+      { q: 'How do I change my password?', a: 'Go to Security Center from your account menu, enter your current password and your new password twice, then confirm.' },
+      { q: 'I lost my password, how can I get it reissued?', a: 'Click "Forgot?" on the login window, enter your username and registered email, and we will send password reset instructions.' }
+    ]}
+  ];
+  function supPanelHTML(blocks) {
+    return blocks.map(function (block) {
+      var bodyHtml = '';
+      if (block.body && block.body.length) {
+        bodyHtml = '<div class="sup-panel-body">' + block.body.map(function (blk) {
+          if (blk.p) return '<p class="sup-p">' + escapeHtml(blk.p).replace(/\n/g, '<br>') + '</p>';
+          if (blk.ul) return '<ul class="sup-ul">' + blk.ul.map(function (li) { return '<li>' + escapeHtml(li) + '</li>'; }).join('') + '</ul>';
+          if (blk.ol) return '<ol class="sup-ol">' + blk.ol.map(function (li) { return '<li>' + escapeHtml(li) + '</li>'; }).join('') + '</ol>';
+          return '';
+        }).join('') + '</div>';
+      }
+      return '<div class="sup-panel"><div class="sup-panel-h">' + escapeHtml(block.panel) + '</div>' + bodyHtml + '</div>';
+    }).join('');
+  }
+  function supFaqHTML(openMap) {
+    return SUP_FAQ_GROUPS.map(function (g, gi) {
+      var items = g.faqs.map(function (f, fi) {
+        var key = gi + '-' + fi;
+        var open = !!openMap[key];
+        return '<div class="sup-faq' + (open ? ' open' : '') + '" data-faq-key="' + key + '">' +
+            '<button type="button" class="sup-faq-q"><span>' + escapeHtml(f.q) + '</span>' +
+              '<svg class="sup-faq-caret" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
+            '</button>' +
+            (open ? '<div class="sup-faq-a">' + escapeHtml(f.a) + '</div>' : '') +
+          '</div>';
+      }).join('');
+      return '<div class="sup-group"><h2 class="sup-group-title">' + escapeHtml(g.title) + '</h2><div class="sup-faq-list">' + items + '</div></div>';
+    }).join('');
+  }
+  function supExclusionListHTML(filter, query) {
+    var list = SUP_EXCLUSION.filter(function (e) {
+      return (filter === 'All' || e.type === filter) && e.name.toLowerCase().indexOf((query || '').toLowerCase()) !== -1;
+    });
+    if (!list.length) return '<div class="sup-panel"><div class="sup-panel-body"><p class="sup-p">No results.</p></div></div>';
+    return list.map(function (e) {
+      return '<div class="sup-panel"><div class="sup-panel-h">' + escapeHtml(e.name) + '</div><div class="sup-panel-body"><ul class="sup-ul">' +
+        '<li>Game type: ' + escapeHtml(e.type) + '</li><li>Game Vendor: ' + escapeHtml(e.vendor) + '</li><li>Exclusion Percentage: ' + escapeHtml(e.pct) + '</li>' +
+      '</ul></div></div>';
+    }).join('');
+  }
+  function supExclusionHTML(filter, query) {
+    var types = ['All'];
+    SUP_EXCLUSION.forEach(function (e) { if (types.indexOf(e.type) === -1) types.push(e.type); });
+    return '<div class="sup-ex">' +
+        '<div class="sup-ex-filters">' +
+          '<select class="sup-ex-select">' + types.map(function (t) { return '<option' + (t === filter ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select>' +
+          '<div class="sup-ex-search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>' +
+            '<input class="sup-ex-query" placeholder="Game Name" value="' + escapeAttr(query || '') + '"></div>' +
+        '</div>' +
+        '<div class="sup-ex-list">' + supExclusionListHTML(filter, query) + '</div>' +
+      '</div>';
+  }
+  function initSupportPage() {
+    var tabsWrap = document.querySelector('.sup-tabs');
+    if (!tabsWrap) return;
+    var openMap = { '0-0': true, '0-1': true };
+    var exState = { filter: 'All', query: '' };
+
+    function renderTab(tab) {
+      Array.prototype.forEach.call(tabsWrap.querySelectorAll('.sup-tab'), function (b) {
+        b.classList.toggle('active', b.textContent.replace('ⓘ', '').trim() === tab);
+      });
+      var node = tabsWrap.nextElementSibling;
+      while (node) { var next = node.nextElementSibling; node.remove(); node = next; }
+      var html;
+      if (tab === 'FAQ') html = supFaqHTML(openMap);
+      else if (tab === 'Exclusion turnover list') html = supExclusionHTML(exState.filter, exState.query);
+      else html = supPanelHTML(SUP_CONTENT[tab] || []);
+      tabsWrap.insertAdjacentHTML('afterend', html);
+    }
+
+    tabsWrap.addEventListener('click', function (e) {
+      var btn = e.target.closest('.sup-tab');
+      if (!btn) return;
+      renderTab(btn.textContent.replace('ⓘ', '').trim());
+    });
+    document.addEventListener('click', function (e) {
+      var faqQ = e.target.closest('.sup-faq-q');
+      if (!faqQ) return;
+      var faqEl = faqQ.closest('[data-faq-key]');
+      if (!faqEl) return;
+      var key = faqEl.getAttribute('data-faq-key');
+      openMap[key] = !openMap[key];
+      renderTab('FAQ');
+    });
+    document.addEventListener('change', function (e) {
+      if (e.target.classList && e.target.classList.contains('sup-ex-select')) {
+        exState.filter = e.target.value;
+        renderTab('Exclusion turnover list');
+      }
+    });
+    document.addEventListener('input', function (e) {
+      if (e.target.classList && e.target.classList.contains('sup-ex-query')) {
+        exState.query = e.target.value;
+        var listWrap = document.querySelector('.sup-ex-list');
+        if (listWrap) listWrap.innerHTML = supExclusionListHTML(exState.filter, exState.query);
+      }
+    });
+
+    renderTab('FAQ');
+  }
+
+  /* ============================================================
+   * Sports 頁：分頁篩選(cv-tab)＋載入更多，比賽資料/演算法逐字對照
+   * vue3-app Sports.vue（baseMatches 常數 + provider 演算法），供應商
+   * 清單沿用既有 CMS_DATA.PROVIDERS，不新增資料模型。sport-odd 按鈕
+   * 原始碼本身也未接任何點擊（純展示賠率），維持現狀。
+   * ========================================================== */
+  var SPORTS_BASE_MATCHES = [
+    { league: 'Champions League', home: 'Real Madrid', away: 'Bayern', start: 'Today · 20:00', odds: ['1.85', '3.40', '4.20'], score: '1 - 0' },
+    { league: 'Premier League', home: 'Arsenal', away: 'Man City', start: 'Today · 22:30', odds: ['2.95', '3.20', '2.40'] },
+    { league: 'NBA', home: 'Lakers', away: 'Celtics', start: 'Tomorrow · 03:30', odds: ['1.65', '—', '2.25'] },
+    { league: 'La Liga', home: 'Barcelona', away: 'Atletico', start: 'Sat · 21:00', odds: ['1.55', '4.10', '5.60'] },
+    { league: 'Serie A', home: 'Inter', away: 'Juventus', start: 'Sun · 19:45', odds: ['2.10', '3.30', '3.60'] },
+    { league: 'NFL', home: 'Chiefs', away: 'Eagles', start: 'Sun · 23:00', odds: ['1.90', '—', '1.95'] }
+  ];
+  function buildSportsMatches() {
+    var all = [];
+    PROVIDERS.forEach(function (provider, providerIndex) {
+      [0, 1].forEach(function (variant) {
+        var template = SPORTS_BASE_MATCHES[(providerIndex + variant * 3) % SPORTS_BASE_MATCHES.length];
+        var live = variant === 0 && providerIndex % 5 === 0;
+        var odds = template.odds.map(function (odd, oddIndex) {
+          if (odd === '—') return odd;
+          return (+odd + providerIndex * 0.03 + variant * 0.08 + oddIndex * 0.02).toFixed(2);
+        });
+        all.push({
+          league: template.league, home: template.home, away: template.away, start: template.start,
+          provider: provider, live: live,
+          min: (34 + providerIndex) + "'",
+          score: template.score || ((providerIndex % 3) + ' - ' + ((providerIndex + 1) % 3)),
+          odds: odds
+        });
+      });
+    });
+    return all;
+  }
+  function sportCardHTML(m) {
+    var scoreHtml = m.live ? '<div class="sport-score">' + escapeHtml(m.score) + '</div>' : '';
+    var headRight = m.live
+      ? '<span class="sport-live"><span class="dot"></span>LIVE ' + escapeHtml(m.min) + '</span>'
+      : '<span class="sport-time">' + escapeHtml(m.start) + '</span>';
+    return '<article class="sport-card' + (m.live ? ' live' : '') + '">' +
+        '<div class="sport-head"><span class="sport-league">' + escapeHtml(m.league) + '</span>' + headRight + '</div>' +
+        '<div class="sport-teams">' +
+          '<div class="sport-team"><div class="sport-team-logo" style="--logo-hue:200">' + escapeHtml(m.home.slice(0, 2).toUpperCase()) + '</div><span>' + escapeHtml(m.home) + '</span></div>' +
+          scoreHtml +
+          '<div class="sport-team"><span>' + escapeHtml(m.away) + '</span><div class="sport-team-logo" style="--logo-hue:340">' + escapeHtml(m.away.slice(0, 2).toUpperCase()) + '</div></div>' +
+        '</div>' +
+        '<div class="sport-odds">' +
+          '<button type="button" class="sport-odd"><span>1</span><strong>' + escapeHtml(m.odds[0]) + '</strong></button>' +
+          '<button type="button" class="sport-odd"' + (m.odds[1] === '—' ? ' disabled' : '') + '><span>X</span><strong>' + escapeHtml(m.odds[1]) + '</strong></button>' +
+          '<button type="button" class="sport-odd"><span>2</span><strong>' + escapeHtml(m.odds[2]) + '</strong></button>' +
+        '</div>' +
+      '</article>';
+  }
+  function initSportsPage() {
+    var tabsWrap = document.querySelector('.sports-grid') ? document.querySelector('.cv-tabs') : null;
+    var grid = document.querySelector('.sports-grid');
+    if (!tabsWrap || !grid) return;
+    var foot = grid.nextElementSibling && grid.nextElementSibling.classList.contains('cv-foot') ? grid.nextElementSibling : null;
+    var allMatches = buildSportsMatches();
+    var state = { filter: 'All', visibleCount: 8 };
+
+    function render() {
+      var filtered = state.filter === 'All' ? allMatches : allMatches.filter(function (m) { return m.provider === state.filter; });
+      var shown = filtered.slice(0, state.visibleCount);
+      grid.innerHTML = shown.map(sportCardHTML).join('');
+      if (foot) foot.style.display = shown.length < filtered.length ? '' : 'none';
+      var countEl = document.querySelector('.section-title .count');
+      if (countEl) countEl.textContent = filtered.length;
+    }
+
+    tabsWrap.addEventListener('click', function (e) {
+      var btn = e.target.closest('.cv-tab');
+      if (!btn) return;
+      Array.prototype.forEach.call(tabsWrap.querySelectorAll('.cv-tab'), function (b) { b.classList.toggle('active', b === btn); });
+      state.filter = btn.textContent.trim();
+      state.visibleCount = 8;
+      render();
+    });
+    if (foot) {
+      var loadMoreBtn = foot.querySelector('.cv-view-all');
+      if (loadMoreBtn) loadMoreBtn.addEventListener('click', function () { state.visibleCount += 4; render(); });
+    }
+    render();
+  }
+
+  /* ============================================================
+   * 優惠卡片（index.html 首頁 4 張 + promotion.html 載入更多剩餘 2 張）：
+   * 對照 vue3-app data/promotions.js PROMOTION_OFFERS（4 筆，逐字保留，
+   * 未新增/未省略），點擊導向各自 actionTarget 對照的真實頁面；
+   * promotion.html 缺少的第 3、4 張卡片 markup 逐字取自 index.html 已
+   * 渲染的同一組資料，非新增視覺／資料。
+   * ========================================================== */
+  var PROMOTION_ACTION_PAGES = ['deposit.html', 'deposit.html', 'account-overview.html', 'account-overview.html'];
+  var PROMOTION_EXTRA_CARDS_HTML = [
+    '<button class="promo-card promo-card-link" type="button" aria-label="查看 推薦好友賺 25%" style="--promo-hue: var(--accent);"><span class="promo-card-tag">推薦</span><div class="promo-card-art" aria-hidden="true" style="background-image: url(&quot;assets/mock/promo-3-v2.jpg&quot;);"></div><h3 class="promo-card-title">推薦好友賺 25%</h3><p class="promo-card-sub">邀請好友後可獲得長期佣金。</p><span class="promo-card-cta">查看 →</span></button>',
+    '<button class="promo-card promo-card-link" type="button" aria-label="查看 最高 20% 返水" style="--promo-hue: var(--accent);"><span class="promo-card-tag">VIP</span><div class="promo-card-art" aria-hidden="true" style="background-image: url(&quot;assets/mock/promo-4-v2.jpg&quot;);"></div><h3 class="promo-card-title">最高 20% 返水</h3><p class="promo-card-sub">每週依 VIP 等級返水，無上限。</p><span class="promo-card-cta">查看 →</span></button>'
+  ];
+  function initPromotionCards() {
+    var grid = document.querySelector('.promo-grid');
+    if (!grid) return;
+    var cards = grid.querySelectorAll('.promo-card.promo-card-link');
+    if (!cards.length) return;
+
+    function bindCard(card, index) {
+      var target = PROMOTION_ACTION_PAGES[index] || 'promotion.html';
+      card.addEventListener('click', function () { location.href = target; });
+    }
+    Array.prototype.forEach.call(cards, bindCard);
+
+    var foot = grid.nextElementSibling;
+    var loadMoreBtn = (foot && foot.classList.contains('cv-foot')) ? foot.querySelector('.cv-view-all') : null;
+    if (loadMoreBtn && cards.length < 4) {
+      loadMoreBtn.addEventListener('click', function () {
+        var startIndex = grid.querySelectorAll('.promo-card.promo-card-link').length;
+        PROMOTION_EXTRA_CARDS_HTML.forEach(function (html, i) {
+          grid.insertAdjacentHTML('beforeend', html);
+          bindCard(grid.lastElementChild, startIndex + i);
+        });
+        foot.style.display = 'none';
+      });
+    }
+  }
+
+  /* ============================================================
+   * Deposit 頁：provider 分頁(A-D，連動可用付款方式數) + 金額速選 +
+   * 優惠方案選擇(啟用送出按鈕) + 送出結果對話框。文案/演算法逐字對照
+   * vue3-app DepositPage.vue；為控制改動範圍，簡化省略原始碼 step
+   * 2/3（轉帳明細畫面／QR 中繼畫面），送出後直接顯示對應結果訊息。
+   * ========================================================== */
+  function initDepositPage() {
+    var providerTabs = document.querySelectorAll('.ui-tablist--underline .ui-tab--underline');
+    var methodTabs = document.querySelectorAll('.dp-method-tabs button');
+    var amountBtns = document.querySelectorAll('.ap-amount-btn');
+    var customInput = document.querySelector('.ap-form-card .ap-input');
+    var promoCards = document.querySelectorAll('.ap-promo-card');
+    var applyBtn = document.querySelector('.ap-form-card .ap-btn-wide.ap-grad');
+    if (!providerTabs.length || !applyBtn) return;
+
+    var METHOD_COUNT = { a: 4, b: 3, c: 2, d: 1 };
+    var PROVIDER_LETTERS = ['a', 'b', 'c', 'd'];
+    var state = { provider: 'a' };
+
+    function syncProviderMethods() {
+      var count = METHOD_COUNT[state.provider] || 4;
+      var visibleMethods = Array.prototype.slice.call(methodTabs, 0, count);
+      Array.prototype.forEach.call(methodTabs, function (btn, i) { btn.style.display = i < count ? '' : 'none'; });
+      var stillVisible = Array.prototype.some.call(visibleMethods, function (btn) { return btn.classList.contains('active'); });
+      if (!stillVisible && visibleMethods[0]) {
+        Array.prototype.forEach.call(methodTabs, function (b) { b.classList.remove('active'); });
+        visibleMethods[0].classList.add('active');
+      }
+    }
+    Array.prototype.forEach.call(providerTabs, function (btn, i) {
+      btn.addEventListener('click', function () {
+        Array.prototype.forEach.call(providerTabs, function (b) { b.classList.toggle('active', b === btn); });
+        state.provider = PROVIDER_LETTERS[i] || 'a';
+        syncProviderMethods();
+      });
+    });
+    Array.prototype.forEach.call(methodTabs, function (btn) {
+      btn.addEventListener('click', function () {
+        Array.prototype.forEach.call(methodTabs, function (b) { b.classList.toggle('active', b === btn); });
+      });
+    });
+
+    Array.prototype.forEach.call(amountBtns, function (btn) {
+      btn.addEventListener('click', function () {
+        Array.prototype.forEach.call(amountBtns, function (b) { b.classList.toggle('active', b === btn); });
+        if (customInput) customInput.value = '₩ ' + btn.textContent.trim();
+      });
+    });
+    if (customInput) {
+      customInput.addEventListener('input', function () {
+        var digits = customInput.value.replace(/[^\d]/g, '');
+        customInput.value = '₩ ' + (digits ? Number(digits).toLocaleString() : '');
+        Array.prototype.forEach.call(amountBtns, function (b) { b.classList.remove('active'); });
+      });
+    }
+
+    Array.prototype.forEach.call(promoCards, function (card) {
+      var radio = card.querySelector('input[type="radio"]');
+      if (!radio) return;
+      radio.addEventListener('change', function () {
+        Array.prototype.forEach.call(promoCards, function (c) { c.classList.toggle('active', c === card); });
+        applyBtn.disabled = false;
+      });
+    });
+
+    var RESULT_MESSAGES = {
+      a: { type: 'success', title: 'Success!', message: '' },
+      b: { type: 'warning', title: 'Application Notice', message: 'The maximum number of application attempts has been reached. Please contact customer support for assistance.' },
+      c: { type: 'warning', title: 'Application Notice', message: 'Your application has been temporarily suspended due to too many failed transaction attempts. Please contact customer support for assistance.' },
+      d: { type: 'warning', title: 'Application Notice', message: 'The requested amount has reached the maximum limit. Please contact customer support for assistance.' }
+    };
+    applyBtn.addEventListener('click', function () {
+      if (applyBtn.disabled) return;
+      var res = RESULT_MESSAGES[state.provider] || RESULT_MESSAGES.a;
+      var extraBtn = res.type !== 'success'
+        ? '<button type="button" class="ap-btn-wide outline" data-dialog-close data-action="goto-cs">Contact Customer Support</button>'
+        : '';
+      var dlg = showDialog(resultDialogHTML(res.type, res.title, res.message, extraBtn));
+      var csBtn = dlg.querySelector('[data-action="goto-cs"]');
+      if (csBtn) csBtn.addEventListener('click', function () { location.href = 'customer-service.html'; });
+    });
+  }
+
+  /* ============================================================
+   * Withdrawal 頁：主分頁(Withdraw / Account Management) x 方式子分頁
+   * (Bank / Crypto) 共 4 種組合，靜態頁只烘焙其中一種，其餘 3 種畫面
+   * markup 逐欄位對照 vue3-app WithdrawalPage.vue 動態產生（欄位名稱/
+   * placeholder 全數照抄原始碼，非新增資料模型）。送出/註冊皆比照原始
+   * 邏輯做必填驗證與筆數上限，成功訊息逐字取自原始碼 dialog 文案。
+   * ========================================================== */
+  function initWithdrawalPage() {
+    var primaryTabs = document.querySelectorAll('.ui-tablist--underline .ui-tab--underline');
+    var panelHost = document.querySelector('.wd-panel');
+    if (!primaryTabs.length || !panelHost) return;
+
+    var state = { primary: 'withdraw', withdrawMethod: 'crypto', manageMethod: 'bank' };
+    var bankAccounts = [{ bank: 'Shinhan Bank', number: '********5123', date: '2025-01-08 21:22:25' }];
+    var cryptoWallets = [];
+    var BANKS = ['Shinhan Bank', 'KB Bank', 'Woori Bank', 'Hana Bank', 'NH Bank'];
+
+    function methodTabsHTML(group) {
+      if (group === 'withdraw') {
+        return '<div class="wd-method-tabs" role="tablist" aria-label="Withdrawal method">' +
+          '<button type="button" data-method="bank" class="' + (state.withdrawMethod === 'bank' ? 'active' : '') + '" role="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Bank Card</button>' +
+          '<button type="button" data-method="crypto" class="' + (state.withdrawMethod === 'crypto' ? 'active' : '') + '" role="tab"><span class="wd-coin-mark">B</span>Crypto Wallet</button>' +
+        '</div>';
+      }
+      return '<div class="wd-method-tabs" role="tablist" aria-label="Account type">' +
+        '<button type="button" data-method="bank" class="' + (state.manageMethod === 'bank' ? 'active' : '') + '" role="tab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Bank Account</button>' +
+        '<button type="button" data-method="crypto" class="' + (state.manageMethod === 'crypto' ? 'active' : '') + '" role="tab"><span class="wd-coin-mark">B</span>Crypto Wallet</button>' +
+      '</div>';
+    }
+    function withdrawBankPanelHTML() {
+      return '<h2 class="ap-section-h"><span class="ap-mark"></span>Bank Card</h2>' +
+        '<div class="wd-account-card"><div class="wd-bank-logo">SH</div><div class="wd-account-copy"><strong>Shinhan Bank</strong><span>********5123</span><span>2025-01-08 21:22:25</span></div></div>' +
+        '<div class="wd-balance-list"><div class="wd-balance-row"><span>Central Wallet:</span><strong>0.00</strong></div><div class="wd-balance-row"><span>Available Amount:</span><strong>0.00</strong></div></div>' +
+        '<h2 class="ap-section-h"><span class="ap-mark"></span>Withdrawal Amount &amp; Password</h2>' +
+        '<div class="wd-form-grid">' +
+          '<label>Withdrawal Amount:</label><input class="ap-input" data-f="amount" inputmode="numeric" placeholder="100,000 ~ 20,000,000">' +
+          '<label>Transaction Password:</label><input class="ap-input" data-f="password" type="password" placeholder="Please fill in the transaction password">' +
+        '</div>' +
+        '<button type="button" class="ap-btn-wide ap-grad" data-action="submit-withdraw" disabled>Submit</button>';
+    }
+    function withdrawCryptoPanelHTML() {
+      var wallets = cryptoWallets.length ? cryptoWallets.map(function (w) {
+        return '<div class="wd-account-card"><span class="wd-wallet-logo">' + escapeHtml(w.type.slice(0, 1)) + '</span><div class="wd-account-copy"><strong>' + escapeHtml(w.type) + '</strong><span>' + escapeHtml(w.address) + '</span><span>' + escapeHtml(w.date) + '</span></div></div>';
+      }).join('') : (
+        '<div class="wd-empty-wallet"><span class="wd-empty-symbol">B</span><strong>Empty wallet list</strong>' +
+        '<button type="button" class="wd-empty-action" data-action="goto-manage-crypto"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add wallet</button></div>'
+      );
+      return '<h2 class="ap-section-h"><span class="ap-mark"></span>Crypto Wallet</h2>' + wallets +
+        '<div class="wd-balance-list"><div class="wd-balance-row"><span>Central Wallet:</span><strong>0.00</strong></div><div class="wd-balance-row"><span>Available Amount:</span><strong>0.00</strong></div></div>' +
+        '<h2 class="ap-section-h"><span class="ap-mark"></span>Withdrawal Amount &amp; Password</h2>' +
+        '<div class="wd-form-grid">' +
+          '<label>Wallet Type:</label><select class="ap-input" data-f="wtype"><option value="" disabled selected>Please select wallet type</option><option>USDT-TRC20</option><option>USDT-ERC20</option><option>BTC</option></select>' +
+          '<label>Wallet Address:</label><input class="ap-input" data-f="waddr" placeholder="Please fill in wallet address">' +
+          '<label>Withdrawal Amount:</label><input class="ap-input" data-f="amount" inputmode="numeric" placeholder="100,000 ~ 20,000,000">' +
+          '<label>Transaction Password:</label><input class="ap-input" data-f="password" type="password" placeholder="Please fill in the transaction password">' +
+        '</div>' +
+        '<button type="button" class="ap-btn-wide ap-grad" data-action="submit-withdraw" disabled>Submit</button>';
+    }
+    function manageBankPanelHTML() {
+      var rows = bankAccounts.map(function (a) {
+        return '<div class="wd-account-card"><div class="wd-bank-logo">SH</div><div class="wd-account-copy"><strong>' + escapeHtml(a.bank) + '</strong><span>' + escapeHtml(a.number) + '</span><span>' + escapeHtml(a.date) + '</span></div></div>';
+      }).join('');
+      return '<h2 class="ap-section-h"><span class="ap-mark"></span>Registered Withdrawal Accounts <span class="wd-count">(' + bankAccounts.length + '/5)</span></h2>' + rows +
+        '<div class="wd-form-grid wd-management-form">' +
+          '<label>Select Bank:</label><select class="ap-input" data-f="bank"><option value="" disabled selected>Please Select a Bank</option>' + BANKS.map(function (b) { return '<option>' + b + '</option>'; }).join('') + '</select>' +
+          '<label>Name on Card:</label><input class="ap-input" value="T***" disabled>' +
+          '<label>Account Number:</label><input class="ap-input" data-f="account" inputmode="numeric" placeholder="Please enter account/card/phone number">' +
+          '<label>Transaction Password:</label><input class="ap-input" data-f="password" type="password" placeholder="Please fill in the transaction password">' +
+        '</div>' +
+        '<button type="button" class="ap-btn-wide ap-grad" data-action="register-bank" disabled>Submit</button>';
+    }
+    function manageCryptoPanelHTML() {
+      var rows = cryptoWallets.length ? cryptoWallets.map(function (w) {
+        return '<div class="wd-account-card"><span class="wd-wallet-logo">' + escapeHtml(w.type.slice(0, 1)) + '</span><div class="wd-account-copy"><strong>' + escapeHtml(w.type) + '</strong><span>' + escapeHtml(w.address) + '</span><span>' + escapeHtml(w.date) + '</span></div></div>';
+      }).join('') : '<div class="wd-compact-empty"><span class="wd-empty-symbol">B</span><span>No registered crypto wallet</span></div>';
+      return '<h2 class="ap-section-h"><span class="ap-mark"></span>Registered Crypto Wallets <span class="wd-count">(' + cryptoWallets.length + '/5)</span></h2>' + rows +
+        '<div class="wd-form-grid wd-management-form">' +
+          '<label>Wallet Type:</label><select class="ap-input" data-f="wtype"><option value="" disabled selected>Please select wallet type</option><option>USDT-TRC20</option><option>USDT-ERC20</option><option>BTC</option></select>' +
+          '<label>Wallet Address:</label><input class="ap-input" data-f="waddr" placeholder="Please fill in wallet address">' +
+          '<label>Transaction Password:</label><input class="ap-input" data-f="password" type="password" placeholder="Please fill in the transaction password">' +
+        '</div>' +
+        '<button type="button" class="ap-btn-wide ap-grad" data-action="register-crypto" disabled>Submit</button>';
+    }
+    function checkReady() {
+      var btn = panelHost.querySelector('[data-action="submit-withdraw"], [data-action="register-bank"], [data-action="register-crypto"]');
+      if (!btn) return;
+      var inputs = panelHost.querySelectorAll('[data-f]');
+      var ready = inputs.length > 0;
+      Array.prototype.forEach.call(inputs, function (inp) { if (!inp.value || !String(inp.value).trim()) ready = false; });
+      btn.disabled = !ready;
+    }
+    function renderPanel() {
+      var group = state.primary;
+      var method = group === 'withdraw' ? state.withdrawMethod : state.manageMethod;
+      var tabsHost = panelHost.parentElement.querySelector('.wd-method-tabs');
+      if (tabsHost) tabsHost.outerHTML = methodTabsHTML(group);
+      panelHost.innerHTML = (group === 'withdraw')
+        ? (method === 'bank' ? withdrawBankPanelHTML() : withdrawCryptoPanelHTML())
+        : (method === 'bank' ? manageBankPanelHTML() : manageCryptoPanelHTML());
+      checkReady();
+    }
+
+    Array.prototype.forEach.call(primaryTabs, function (btn, i) {
+      btn.addEventListener('click', function () {
+        Array.prototype.forEach.call(primaryTabs, function (b) { b.classList.toggle('active', b === btn); });
+        state.primary = i === 0 ? 'withdraw' : 'management';
+        renderPanel();
+      });
+    });
+
+    document.addEventListener('click', function (e) {
+      var scope = e.target.closest('.wd-panel') || e.target.closest('.wd-method-tabs');
+      if (!scope) return;
+      var methodBtn = e.target.closest('.wd-method-tabs button[data-method]');
+      if (methodBtn) {
+        if (state.primary === 'withdraw') state.withdrawMethod = methodBtn.getAttribute('data-method');
+        else state.manageMethod = methodBtn.getAttribute('data-method');
+        renderPanel();
+        return;
+      }
+      var addWalletBtn = e.target.closest('[data-action="goto-manage-crypto"]');
+      if (addWalletBtn) {
+        state.primary = 'management'; state.manageMethod = 'crypto';
+        Array.prototype.forEach.call(primaryTabs, function (b, i) { b.classList.toggle('active', i === 1); });
+        renderPanel();
+        return;
+      }
+      var submitBtn = e.target.closest('[data-action="submit-withdraw"]');
+      if (submitBtn && !submitBtn.disabled) {
+        var methodLabel = (state.withdrawMethod === 'bank') ? 'Bank card' : 'Crypto wallet';
+        showDialog(resultDialogHTML('success', 'Success!', methodLabel + ' withdrawal request submitted successfully.'));
+        return;
+      }
+      var regBankBtn = e.target.closest('[data-action="register-bank"]');
+      if (regBankBtn && !regBankBtn.disabled) {
+        if (bankAccounts.length >= 5) { showDialog(resultDialogHTML('warning', 'Account Limit', 'A maximum of five withdrawal accounts can be registered.')); return; }
+        var bankSel = panelHost.querySelector('[data-f="bank"]');
+        var acctInp = panelHost.querySelector('[data-f="account"]');
+        var last4 = (acctInp.value || '').replace(/\D/g, '').slice(-4) || acctInp.value.slice(-4);
+        bankAccounts.push({ bank: bankSel.value, number: '********' + last4, date: new Date().toISOString().slice(0, 19).replace('T', ' ') });
+        renderPanel();
+        showDialog(resultDialogHTML('success', 'Success!', 'Withdrawal account registered successfully.'));
+        return;
+      }
+      var regCryptoBtn = e.target.closest('[data-action="register-crypto"]');
+      if (regCryptoBtn && !regCryptoBtn.disabled) {
+        if (cryptoWallets.length >= 5) { showDialog(resultDialogHTML('warning', 'Wallet Limit', 'A maximum of five crypto wallets can be registered.')); return; }
+        var wtypeSel = panelHost.querySelector('[data-f="wtype"]');
+        var waddrInp = panelHost.querySelector('[data-f="waddr"]');
+        var addr = (waddrInp.value || '').trim();
+        cryptoWallets.push({ type: wtypeSel.value, address: addr.slice(0, 8) + '...' + addr.slice(-6), date: new Date().toISOString().slice(0, 19).replace('T', ' ') });
+        renderPanel();
+        showDialog(resultDialogHTML('success', 'Success!', 'Crypto wallet registered successfully.'));
+        return;
+      }
+    });
+    document.addEventListener('input', function (e) { if (e.target.closest && e.target.closest('.wd-panel')) checkReady(); });
+    document.addEventListener('change', function (e) { if (e.target.closest && e.target.closest('.wd-panel')) checkReady(); });
+
+    // 靜態頁面初次渲染的 method-tabs/wd-panel markup沒有 data-method / data-action
+    // 掛勾（那是 Vue SSR 當下 crypto 分支的純展示 HTML），開場先用同一套
+    // renderPanel() 正規化一次（內容應與已渲染畫面一致，僅補上事件掛勾用的屬性）。
+    renderPanel();
   }
 
   /* ============================================================
@@ -845,6 +1659,15 @@
     safe(initCustomerServiceFab);
     safe(initBalanceFloat);
     safe(initMobileNav);
+    safe(initAccountOverviewPage);
+    safe(initSecurityCenterPage);
+    safe(initPersonalInfoPage);
+    safe(initRecordPage);
+    safe(initSupportPage);
+    safe(initSportsPage);
+    safe(initPromotionCards);
+    safe(initDepositPage);
+    safe(initWithdrawalPage);
     safe(function () { document.addEventListener('click', onDocumentClick); });
     safe(function () { document.addEventListener('submit', onDocumentSubmit); });
     safe(function () { document.addEventListener('keydown', onDocumentKeydown); });
