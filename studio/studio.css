@@ -1,0 +1,58 @@
+/* CMS_設計後台_v3 靜態版 layout。用 v3 皮膚 token(var(--bg)/--text/--line/--accent…),
+   右側 iframe 載入真實前台頁,選皮膚即時反映(設 data-skin/data-theme,皮膚 CSS 已靜態載入)。 */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+}
+.st-shell { display: grid; grid-template-columns: 320px 1fr; height: 100vh; }
+
+.st-panel {
+  display: flex; flex-direction: column; gap: 18px; padding: 18px; overflow-y: auto;
+  background: var(--bg-card, var(--bg-elev, var(--bg))); border-right: 1px solid var(--line);
+}
+.st-panel-head { padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.st-brand { font-size: 18px; font-weight: 700; color: var(--text); }
+.st-sub { margin-top: 4px; font-size: 12px; color: var(--text-dim, var(--text-mid)); }
+.st-group-title { margin-bottom: 8px; font-size: 12px; font-weight: 600; color: var(--text-mid); }
+
+.st-input {
+  width: 100%; padding: 9px 11px; font-size: 14px; color: var(--text);
+  background: var(--bg-elev, var(--bg)); border: 1px solid var(--line); border-radius: 8px; outline: none;
+}
+.st-input:focus { border-color: var(--accent); }
+
+.st-skins { display: flex; flex-direction: column; gap: 6px; }
+.st-skin {
+  display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--bg-elev, var(--bg));
+  color: var(--text-mid); cursor: pointer; font-size: 14px; text-align: left;
+}
+.st-skin:hover { border-color: var(--accent); }
+.st-skin.active { border-color: var(--accent); color: var(--text); font-weight: 600; }
+.st-swatch { width: 18px; height: 18px; border-radius: 50%; flex: 0 0 auto; border: 1px solid var(--line); }
+.st-skin-check { margin-left: auto; color: var(--accent); opacity: 0; }
+.st-skin.active .st-skin-check { opacity: 1; }
+
+.st-actions { display: flex; gap: 10px; margin-top: 4px; }
+.st-btn { flex: 1; padding: 10px 12px; font-size: 14px; font-weight: 600; border-radius: 8px; border: 1px solid transparent; cursor: pointer; }
+.st-btn-primary { background: var(--accent); color: var(--text-on-accent, #fff); }
+.st-btn-primary:hover { filter: brightness(1.05); }
+.st-btn-ghost { background: transparent; color: var(--text-mid); border-color: var(--line); }
+.st-btn-ghost:hover { border-color: var(--accent); color: var(--text); }
+.st-status { min-height: 16px; font-size: 12px; color: var(--accent); }
+
+.st-preview { display: flex; flex-direction: column; min-width: 0; background: var(--bg); }
+.st-preview-bar { display: flex; align-items: baseline; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+.st-preview-label { font-size: 14px; font-weight: 600; color: var(--text); }
+.st-preview-hint { font-size: 12px; color: var(--text-dim, var(--text-mid)); }
+.st-preview-frame { flex: 1; min-height: 0; }
+.st-preview-frame iframe { width: 100%; height: 100%; border: 0; display: block; background: var(--bg); }
+
+@media (max-width: 860px) {
+  .st-shell { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .st-panel { max-height: 42vh; }
+}

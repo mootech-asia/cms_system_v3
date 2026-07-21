@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-Hant" data-theme="dark" data-skin="blue">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CMS_設計後台_v3</title>
+    <link rel="stylesheet" href="../assets/css/design-system/tokens.css" />
+    <link rel="stylesheet" href="../assets/css/skins/white.css" />
+    <link rel="stylesheet" href="../assets/css/skins/blue.css" />
+    <link rel="stylesheet" href="../assets/css/skins/night-esports-green.css" />
+    <link rel="stylesheet" href="../assets/css/skins/cosmic-spectrum-purple.css" />
+    <link rel="stylesheet" href="../assets/css/skins/curated-collection.css" />
+    <link rel="stylesheet" href="studio.css" />
+  </head>
+  <body>
+    <div class="st-shell">
+      <aside class="st-panel">
+        <div class="st-panel-head">
+          <div class="st-brand">CMS_設計後台_v3</div>
+          <div class="st-sub">設計後台 · 選皮膚即時反映右側真實前台</div>
+        </div>
+
+        <section class="st-group">
+          <div class="st-group-title">皮膚</div>
+          <div id="st-skins" class="st-skins" role="listbox" aria-label="皮膚"></div>
+        </section>
+
+        <section class="st-group">
+          <div class="st-group-title">預覽頁面</div>
+          <select id="st-page" class="st-input"></select>
+        </section>
+
+        <div class="st-actions">
+          <button id="st-apply" type="button" class="st-btn st-btn-primary">套用到本站</button>
+          <button id="st-reset" type="button" class="st-btn st-btn-ghost">重設</button>
+        </div>
+        <div id="st-status" class="st-status" role="status" aria-live="polite"></div>
+      </aside>
+
+      <main class="st-preview">
+        <div class="st-preview-bar">
+          <span id="st-preview-label" class="st-preview-label">即時預覽 — 大廳</span>
+          <span class="st-preview-hint">iframe 載入真實前台頁</span>
+        </div>
+        <div class="st-preview-frame">
+          <iframe id="st-frame" title="前台預覽" src="../index.html"></iframe>
+        </div>
+      </main>
+    </div>
+    <script src="studio.js"></script>
+  </body>
+</html>
