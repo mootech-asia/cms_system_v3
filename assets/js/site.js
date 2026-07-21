@@ -78,6 +78,64 @@
   };
 
   /* ============================================================
+   * i18n（移植自 vue3-app/src/composables/useLocale.js + data/i18n.js）：
+   * 靜態站以 data-i18n / data-i18n-title 屬性標註可翻譯文字，t(path) 從
+   * window.CMS_I18N 依當前語系取值（fallback zh）；切語系寫入 localStorage
+   * 後重載整頁套用（純靜態多頁站本就整頁導覽，重載最單純可靠）。
+   * ========================================================== */
+  var I18N = window.CMS_I18N || { LANGS: { zh: { label: '中文', shortLabel: '中', htmlLang: 'zh-Hant' } }, TRANSLATIONS: { zh: {} } };
+  var LOCALE_KEY = I18N.LOCALE_STORAGE_KEY || 'cms-v3:locale';
+  var FALLBACK_LOCALE = 'zh';
+  function readLocale() {
+    try { var s = localStorage.getItem(LOCALE_KEY); return (I18N.LANGS && I18N.LANGS[s]) ? s : FALLBACK_LOCALE; }
+    catch (e) { return FALLBACK_LOCALE; }
+  }
+  var LOCALE = readLocale();
+  function localeRoot(loc) {
+    return {
+      t: (I18N.TRANSLATIONS || {})[loc],
+      HERO_COPY: (I18N.HERO_COPY || {})[loc],
+      PROMO_RIBBON_COPY: (I18N.PROMO_RIBBON_COPY || {})[loc],
+      PROMOTION_COPY: (I18N.PROMOTION_COPY || {})[loc],
+      TOURNAMENT_COPY: (I18N.TOURNAMENT_COPY || {})[loc]
+    };
+  }
+  function resolvePath(root, path) {
+    var parts = String(path).replace(/\[(\d+)\]/g, '.$1').split('.');
+    var cur = root;
+    for (var i = 0; i < parts.length; i++) { if (cur == null) return undefined; cur = cur[parts[i]]; }
+    return cur;
+  }
+  function tr(path, fallback) {
+    var v = resolvePath(localeRoot(LOCALE), path);
+    if (v == null) v = resolvePath(localeRoot(FALLBACK_LOCALE), path);
+    return (v == null || typeof v !== 'string') ? (fallback != null ? fallback : path) : v;
+  }
+  function setLocale(loc) {
+    if (!I18N.LANGS || !I18N.LANGS[loc] || loc === LOCALE) { closeLangMenu(); return; }
+    try { localStorage.setItem(LOCALE_KEY, loc); } catch (e) {}
+    location.reload();
+  }
+  function applyI18n(scope) {
+    var root = scope || document;
+    Array.prototype.forEach.call(root.querySelectorAll('[data-i18n]'), function (el) {
+      var val = tr(el.getAttribute('data-i18n'), null);
+      if (val == null) return;
+      var suffix = el.getAttribute('data-i18n-suffix') || '';
+      el.textContent = val + suffix;
+    });
+    Array.prototype.forEach.call(root.querySelectorAll('[data-i18n-title]'), function (el) {
+      var val = tr(el.getAttribute('data-i18n-title'), null);
+      if (val != null) el.textContent = val;
+    });
+  }
+  function initI18n() {
+    var info = (I18N.LANGS || {})[LOCALE];
+    document.documentElement.lang = (info && info.htmlLang) || 'zh-Hant';
+    applyI18n(document);
+  }
+
+  /* ============================================================
    * useFavorites 對照（同一組 localStorage key，行為完全相同）
    * ========================================================== */
   var FAV_KEY = 'lobby_favs_v1';
@@ -734,7 +792,7 @@
     var langTrigger = t.closest('.sb-lang');
     if (langTrigger) { toggleLangMenu(langTrigger); return; }
     var langItem = t.closest('.sb-lang-item');
-    if (langItem) { closeLangMenu(); return; }
+    if (langItem) { var loc = langItem.getAttribute('data-locale'); closeLangMenu(); if (loc) setLocale(loc); return; }
 
     var collapseSidebarBtn = t.closest('.sb-collapse-account, .sb-collapse-money');
     if (collapseSidebarBtn) { var shell1 = document.querySelector('.shell'); if (shell1) shell1.classList.add('collapsed'); return; }
@@ -898,8 +956,14 @@
   function renderLangMenu(menu) {
     menu.className = 'sb-lang-menu';
     menu.setAttribute('role', 'listbox');
-    menu.innerHTML = '<button type="button" class="sb-lang-item active" role="option" aria-selected="true">' +
-      '<span class="sb-flag" aria-hidden="true"></span><span>中文</span>' + CHECK_ICON + '</button>';
+    var langs = I18N.LANGS || { zh: { label: '中文' } };
+    menu.innerHTML = Object.keys(langs).map(function (key) {
+      var active = key === LOCALE;
+      return '<button type="button" class="sb-lang-item' + (active ? ' active' : '') + '"' +
+        ' role="option" aria-selected="' + (active ? 'true' : 'false') + '" data-locale="' + key + '">' +
+        '<span class="sb-flag" aria-hidden="true"></span><span>' + escapeHtml(langs[key].label) + '</span>' +
+        (active ? CHECK_ICON : '') + '</button>';
+    }).join('');
   }
   function closeLangMenu() { var m = document.querySelector('.sb-lang-menu'); if (m) m.remove(); }
   function toggleLangMenu(trigger) {
@@ -1653,6 +1717,7 @@
    * Bootstrap
    * ========================================================== */
   document.addEventListener('DOMContentLoaded', function () {
+    safe(initI18n);
     safe(restoreSkin);
     safe(initHero);
     safe(initRails);
