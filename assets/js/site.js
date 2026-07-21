@@ -67,15 +67,7 @@
     cs: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 16 0v4a3 3 0 0 1-3 3h-2v-7h5M4 12v4a3 3 0 0 0 3 3h2v-7H4"/></svg>'
   };
 
-  /* zh 字串（僅動態產生 markup 需要；3 個 modal 原始碼本身就是純英文寫死，不經 t()，故照抄英文原文） */
-  var STR = {
-    all: '全部',
-    favorites: '我的最愛',
-    loadMore: '載入更多',
-    noFavorites: '尚未加入我的最愛，點擊遊戲愛心即可收藏。',
-    noProviderGames: function (p) { return '目前沒有來自 ' + p + ' 的遊戲。'; },
-    noGames: '目前沒有可顯示的遊戲。'
-  };
+  /* STR（動態 markup 用字串）已移到下方 i18n 區塊之後，改由 tr() 依當前語系解析。 */
 
   /* ============================================================
    * i18n（移植自 vue3-app/src/composables/useLocale.js + data/i18n.js）：
@@ -128,12 +120,41 @@
       var val = tr(el.getAttribute('data-i18n-title'), null);
       if (val != null) el.textContent = val;
     });
+    /* 混合內容：只替換元素的第一個非空白文字節點，保留子元素(icon/計數)與原空白 */
+    Array.prototype.forEach.call(root.querySelectorAll('[data-i18n-text]'), function (el) {
+      var val = tr(el.getAttribute('data-i18n-text'), null);
+      if (val == null) return;
+      for (var i = 0; i < el.childNodes.length; i++) {
+        var node = el.childNodes[i];
+        if (node.nodeType === 3 && node.nodeValue.replace(/\s+/g, ' ').trim()) {
+          var m = node.nodeValue.match(/^(\s*)[\s\S]*?(\s*)$/);
+          node.nodeValue = (m ? m[1] : '') + val + (m ? m[2] : '');
+          break;
+        }
+      }
+    });
+    /* 語言切換器觸發鈕的目前語系標籤（"中文"/"English"/… 非 TRANSLATIONS 值，直接取 LANGS） */
+    var langLabel = (I18N.LANGS || {})[LOCALE];
+    Array.prototype.forEach.call(root.querySelectorAll('.sb-lang-label'), function (el) {
+      if (langLabel && langLabel.label) el.textContent = langLabel.label;
+    });
   }
   function initI18n() {
     var info = (I18N.LANGS || {})[LOCALE];
     document.documentElement.lang = (info && info.htmlLang) || 'zh-Hant';
     applyI18n(document);
   }
+
+  /* 動態產生 markup 用的字串：由 tr() 依當前語系解析（切語系會 reload，載入時解析即可）。
+     3 個 modal 原始碼本身仍是純英文寫死，未經 tr()。 */
+  var STR = {
+    all: tr('t.common.all', '全部'),
+    favorites: tr('t.common.favorites', '我的最愛'),
+    loadMore: tr('t.common.loadMore', '載入更多'),
+    noFavorites: tr('t.lobby.noFavorites', '尚未加入我的最愛，點擊遊戲愛心即可收藏。'),
+    noProviderGames: function (p) { return tr('t.lobby.noProviderGames', '目前沒有來自 {provider} 的遊戲。').replace('{provider}', p); },
+    noGames: tr('t.lobby.noGames', '目前沒有可顯示的遊戲。')
+  };
 
   /* ============================================================
    * useFavorites 對照（同一組 localStorage key，行為完全相同）
@@ -211,11 +232,11 @@
    *   (b) Promos 分類 tab 點擊時的動態重繪
    * ========================================================== */
   var CATEGORY_PARAMS = {
-    'Hot Games': { title: '熱門遊戲', icon: 'fire', games: GAMES.slots.concat(GAMES.live, GAMES.originals), showFilterTabs: false, showProviderTabs: false, showFavorites: false, enableLoadMore: false, pageSize: 10 },
-    'Mini Games': { title: '小遊戲', icon: 'star', games: GAMES.originals, showFilterTabs: true, showProviderTabs: true, showFavorites: true, enableLoadMore: true, pageSize: 10 },
-    'Slots': { title: '老虎機', icon: 'fire', games: GAMES.slots, showFilterTabs: true, showProviderTabs: true, showFavorites: true, enableLoadMore: true, pageSize: 10 },
-    'Live': { title: '真人', icon: 'bolt', games: GAMES.live, showFilterTabs: true, showProviderTabs: true, showFavorites: true, enableLoadMore: true, pageSize: 10 },
-    'Fish': { title: '捕魚', icon: null, games: GAMES.slots, showFilterTabs: true, showProviderTabs: true, showFavorites: true, enableLoadMore: true, pageSize: 10 }
+    'Hot Games': { title: tr('t.nav.Hot Games', '熱門遊戲'), icon: 'fire', games: GAMES.slots.concat(GAMES.live, GAMES.originals), showFilterTabs: false, showProviderTabs: false, showFavorites: false, enableLoadMore: false, pageSize: 10 },
+    'Mini Games': { title: tr('t.nav.Mini Games', '小遊戲'), icon: 'star', games: GAMES.originals, showFilterTabs: true, showProviderTabs: true, showFavorites: true, enableLoadMore: true, pageSize: 10 },
+    'Slots': { title: tr('t.nav.Slots', '老虎機'), icon: 'fire', games: GAMES.slots, showFilterTabs: true, showProviderTabs: true, showFavorites: true, enableLoadMore: true, pageSize: 10 },
+    'Live': { title: tr('t.nav.Live', '真人'), icon: 'bolt', games: GAMES.live, showFilterTabs: true, showProviderTabs: true, showFavorites: true, enableLoadMore: true, pageSize: 10 },
+    'Fish': { title: tr('t.nav.Fish', '捕魚'), icon: null, games: GAMES.slots, showFilterTabs: true, showProviderTabs: true, showFavorites: true, enableLoadMore: true, pageSize: 10 }
   };
 
   function renderCategoryView(section) {
