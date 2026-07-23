@@ -5408,6 +5408,7 @@ select.twk-field {
   z-index: -1;
   background-size: cover;
   background-position: center;
+  background-color: #070b12;
 }
 .tourn-hero-bg::after {
   content: '';

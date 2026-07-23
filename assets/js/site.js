@@ -133,6 +133,54 @@
         }
       }
     });
+    /* 屬性翻譯：placeholder */
+    Array.prototype.forEach.call(root.querySelectorAll('[data-i18n-placeholder]'), function (el) {
+      var val = tr(el.getAttribute('data-i18n-placeholder'), null);
+      if (val != null) el.setAttribute('placeholder', val);
+    });
+    /* 屬性翻譯：aria-label／title 取同一鍵，元素既有哪個就設哪個 */
+    Array.prototype.forEach.call(root.querySelectorAll('[data-i18n-label]'), function (el) {
+      var val = tr(el.getAttribute('data-i18n-label'), null);
+      if (val == null) return;
+      if (el.hasAttribute('aria-label')) el.setAttribute('aria-label', val);
+      if (el.hasAttribute('title')) el.setAttribute('title', val);
+    });
+    /* 組合式 aria-label（section 收合鈕）：收合動詞＋翻譯後的區塊標題重建 */
+    var collapseWord = tr('t.common.collapse', '收合');
+    Array.prototype.forEach.call(root.querySelectorAll('.section-collapse'), function (btn) {
+      var grp = btn.closest('.section-title-group');
+      var titleEl = grp ? grp.querySelector('.section-title') : null;
+      if (!titleEl) return;
+      var name = '';
+      for (var i = 0; i < titleEl.childNodes.length; i++) {
+        var node = titleEl.childNodes[i];
+        if (node.nodeType === 3 && node.nodeValue.trim()) { name = node.nodeValue.trim(); break; }
+      }
+      if (name) btn.setAttribute('aria-label', collapseWord + ' ' + name);
+    });
+    /* 組合式 aria-label（促銷卡）：以翻譯後的標題重建 */
+    Array.prototype.forEach.call(root.querySelectorAll('.promo-card-link'), function (card) {
+      var titleEl = card.querySelector('.promo-card-title');
+      if (titleEl && titleEl.textContent.trim()) card.setAttribute('aria-label', titleEl.textContent.trim());
+    });
+    /* 會員／帳戶頁烘焙英文（未走 data-i18n）：以 i18n-member.js 字典按當前語系替換純文字節點 */
+    var MEMBER = window.CMS_I18N_MEMBER;
+    if (MEMBER && LOCALE !== 'en') {
+      var mwalk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      var mnodes = [], mn;
+      while ((mn = mwalk.nextNode())) mnodes.push(mn);
+      mnodes.forEach(function (node) {
+        var parent = node.parentNode;
+        if (parent && (parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE')) return;
+        var raw = node.nodeValue; if (!raw) return;
+        var entry = MEMBER[raw.trim()];
+        var val = entry && entry[LOCALE];
+        if (val != null) {
+          var mm = raw.match(/^(\s*)[\s\S]*?(\s*)$/);
+          node.nodeValue = (mm ? mm[1] : '') + val + (mm ? mm[2] : '');
+        }
+      });
+    }
     /* 語言切換器觸發鈕的目前語系標籤（"中文"/"English"/… 非 TRANSLATIONS 值，直接取 LANGS） */
     var langLabel = (I18N.LANGS || {})[LOCALE];
     Array.prototype.forEach.call(root.querySelectorAll('.sb-lang-label'), function (el) {
@@ -606,8 +654,9 @@
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'tb-icon-btn cms-cs-fab';
-    btn.setAttribute('aria-label', '客服中心');
-    btn.setAttribute('title', '客服中心');
+    var csLabel = tr('t.modal.cs.title', '客服中心');
+    btn.setAttribute('aria-label', csLabel);
+    btn.setAttribute('title', csLabel);
     btn.setAttribute('data-action', 'open-cs');
     btn.innerHTML = MENU_ICONS.cs;
     document.body.appendChild(btn);
@@ -818,9 +867,9 @@
     if (langItem) { var loc = langItem.getAttribute('data-locale'); closeLangMenu(); if (loc) setLocale(loc); return; }
 
     var collapseSidebarBtn = t.closest('.sb-collapse-account, .sb-collapse-money');
-    if (collapseSidebarBtn) { var shell1 = document.querySelector('.shell'); if (shell1) shell1.classList.add('collapsed'); return; }
+    if (collapseSidebarBtn) { var shell1 = document.querySelector('.shell'); var sbC = document.querySelector('.sidebar'); if (shell1) shell1.classList.add('collapsed'); if (sbC) sbC.classList.add('collapsed'); return; }
     var expandSidebarBtn = t.closest('.sb-collapse-compact');
-    if (expandSidebarBtn) { var shell2 = document.querySelector('.shell'); if (shell2) shell2.classList.remove('collapsed'); return; }
+    if (expandSidebarBtn) { var shell2 = document.querySelector('.shell'); var sbE = document.querySelector('.sidebar'); if (shell2) shell2.classList.remove('collapsed'); if (sbE) sbE.classList.remove('collapsed'); return; }
 
     var sectionToggleBtn = t.closest('.sb-section-toggle');
     if (sectionToggleBtn) {
@@ -1459,8 +1508,8 @@
    * ========================================================== */
   var PROMOTION_ACTION_PAGES = ['deposit.html', 'deposit.html', 'account-overview.html', 'account-overview.html'];
   var PROMOTION_EXTRA_CARDS_HTML = [
-    '<button class="promo-card promo-card-link" type="button" aria-label="查看 推薦好友賺 25%" style="--promo-hue: var(--accent);"><span class="promo-card-tag">推薦</span><div class="promo-card-art" aria-hidden="true" style="background-image: url(&quot;assets/mock/promo-3-v2.jpg&quot;);"></div><h3 class="promo-card-title">推薦好友賺 25%</h3><p class="promo-card-sub">邀請好友後可獲得長期佣金。</p><span class="promo-card-cta">查看 →</span></button>',
-    '<button class="promo-card promo-card-link" type="button" aria-label="查看 最高 20% 返水" style="--promo-hue: var(--accent);"><span class="promo-card-tag">VIP</span><div class="promo-card-art" aria-hidden="true" style="background-image: url(&quot;assets/mock/promo-4-v2.jpg&quot;);"></div><h3 class="promo-card-title">最高 20% 返水</h3><p class="promo-card-sub">每週依 VIP 等級返水，無上限。</p><span class="promo-card-cta">查看 →</span></button>'
+    '<button class="promo-card promo-card-link" type="button" aria-label="查看 推薦好友賺 25%" style="--promo-hue: var(--accent);"><span class="promo-card-tag" data-i18n="PROMOTION_COPY.refer-and-earn.tag">推薦</span><div class="promo-card-art" aria-hidden="true" style="background-image: url(&quot;assets/mock/promo-3-v2.jpg&quot;);"></div><h3 class="promo-card-title" data-i18n="PROMOTION_COPY.refer-and-earn.title">推薦好友賺 25%</h3><p class="promo-card-sub" data-i18n="PROMOTION_COPY.refer-and-earn.sub">邀請好友後可獲得長期佣金。</p><span class="promo-card-cta" data-i18n="PROMOTION_COPY.first-deposit.cta" data-i18n-suffix=" →">查看 →</span></button>',
+    '<button class="promo-card promo-card-link" type="button" aria-label="查看 最高 20% 返水" style="--promo-hue: var(--accent);"><span class="promo-card-tag" data-i18n="PROMOTION_COPY.vip-cashback.tag">VIP</span><div class="promo-card-art" aria-hidden="true" style="background-image: url(&quot;assets/mock/promo-4-v2.jpg&quot;);"></div><h3 class="promo-card-title" data-i18n="PROMOTION_COPY.vip-cashback.title">最高 20% 返水</h3><p class="promo-card-sub" data-i18n="PROMOTION_COPY.vip-cashback.sub">每週依 VIP 等級返水，無上限。</p><span class="promo-card-cta" data-i18n="PROMOTION_COPY.first-deposit.cta" data-i18n-suffix=" →">查看 →</span></button>'
   ];
   function initPromotionCards() {
     var grid = document.querySelector('.promo-grid');
@@ -1483,6 +1532,7 @@
           grid.insertAdjacentHTML('beforeend', html);
           bindCard(grid.lastElementChild, startIndex + i);
         });
+        applyI18n(grid);
         foot.style.display = 'none';
       });
     }
@@ -1760,6 +1810,8 @@
     safe(initPromotionCards);
     safe(initDepositPage);
     safe(initWithdrawalPage);
+    /* 各頁 render 完後再套一次 i18n，補翻 JS 動態產生（在 initI18n 之後才建）的內容 */
+    safe(function () { applyI18n(document); });
     safe(function () { document.addEventListener('click', onDocumentClick); });
     safe(function () { document.addEventListener('submit', onDocumentSubmit); });
     safe(function () { document.addEventListener('keydown', onDocumentKeydown); });
